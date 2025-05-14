@@ -1,0 +1,365 @@
+<!doctype html>
+<html lang="zh-Hans" dir="ltr" class="docs-wrapper plugin-docs plugin-id-default docs-version-current docs-doc-page docs-doc-id-T113s3-Pro/part8/LinuxKernelOverview1" data-has-hydrated="false">
+<head>
+<meta charset="UTF-8">
+<meta name="generator" content="Docusaurus v3.0.1">
+<title data-rh="true">Linux内核开发流程 | 韦东山嵌入式Linux开发系列课程</title><meta data-rh="true" name="viewport" content="width=device-width,initial-scale=1"><meta data-rh="true" name="twitter:card" content="summary_large_image"><meta data-rh="true" property="og:image" content="https://linux.100ask.net/img/docusaurus-social-card.jpg"><meta data-rh="true" name="twitter:image" content="https://linux.100ask.net/img/docusaurus-social-card.jpg"><meta data-rh="true" property="og:url" content="https://linux.100ask.net/docs/T113s3-Pro/part8/LinuxKernelOverview1"><meta data-rh="true" property="og:locale" content="zh_Hans"><meta data-rh="true" property="og:locale:alternate" content="en"><meta data-rh="true" name="docusaurus_locale" content="zh-Hans"><meta data-rh="true" name="docsearch:language" content="zh-Hans"><meta data-rh="true" name="docusaurus_version" content="current"><meta data-rh="true" name="docusaurus_tag" content="docs-default-current"><meta data-rh="true" name="docsearch:version" content="current"><meta data-rh="true" name="docsearch:docusaurus_tag" content="docs-default-current"><meta data-rh="true" property="og:title" content="Linux内核开发流程 | 韦东山嵌入式Linux开发系列课程"><meta data-rh="true" name="description" content="1. Linux内核开发流程"><meta data-rh="true" property="og:description" content="1. Linux内核开发流程"><link data-rh="true" rel="icon" href="/img/favicon.ico"><link data-rh="true" rel="canonical" href="https://linux.100ask.net/docs/T113s3-Pro/part8/LinuxKernelOverview1"><link data-rh="true" rel="alternate" href="https://linux.100ask.net/docs/T113s3-Pro/part8/LinuxKernelOverview1" hreflang="zh-Hans"><link data-rh="true" rel="alternate" href="https://linux.100ask.net/en/docs/T113s3-Pro/part8/LinuxKernelOverview1" hreflang="en"><link data-rh="true" rel="alternate" href="https://linux.100ask.net/docs/T113s3-Pro/part8/LinuxKernelOverview1" hreflang="x-default"><link rel="stylesheet" href="/assets/css/styles.e3ab61ce.css">
+<script src="/assets/js/runtime~main.00e1d31a.js" defer="defer"></script>
+<script src="/assets/js/main.b2cd252e.js" defer="defer"></script>
+</head>
+<body class="navigation-with-keyboard">
+<script>!function(){function t(t){document.documentElement.setAttribute("data-theme",t)}var e=function(){try{return new URLSearchParams(window.location.search).get("docusaurus-theme")}catch(t){}}()||function(){try{return localStorage.getItem("theme")}catch(t){}}();t(null!==e?e:"light")}(),function(){try{const c=new URLSearchParams(window.location.search).entries();for(var[t,e]of c)if(t.startsWith("docusaurus-data-")){var a=t.replace("docusaurus-data-","data-");document.documentElement.setAttribute(a,e)}}catch(t){}}()</script><div id="__docusaurus"><div role="region" aria-label="跳到主要内容"><a class="skipToContent_fXgn" href="#__docusaurus_skipToContent_fallback">跳到主要内容</a></div><nav aria-label="主导航" class="navbar navbar--fixed-top"><div class="navbar__inner"><div class="navbar__items"><button aria-label="切换导航栏" aria-expanded="false" class="navbar__toggle clean-btn" type="button"><svg width="30" height="30" viewBox="0 0 30 30" aria-hidden="true"><path stroke="currentColor" stroke-linecap="round" stroke-miterlimit="10" stroke-width="2" d="M4 7h22M4 15h22M4 23h22"></path></svg></button><a class="navbar__brand" href="/"><div class="navbar__logo"><img src="/img/logo.svg" alt="东山PI" class="themedComponent_mlkZ themedComponent--light_NVdE"><img src="/img/logo.svg" alt="东山PI" class="themedComponent_mlkZ themedComponent--dark_xIcU"></div><b class="navbar__title text--truncate">韦东山嵌入式Linux开发系列课程</b></a><a class="navbar__item navbar__link" href="/docs/T113s3-Industrial/BoardIntroduction">T113s3-Industrial</a><a aria-current="page" class="navbar__item navbar__link navbar__link--active" href="/docs/T113s3-Pro/BoardIntroduction">T113s3-Pro</a><a class="navbar__item navbar__link" href="/docs/D1h-DualDisplay/BoardIntroduction">D1h-DualDisplay</a><a class="navbar__item navbar__link" href="/docs/D1s-CVBS/BoardIntroduction">D1s-CVBS</a><a class="navbar__item navbar__link" href="/docs/T113i-Industrial/BoardIntroduction">T113i-Industrial</a><a class="navbar__item navbar__link" href="/docs/T113s3-SdNand/BoardIntroduction">T113s3-SdNand</a><a class="navbar__item navbar__link" href="/docs/R818-DshanPI-ROSx/BoardIntroduction">R818-DshanPI-ROSx</a><a class="navbar__item navbar__link" href="/docs/H616-YuzukiHD-Chameleon/BoardIntroduction">H616-YuzukiHD-Chameleon</a></div><div class="navbar__items navbar__items--right"><div class="navbar__item dropdown dropdown--hoverable dropdown--right"><a href="#" aria-haspopup="true" aria-expanded="false" role="button" class="navbar__link"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" class="iconLanguage_nlXk"><path fill="currentColor" d="M12.87 15.07l-2.54-2.51.03-.03c1.74-1.94 2.98-4.17 3.71-6.53H17V4h-7V2H8v2H1v1.99h11.17C11.5 7.92 10.44 9.75 9 11.35 8.07 10.32 7.3 9.19 6.69 8h-2c.73 1.63 1.73 3.17 2.98 4.56l-5.09 5.02L4 19l5-5 3.11 3.11.76-2.04zM18.5 10h-2L12 22h2l1.12-3h4.75L21 22h2l-4.5-12zm-2.62 7l1.62-4.33L19.12 17h-3.24z"></path></svg>简体中文</a><ul class="dropdown__menu"><li><a href="/docs/T113s3-Pro/part8/LinuxKernelOverview1" target="_self" rel="noopener noreferrer" class="dropdown__link dropdown__link--active" lang="zh-Hans">简体中文</a></li><li><a href="/en/docs/T113s3-Pro/part8/LinuxKernelOverview1" target="_self" rel="noopener noreferrer" class="dropdown__link" lang="en">English</a></li></ul></div><a href="https://github.com/100askTeam/linuxboard-docs" target="_blank" rel="noopener noreferrer" class="navbar__item navbar__link">GitHub<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a><div class="toggle_vylO colorModeToggle_DEke"><button class="clean-btn toggleButton_gllP toggleButtonDisabled_aARS" type="button" disabled="" title="切换浅色/暗黑模式（当前为浅色模式）" aria-label="切换浅色/暗黑模式（当前为浅色模式）" aria-live="polite"><svg viewBox="0 0 24 24" width="24" height="24" class="lightToggleIcon_pyhR"><path fill="currentColor" d="M12,9c1.65,0,3,1.35,3,3s-1.35,3-3,3s-3-1.35-3-3S10.35,9,12,9 M12,7c-2.76,0-5,2.24-5,5s2.24,5,5,5s5-2.24,5-5 S14.76,7,12,7L12,7z M2,13l2,0c0.55,0,1-0.45,1-1s-0.45-1-1-1l-2,0c-0.55,0-1,0.45-1,1S1.45,13,2,13z M20,13l2,0c0.55,0,1-0.45,1-1 s-0.45-1-1-1l-2,0c-0.55,0-1,0.45-1,1S19.45,13,20,13z M11,2v2c0,0.55,0.45,1,1,1s1-0.45,1-1V2c0-0.55-0.45-1-1-1S11,1.45,11,2z M11,20v2c0,0.55,0.45,1,1,1s1-0.45,1-1v-2c0-0.55-0.45-1-1-1C11.45,19,11,19.45,11,20z M5.99,4.58c-0.39-0.39-1.03-0.39-1.41,0 c-0.39,0.39-0.39,1.03,0,1.41l1.06,1.06c0.39,0.39,1.03,0.39,1.41,0s0.39-1.03,0-1.41L5.99,4.58z M18.36,16.95 c-0.39-0.39-1.03-0.39-1.41,0c-0.39,0.39-0.39,1.03,0,1.41l1.06,1.06c0.39,0.39,1.03,0.39,1.41,0c0.39-0.39,0.39-1.03,0-1.41 L18.36,16.95z M19.42,5.99c0.39-0.39,0.39-1.03,0-1.41c-0.39-0.39-1.03-0.39-1.41,0l-1.06,1.06c-0.39,0.39-0.39,1.03,0,1.41 s1.03,0.39,1.41,0L19.42,5.99z M7.05,18.36c0.39-0.39,0.39-1.03,0-1.41c-0.39-0.39-1.03-0.39-1.41,0l-1.06,1.06 c-0.39,0.39-0.39,1.03,0,1.41s1.03,0.39,1.41,0L7.05,18.36z"></path></svg><svg viewBox="0 0 24 24" width="24" height="24" class="darkToggleIcon_wfgR"><path fill="currentColor" d="M9.37,5.51C9.19,6.15,9.1,6.82,9.1,7.5c0,4.08,3.32,7.4,7.4,7.4c0.68,0,1.35-0.09,1.99-0.27C17.45,17.19,14.93,19,12,19 c-3.86,0-7-3.14-7-7C5,9.07,6.81,6.55,9.37,5.51z M12,3c-4.97,0-9,4.03-9,9s4.03,9,9,9s9-4.03,9-9c0-0.46-0.04-0.92-0.1-1.36 c-0.98,1.37-2.58,2.26-4.4,2.26c-2.98,0-5.4-2.42-5.4-5.4c0-1.81,0.89-3.42,2.26-4.4C12.92,3.04,12.46,3,12,3L12,3z"></path></svg></button></div><div class="navbarSearchContainer_Bca1"></div></div></div><div role="presentation" class="navbar-sidebar__backdrop"></div></nav><div id="__docusaurus_skipToContent_fallback" class="main-wrapper mainWrapper_z2l0"><div class="docsWrapper_hBAB"><button aria-label="回到顶部" class="clean-btn theme-back-to-top-button backToTopButton_sjWU" type="button"></button><div class="docRoot_UBD9"><aside class="theme-doc-sidebar-container docSidebarContainer_YfHR"><div class="sidebarViewport_aRkj"><div class="sidebar_njMd"><nav aria-label="文档侧边栏" class="menu thin-scrollbar menu_SIkG"><ul class="theme-doc-sidebar-menu menu__list"><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class="menu__link" href="/docs/T113s3-Pro/BoardIntroduction">T113s-Pro V1.3</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class="menu__link" href="/docs/T113s3-Pro/SupportingResources">源码工具文档手册</a></li><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item menu__list-item--collapsed"><div class="menu__list-item-collapsible"><a class="menu__link menu__link--sublist" aria-expanded="false" href="/docs/category/快速启动-1">快速启动</a><button aria-label="展开侧边栏分类 &#x27;快速启动&#x27;" type="button" class="clean-btn menu__caret"></button></div></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class="menu__link" href="/docs/T113s3-Pro/ConfigHostEnv">安装并配置开发环境</a></li><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item menu__list-item--collapsed"><div class="menu__list-item-collapsible"><a class="menu__link menu__link--sublist" aria-expanded="false" href="/docs/category/板载功能体验">板载功能体验</a><button aria-label="展开侧边栏分类 &#x27;板载功能体验&#x27;" type="button" class="clean-btn menu__caret"></button></div></li><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item menu__list-item--collapsed"><div class="menu__list-item-collapsible"><a class="menu__link menu__link--sublist" aria-expanded="false" href="/docs/category/tina-sdk开发-1">Tina-SDK开发</a><button aria-label="展开侧边栏分类 &#x27;Tina-SDK开发&#x27;" type="button" class="clean-btn menu__caret"></button></div></li><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item menu__list-item--collapsed"><div class="menu__list-item-collapsible"><a class="menu__link menu__link--sublist" aria-expanded="false" href="/docs/category/bootloader开发-1">Bootloader开发</a><button aria-label="展开侧边栏分类 &#x27;Bootloader开发&#x27;" type="button" class="clean-btn menu__caret"></button></div></li><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item"><div class="menu__list-item-collapsible"><a class="menu__link menu__link--sublist menu__link--active" aria-expanded="true" href="/docs/category/linuxkernel开发-1">LinuxKernel开发</a><button aria-label="折叠侧边栏分类 &#x27;LinuxKernel开发&#x27;" type="button" class="clean-btn menu__caret"></button></div><ul style="display:block;overflow:visible;height:auto" class="menu__list"><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/docs/T113s3-Pro/part8/LinuxKernelOverview">Linux Kernel简介</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link menu__link--active" aria-current="page" tabindex="0" href="/docs/T113s3-Pro/part8/LinuxKernelOverview1">Linux内核开发流程</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/docs/T113s3-Pro/part8/LinuxKernelOverview2">如何启动Kernel</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/docs/T113s3-Pro/part8/LinuxKernelOverview3">扩展-如何修改内核配置</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/docs/T113s3-Pro/part8/TinaSDKV2.0LinuxKernelBasicDevelopment">Tina Linux Kerenl目录结构</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/docs/T113s3-Pro/part8/TinaSDKV2.0LinuxKernelBasicDevelopment1">单独编译Tina Linux</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/docs/T113s3-Pro/part8/TinaSDKV2.0LinuxKernelBasicDevelopment2">TinaLinux增加内核模块</a></li></ul></li><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item menu__list-item--collapsed"><div class="menu__list-item-collapsible"><a class="menu__link menu__link--sublist" aria-expanded="false" href="/docs/category/tinasdk系统定制">TinaSDK系统定制</a><button aria-label="展开侧边栏分类 &#x27;TinaSDK系统定制&#x27;" type="button" class="clean-btn menu__caret"></button></div></li></ul></nav></div></div></aside><main class="docMainContainer_TBSr"><div class="container padding-top--md padding-bottom--lg"><div class="row"><div class="col docItemCol_VOVn"><div class="docItemContainer_Djhp"><article><nav class="theme-doc-breadcrumbs breadcrumbsContainer_Z_bl" aria-label="页面路径"><ul class="breadcrumbs" itemscope="" itemtype="https://schema.org/BreadcrumbList"><li class="breadcrumbs__item"><a aria-label="主页面" class="breadcrumbs__link" href="/"><svg viewBox="0 0 24 24" class="breadcrumbHomeIcon_YNFT"><path d="M10 19v-5h4v5c0 .55.45 1 1 1h3c.55 0 1-.45 1-1v-7h1.7c.46 0 .68-.57.33-.87L12.67 3.6c-.38-.34-.96-.34-1.34 0l-8.36 7.53c-.34.3-.13.87.33.87H5v7c0 .55.45 1 1 1h3c.55 0 1-.45 1-1z" fill="currentColor"></path></svg></a></li><li itemscope="" itemprop="itemListElement" itemtype="https://schema.org/ListItem" class="breadcrumbs__item"><a class="breadcrumbs__link" itemprop="item" href="/docs/category/linuxkernel开发-1"><span itemprop="name">LinuxKernel开发</span></a><meta itemprop="position" content="1"></li><li itemscope="" itemprop="itemListElement" itemtype="https://schema.org/ListItem" class="breadcrumbs__item breadcrumbs__item--active"><span class="breadcrumbs__link" itemprop="name">Linux内核开发流程</span><meta itemprop="position" content="2"></li></ul></nav><div class="tocCollapsible_ETCw theme-doc-toc-mobile tocMobile_ITEo"><button type="button" class="clean-btn tocCollapsibleButton_TO0P">本页总览</button></div><div class="theme-doc-markdown markdown"><h1>Linux内核开发流程</h1>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="1-linux内核开发流程">1. Linux内核开发流程<a href="#1-linux内核开发流程" class="hash-link" aria-label="1. Linux内核开发流程的直接链接" title="1. Linux内核开发流程的直接链接">​</a></h2>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="构建linux内核流程">构建Linux内核流程<a href="#构建linux内核流程" class="hash-link" aria-label="构建Linux内核流程的直接链接" title="构建Linux内核流程的直接链接">​</a></h3>
+<p>主要分为两部分</p>
+<ol>
+<li>环境配置： 选择合适的编译主机环境 系统非常重要<!-- -->
+<ol>
+<li>安装对Linux内核源码构建所需的环境依赖</li>
+<li>  设置你需要构建的目标单板的架构 工具链</li>
+</ol>
+</li>
+<li>内核构建<!-- -->
+<ol>
+<li>make构建可以给bootloader使用的 内核镜像</li>
+<li>make构建 dtb设备树文件（可选 <code>x86架构不需要</code>）</li>
+<li>make 构建内核模块驱动</li>
+<li>安装到合适的位置，替换原有的版本</li>
+</ol>
+</li>
+</ol>
+<p><img loading="lazy" alt="image-20240307115608709" src="/assets/images/image-20240307115608709-dd0b80453e10b501837f95c79adcc841.png" width="1550" height="875" class="img_ev3q"></p>
+<ol>
+<li>
+<p>Host下配置开发环境</p>
+<ul>
+<li>
+<p>安装必要依赖包</p>
+<ul>
+<li>解压配置合适的工具链</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>获取配套的交叉编译工具链</p>
+<ul>
+<li>
+<p>SOC原厂提供: NXP ST  Rockchip Amlogic Allwinnertech 等。</p>
+<ul>
+<li>社区下载： Linrao Debian ARM Bootlin</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>下载kernel源码</p>
+<ul>
+<li>
+<p>获取Linux Kernel主线LTS源码</p>
+<ul>
+<li>
+<p>Git方式获取: git clone <a href="https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git" target="_blank" rel="noopener noreferrer">https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git</a></p>
+</li>
+<li>
+<p>压缩版下载: <a href="https://mirrors.edge.kernel.org/pub/linux/kernel/" target="_blank" rel="noopener noreferrer">https://mirrors.edge.kernel.org/pub/linux/kernel/</a></p>
+</li>
+<li>
+<p>获取芯片原厂Kernel源码</p>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>指定编译板子配置文件 <code>make BOARDNAME_defconfig</code></p>
+</li>
+<li>
+<p>编译</p>
+<ul>
+<li>
+<p>编译内核镜像 <code>make –jN</code></p>
+<ul>
+<li>
+<p>编译设备树<code>make dtbs</code></p>
+</li>
+<li>
+<p>编译安装模块驱动 <code>make modules</code></p>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>安装驱动模块至目标kernel位置</p>
+</li>
+</ol>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="获取适合的linux内核">获取适合的Linux内核<a href="#获取适合的linux内核" class="hash-link" aria-label="获取适合的Linux内核的直接链接" title="获取适合的Linux内核的直接链接">​</a></h3>
+<p>Kernel源码区别</p>
+<ul>
+<li>
+<p>Linus Torvalds 发布的 Linux 内核的官方（主线）版本可在 <a href="https://kernel.org" target="_blank" rel="noopener noreferrer">https://kernel.org</a> 获得。</p>
+<ul>
+<li>这些版本遵循内核的开发模式流程。但是，它们可能尚未包含特定领域的最新特性。某些开发中的功能可能尚未准备好用于主线版本。</li>
+</ul>
+</li>
+<li>
+<p>许多芯片供应商提供自己的内核源</p>
+<ul>
+<li>他们优先关注硬件支持。与主线 Linux 有一个非常重要的增量支持。</li>
+<li>仅在主线还没有支持时有用。 许多SOC供应商同时投入于主线内核开发。</li>
+</ul>
+</li>
+<li>
+<p>许多内核子社区维护自己的内核版本，通常具有更新 但不够稳定。</p>
+<ul>
+<li>
+<p>架构社区（ARM、MIPS、PowerPC 等）、设备驱动社区（I2C、SPI、USB、PCI、网络等），其他社区（如real-time等）</p>
+</li>
+<li>
+<p>无官方发布，仅用于分享工作和为主线版本做出贡献。</p>
+</li>
+</ul>
+</li>
+</ul>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="2-使用主线linuxkernel演示">2. 使用主线Linuxkernel演示<a href="#2-使用主线linuxkernel演示" class="hash-link" aria-label="2. 使用主线Linuxkernel演示的直接链接" title="2. 使用主线Linuxkernel演示的直接链接">​</a></h2>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="1-获取主线linuxkernel">1. 获取主线Linuxkernel<a href="#1-获取主线linuxkernel" class="hash-link" aria-label="1. 获取主线Linuxkernel的直接链接" title="1. 获取主线Linuxkernel的直接链接">​</a></h3>
+<ul>
+<li>所有版本压缩包下载：<a href="https://kernel.org/pub/linux/kernel/" target="_blank" rel="noopener noreferrer">https://kernel.org/pub/linux/kernel/</a></li>
+</ul>
+<p><img loading="lazy" alt="image-20240307120213924" src="/assets/images/image-20240307120213924-eb483e3bb3277001fea9fd0c46d7da20.png" width="847" height="708" class="img_ev3q"></p>
+<ul>
+<li>Git仓库源码地址：git clone <a href="https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git" target="_blank" rel="noopener noreferrer">https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git</a></li>
+</ul>
+<p><img loading="lazy" alt="image-20240307120230164" src="/assets/images/image-20240307120230164-e9f0f3b479788397aa989527a256d3a7.png" width="980" height="692" class="img_ev3q"></p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="2-kernel源码目录作用">2. Kernel源码目录作用<a href="#2-kernel源码目录作用" class="hash-link" aria-label="2. Kernel源码目录作用的直接链接" title="2. Kernel源码目录作用的直接链接">​</a></h3>
+<table><thead><tr><th>kernel源码目录</th><th style="text-align:center">目录功能作用介绍</th></tr></thead><tbody><tr><td><strong>arch</strong></td><td style="text-align:center">包含体系结构的文件。子目录下有不同的架构。</td></tr><tr><td><strong>Documentation</strong></td><td style="text-align:center">包含内核文档。如果您想找到有关 Linux 某个方面的更多信息，可以直接从这里寻找</td></tr><tr><td><strong>drivers</strong></td><td style="text-align:center">包含设备驱动程序 - 数以千计。 有一个每种驱动程序的子目录。</td></tr><tr><td><strong>fs</strong></td><td style="text-align:center">包含文件系统代码。</td></tr><tr><td><strong>include</strong></td><td style="text-align:center">包含内核头文件，包括那些工具链需要的文件。</td></tr><tr><td><strong>init</strong></td><td style="text-align:center">包含内核启动代码。</td></tr><tr><td><strong>kernel</strong>：</td><td style="text-align:center">包含核心功能，包括调度、锁、定时器、电源管理和调试/代码跟踪等。</td></tr><tr><td><strong>mm</strong></td><td style="text-align:center">包含内存管理。</td></tr><tr><td><strong>net</strong></td><td style="text-align:center">包含网络协议。</td></tr><tr><td><strong>scripts</strong></td><td style="text-align:center">包含许多有用的脚本，包括设备树编译器 (DTC)等。</td></tr><tr><td><strong>tools</strong></td><td style="text-align:center">包含许多有用的工具，包括 Linux 性能计数器工具 perf，分析和追踪等。</td></tr></tbody></table>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="3-配置kernel编译环境">3. 配置Kernel编译环境<a href="#3-配置kernel编译环境" class="hash-link" aria-label="3. 配置Kernel编译环境的直接链接" title="3. 配置Kernel编译环境的直接链接">​</a></h3>
+<h4 class="anchor anchorWithStickyNavbar_LWe7" id="1-安装host依赖">1. 安装Host依赖<a href="#1-安装host依赖" class="hash-link" aria-label="1. 安装Host依赖的直接链接" title="1. 安装Host依赖的直接链接">​</a></h4>
+<ul>
+<li>Ubuntu16+ 系统 LinuxKernel编译依赖</li>
+</ul>
+<blockquote>
+<p>sudo apt-get install libc6-armel-cross libc6-dev-armel-cross libncurses5-dev build-essential bison flex libssl-dev bc libelf-dev</p>
+</blockquote>
+<h4 class="anchor anchorWithStickyNavbar_LWe7" id="2-设置arch">2. 设置ARCH<a href="#2-设置arch" class="hash-link" aria-label="2. 设置ARCH的直接链接" title="2. 设置ARCH的直接链接">​</a></h4>
+<p>首先，指定要构建的内核的架构将 ARCH 设置为 arch/ 下的目录名称：<code> export ARCH=arm</code> 默认情况下，内核构建系统假定内核是为主机架构配置和构建的（在我们的例子中为 x86，那么ARCH默认就是x86)。内核构建镜像时将使用此设置。使用目标架构的配置项。使用目标架构的源代码和头文件编译内核。</p>
+<p><img loading="lazy" alt="image-20240307120502837" src="/assets/images/image-20240307120502837-a3dd435a3aad3b391614d3ae5129fcf4.png" width="738" height="832" class="img_ev3q"></p>
+<h4 class="anchor anchorWithStickyNavbar_LWe7" id="3-设置-croos_compile">3. 设置 CROOS_COMPILE<a href="#3-设置-croos_compile" class="hash-link" aria-label="3. 设置 CROOS_COMPILE的直接链接" title="3. 设置 CROOS_COMPILE的直接链接">​</a></h4>
+<p>在编译镜像时，内核Makefile调用的编译器是<code>$(CROSS_COMPILE)gcc</code> 在配置时需要已经指定过编译器，因为某些内核配置选项取决于编译器的功能。</p>
+<ul>
+<li>
+<p>本地编译时: 保持CROSS_COMPILE 变量未定义，内核将使用 默认的gcc 为主机架构进行本地编译。</p>
+</li>
+<li>
+<p>使用交叉编译器时: 为了与本机编译器有所不同，交叉编译器名称的可执行文件以 目标系统、体系结构或着有时是库的名称作为前缀。例如：</p>
+<ul>
+<li>mips-linux-gcc ：前缀名称是 mips-linux-</li>
+<li>arm-linux-gnueabi-gcc ：前缀名称是 arm-linux-gnueabi-</li>
+<li>riscv64-unknown-linux-gnu-gcc : 前缀名称是 riscv64-unknown-linux-gnu-</li>
+<li>因此，您可以按如下方式指定您的交叉编译器：export  CROSS_COMPILE=arm-linux-gnueabi-</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>CROSS_COMPILE 其实就是交叉编译工具的前缀名称（gcc、as、ld、objcopy、strip...）。</p>
+</blockquote>
+<p>实际上有两种定义 ARCH 和 CROSS_COMPILE 的方式：</p>
+<ul>
+<li>
+<p>方式一：在 make 命令行上传递 ARCH 和 CROSS_COMPILE ：</p>
+<ul>
+<li>
+<p><code>make  ARCH=arm CROSS_COMPILE=arm-linux- ...</code></p>
+</li>
+<li>
+<p>缺点：当您运行任何 make 命令时很容易忘记传递这些变量，从而导致您的构建和配置被破坏。</p>
+</li>
+</ul>
+</li>
+<li>
+<p>方式二：定义 ARCH 和 CROSS_COMPILE 作为系统环境变量：</p>
+<ul>
+<li>
+<p><code>export ARCH=arm   export CROSS_COMPILE=arm-linux-</code></p>
+</li>
+<li>
+<p>缺点：它只能在当前 shell 或终端内工作。 您可以将这些设置放在每次开始处理项目时都提供的 文件中。 如果您只使用始终相同的工具链在单一架构上工作，您甚至可以将这些设置放在您的<code> ~/.bashrc</code>文件中，使它们在任何终端上永  久可见,设置后使用<code>source ~/.bashrc</code>命令生效。</p>
+</li>
+</ul>
+</li>
+</ul>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="3-指定目标单板配置">3. 指定目标单板配置<a href="#3-指定目标单板配置" class="hash-link" aria-label="3. 指定目标单板配置的直接链接" title="3. 指定目标单板配置的直接链接">​</a></h3>
+<p>一开始我们很难找到哪种内核配置完全适用于您的硬件和根文件系统，那么可以从如下两个方面入手。</p>
+<ol>
+<li>
+<p>对于PC桌面设备或服务器设备：</p>
+<ul>
+<li>建议从配置您正在运行的内核开始，通常可以在 /boot目录下找到  cp /boot/config-<code>uname -r</code> .config</li>
+</ul>
+</li>
+<li>
+<p>嵌入式平台案例（至少是 ARM 32 位）：</p>
+<ul>
+<li>默认配置文件可用，通常适用于每个 CPU 系列。</li>
+<li>它们存储在 <code>arch/&lt;arch&gt;/configs/</code> 中 ，并且只是最小的 .config 文件（仅与默认设置有一些不同）。</li>
+<li>运行 make help 以查找是否可用于您的平台。要加载默认配置文件，只需运行。 <code> make  &lt;CPU&gt;_defconfig</code> 这将覆盖您现有的 .config 文件！</li>
+</ul>
+</li>
+</ol>
+<p>配置之后，可以进入配置菜单界面进行配置更改（make menuconfig  默认可以不用修改）。</p>
+<p><img loading="lazy" alt="image-20240307120628998" src="/assets/images/image-20240307120628998-b4761a2539047648a06b973480cb195e.png" width="1812" height="251" class="img_ev3q"></p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="4-编译安装内核">4. 编译安装内核<a href="#4-编译安装内核" class="hash-link" aria-label="4. 编译安装内核的直接链接" title="4. 编译安装内核的直接链接">​</a></h3>
+<h4 class="anchor anchorWithStickyNavbar_LWe7" id="1-编译内核镜像">1. 编译内核镜像<a href="#1-编译内核镜像" class="hash-link" aria-label="1. 编译内核镜像的直接链接" title="1. 编译内核镜像的直接链接">​</a></h4>
+<p>在配置完成上述 步骤后，需要在内核源码目录中执行。下执行 <code>make </code>命令即可开始编译内核镜像。对于x86架构 或者本地目标单板环境，我们不用过多关心是否包含参数问题，但是在嵌入式设备，因为不同的芯片厂家支持的 内核 镜像格式不同，所以我们需要在编译内核镜像之前 先确定 bootloader 支持引导的内核镜像是那种！</p>
+<ul>
+<li>
+<p>如果您有多个 CPU 内核/线程，请记住个数。同时我们建议：ncpus * 2 或 ncpus + 2，以最大化利用CPU 和 I/O资源。</p>
+<ul>
+<li>示例(4个CPU/单核四线程)：make -j 8</li>
+</ul>
+</li>
+<li>
+<p>编译内核无需以 root 身份运行！</p>
+</li>
+<li>
+<p>如需要 更快地重新编译：</p>
+<ul>
+<li>使用 ccache 编译器缓存：export  CROSS_COMPILE=&quot;ccache riscv64-linux-&quot;</li>
+</ul>
+</li>
+</ul>
+<h4 class="anchor anchorWithStickyNavbar_LWe7" id="2-确认内核镜像">2. 确认内核镜像<a href="#2-确认内核镜像" class="hash-link" aria-label="2. 确认内核镜像的直接链接" title="2. 确认内核镜像的直接链接">​</a></h4>
+<table><thead><tr><th style="text-align:center">内核镜像名称</th><th style="text-align:center">内核镜像功能作用</th></tr></thead><tbody><tr><td style="text-align:center">vmlinux</td><td style="text-align:center">未压缩的原始内核映像，ELF 格式，用于调试目的，但无法启动。</td></tr><tr><td style="text-align:center"><code>arch/&lt;arch&gt;/boot/*Image</code></td><td style="text-align:center">通常是最终可以启动的压缩后的内核镜像文件</td></tr><tr><td style="text-align:center"><code>arch/&lt;arch&gt;/boot/bzImage</code></td><td style="text-align:center">for x86,</td></tr><tr><td style="text-align:center"><code>arch/&lt;arch&gt;/boot/zImage</code></td><td style="text-align:center">for ARM,</td></tr><tr><td style="text-align:center"><code>arch/&lt;arch&gt;/boot/Image.gz</code></td><td style="text-align:center">for RISC-V,</td></tr><tr><td style="text-align:center"><code>arch/&lt;arch&gt;/boot/vmlinux.bin.gz</code></td><td style="text-align:center">for ARC等。</td></tr><tr><td style="text-align:center"><code>arch/&lt;arch&gt;/boot/Image</code></td><td style="text-align:center">也可以引导的未压缩内核映像。</td></tr><tr><td style="text-align:center"><code>arch/&lt;arch&gt;/boot/dts/*.dtb</code></td><td style="text-align:center">编译的设备树文件（某些架构）。</td></tr></tbody></table>
+<h4 class="anchor anchorWithStickyNavbar_LWe7" id="3-安装内核镜像">3. 安装内核镜像<a href="#3-安装内核镜像" class="hash-link" aria-label="3. 安装内核镜像的直接链接" title="3. 安装内核镜像的直接链接">​</a></h4>
+<p>本地安装: <code>sudo make install</code> 是否默认为主机系统安装</p>
+<ul>
+<li>
+<p>安装至 <code>/boot/vmlinuz-&lt;version&gt;</code></p>
+</li>
+<li>
+<p>压缩的内核映像。 与 <code>arch/&lt;arch&gt;/boot</code> 中的相同</p>
+</li>
+<li>
+<p><code>/boot/System.map-&lt;version&gt;</code> 为调试目的存储内核符号地址（已过时：此类信息通常存储在内核本身中）</p>
+</li>
+<li>
+<p><code>/boot/config-&lt;version&gt;</code> 此版本的内核配置</p>
+</li>
+<li>
+<p>在 GNU/Linux 发行版中，通常会重新运行Boot-Loader配置程序，以使新内核在下次引导时可用。</p>
+</li>
+</ul>
+<p>嵌入式设备安装</p>
+<ul>
+<li>
+<p>make install 在嵌入式开发中很少使用，因为内核镜像是单个文件，易于处理。另一个原因是没有标准的方式来部署和使用嵌入式设备内核映像。</p>
+</li>
+<li>
+<p>因此，使内核映像对目标可用通常是手动的或通过构建系统中的脚本完成。</p>
+</li>
+<li>
+<p>可以自定义 make install 程序 <code>arch/&lt;arch&gt;/boot/install.sh</code></p>
+</li>
+</ul>
+<h4 class="anchor anchorWithStickyNavbar_LWe7" id="4-编译安装设备树">4. 编译安装设备树<a href="#4-编译安装设备树" class="hash-link" aria-label="4. 编译安装  设备树的直接链接" title="4. 编译安装设备树的直接链接">​</a></h4>
+<p>内核源码目录下执行 <code>make dtbs</code></p>
+<ul>
+<li>
+<p>目标单板所需的硬件设备信息。</p>
+</li>
+<li>
+<p>一般用于嵌入式设备。</p>
+</li>
+<li>
+<p>设备树文件要与目标单板配套。</p>
+</li>
+<li>
+<p>设备树文件一般和内核镜像存放同一位置。</p>
+</li>
+</ul>
+<p><img loading="lazy" alt="image-20240307120923939" src="/assets/images/image-20240307120923939-8bab2a0191d8942bd413e1b6c2897a74.png" width="797" height="885" class="img_ev3q"></p>
+<h4 class="anchor anchorWithStickyNavbar_LWe7" id="5-编译安装内核模块">5. 编译安装内核模块<a href="#5-编译安装内核模块" class="hash-link" aria-label="5. 编译安装内核模块的直接链接" title="5. 编译安装内核模块的直接链接">​</a></h4>
+<p>使用Linux模块的优势</p>
+<ul>
+<li>
+<p>使用内核模块可以支持更多不同的设备外设。</p>
+</li>
+<li>
+<p>模块使无需重启即可轻松开发驱动程序：加载、测试、卸载、重建、加载...</p>
+</li>
+<li>
+<p>有助于将内核映像大小保持在最小（在 PC 的 GNU/Linux 发行版中必不可少）。</p>
+</li>
+<li>
+<p>对于减少启动时间也很有用：您无需花时间初始化稍后才需要的设备和内核功能。</p>
+</li>
+<li>
+<p>注意：一旦加载，在系统中拥有完全控制权和权限。 没有特别的保护。 这就是为什么只有 root 用户才能加载和卸载模块。</p>
+</li>
+<li>
+<p>为了提高安全性，可以只允许签名模块，或完全禁用模块支持。</p>
+</li>
+</ul>
+<p>编译驱动模块命令 在内核源码目录下执行  <code>make modules</code></p>
+<ul>
+<li>
+<p>内核映像是一个单一文件，由与配置中启用的功能相对应的所有目标文件链接而成。这是由引导加载程序加载到内存中的文件。</p>
+</li>
+<li>
+<p>因此，一旦内核启动，所有包含的功能都可用，此时不存在文件系统概念。但是，某些功能（设备驱动程序、文件系统等）都可以编译为模块。这些是可以动态加载/卸载，在内核添加/删除功能的插件。</p>
+</li>
+<li>
+<p>每个驱动模块在文件系统中存储为一个单独的文件，因此必须访问文件系统才能使用驱动模块。</p>
+</li>
+<li>
+<p>这在内核的早期引导过程中是不可用的，因为没有可用的文件系统。</p>
+</li>
+</ul>
+<p>本地主机模块驱动: <code>sudo make modules_install</code></p>
+<ul>
+<li>
+<p>默认为主机系统安装，所以需要以root身份运行</p>
+</li>
+<li>
+<p>将所有模块安装在 <code>/lib/modules/&lt;version&gt;/kernel/Module .ko</code>（内核对象）文件，与源文件的目录结构相同。</p>
+</li>
+<li>
+<p><code>modules.alias, modules.alias.bin</code> 模块加载实用程序的别名。 用于查找设备的驱动程序。 示例：</p>
+</li>
+<li>
+<p>别名 usb<!-- -->:v066Bp20F9d<em>dc</em>dsc<em>dp</em>ic<em>isc</em>ip<em>in</em> asix modules.dep, modules.dep.bin</p>
+</li>
+<li>
+<p>模块依赖 modules.symbols, modules.symbols.bin 告诉给定符号属于哪个模块。</p>
+</li>
+</ul>
+<p>嵌入式主机模块驱动</p>
+<ul>
+<li>
+<p>在嵌入式开发中，您不能直接使用 make modules_install 。因为它会把驱动模块安装在本地主机上的 /lib/modules 中。</p>
+</li>
+<li>
+<p>此时需要指定 INSTALL_MOD_PATH 变量来生成模块相关文件并将模块安装在 <code>&lt;目标根文件系统&gt;</code> 而不是您的 <code>&lt;主机根文件系统&gt;</code>中。示例命令：</p>
+<ul>
+<li><code>make INSTALL_MOD_PATH=&lt;dir&gt;/  modules_install</code></li>
+</ul>
+</li>
+</ul>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="5-清理编译缓存">5. 清理编译缓存<a href="#5-清理编译缓存" class="hash-link" aria-label="5. 清理编译缓存的直接链接" title="5. 清理编译缓存的直接链接">​</a></h3>
+<ul>
+<li>
+<p>清理生成的文件（有时在切换版本之前很有用，以避免未跟踪的输出文件，或强制重新编译）：<code>make clean</code></p>
+</li>
+<li>
+<p>删除所有生成的文件。 从一种架构切换到另一种架构时需要。 注意：它还会删除您的 .config 文件！<code>make mrproper</code></p>
+</li>
+<li>
+<p>同时删除编辑器备份和补丁拒绝文件（主要是生成补丁）：<code>make distclean</code></p>
+</li>
+<li>
+<p>如果您在 git 树中，删除 git 未跟踪（和忽略）的所有文件： <code>git clean -fdx</code></p>
+</li>
+</ul></div><footer class="theme-doc-footer docusaurus-mt-lg"><div class="theme-doc-footer-edit-meta-row row"><div class="col"><a href="https://github.com/100askTeam/linuxboard-docs/tree/main/docs/T113s3-Pro/part8/02-LinuxKernelOverview1.md" target="_blank" rel="noopener noreferrer" class="theme-edit-this-page"><svg fill="currentColor" height="20" width="20" viewBox="0 0 40 40" class="iconEdit_Z9Sw" aria-hidden="true"><g><path d="m34.5 11.7l-3 3.1-6.3-6.3 3.1-3q0.5-0.5 1.2-0.5t1.1 0.5l3.9 3.9q0.5 0.4 0.5 1.1t-0.5 1.2z m-29.5 17.1l18.4-18.5 6.3 6.3-18.4 18.4h-6.3v-6.2z"></path></g></svg>编辑此页</a></div><div class="col lastUpdated_vwxv"></div></div></footer></article><nav class="pagination-nav docusaurus-mt-lg" aria-label="文件选项卡"><a class="pagination-nav__link pagination-nav__link--prev" href="/docs/T113s3-Pro/part8/LinuxKernelOverview"><div class="pagination-nav__sublabel">上一页</div><div class="pagination-nav__label">Linux Kernel简介</div></a><a class="pagination-nav__link pagination-nav__link--next" href="/docs/T113s3-Pro/part8/LinuxKernelOverview2"><div class="pagination-nav__sublabel">下一页</div><div class="pagination-nav__label">如何启动Kernel</div></a></nav></div></div><div class="col col--3"><div class="tableOfContents_bqdL thin-scrollbar theme-doc-toc-desktop"><ul class="table-of-contents table-of-contents__left-border"><li><a href="#1-linux内核开发流程" class="table-of-contents__link toc-highlight">1. Linux内核开发流程</a><ul><li><a href="#构建linux内核流程" class="table-of-contents__link toc-highlight">构建Linux内核流程</a></li><li><a href="#获取适合的linux内核" class="table-of-contents__link toc-highlight">获取适合的Linux内核</a></li></ul></li><li><a href="#2-使用主线linuxkernel演示" class="table-of-contents__link toc-highlight">2. 使用主线Linuxkernel演示</a><ul><li><a href="#1-获取主线linuxkernel" class="table-of-contents__link toc-highlight">1. 获取主线Linuxkernel</a></li><li><a href="#2-kernel源码目录作用" class="table-of-contents__link toc-highlight">2. Kernel源码目录作用</a></li><li><a href="#3-配置kernel编译环境" class="table-of-contents__link toc-highlight">3. 配置Kernel编译环境</a></li><li><a href="#3-指定目标单板配置" class="table-of-contents__link toc-highlight">3. 指定目标单板配置</a></li><li><a href="#4-编译安装内核" class="table-of-contents__link toc-highlight">4. 编译安装内核</a></li><li><a href="#5-清理编译缓存" class="table-of-contents__link toc-highlight">5. 清理编译缓存</a></li></ul></li></ul></div></div></div></div></main></div></div></div><footer class="footer footer--dark"><div class="container container-fluid"><div class="row footer__links"><div class="col footer__col"><div class="footer__title">Docs</div><ul class="footer__items clean-list"><li class="footer__item"><a href="https://dongshanpi.com" target="_blank" rel="noopener noreferrer" class="footer__link-item">DongshanPI<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a></li><li class="footer__item"><a href="https://canaan-docs.100ask.net/" target="_blank" rel="noopener noreferrer" class="footer__link-item">Canaan-Docs<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a></li><li class="footer__item"><a href="https://renesas-docs.100ask.net/" target="_blank" rel="noopener noreferrer" class="footer__link-item">Renesas-Docs<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a></li><li class="footer__item"><a href="https://rtos.100ask.net/" target="_blank" rel="noopener noreferrer" class="footer__link-item">RTOS<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a></li><li class="footer__item"><a href="https://tina.100ask.net/" target="_blank" rel="noopener noreferrer" class="footer__link-item">TinaSDK-Docs<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a></li><li class="footer__item"><a href="https://allwinner-docs.100ask.net/" target="_blank" rel="noopener noreferrer" class="footer__link-item">Allwinner-Docs<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a></li><li class="footer__item"><a href="https://aw-r128.100ask.net/" target="_blank" rel="noopener noreferrer" class="footer__link-item">R128-Docs<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a></li></ul></div><div class="col footer__col"><div class="footer__title">Community</div><ul class="footer__items clean-list"><li class="footer__item"><a href="https://space.bilibili.com/275908810" target="_blank" rel="noopener noreferrer" class="footer__link-item">BiliBili<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a></li><li class="footer__item"><a href="https://forums.100ask.net" target="_blank" rel="noopener noreferrer" class="footer__link-item">Stack Overflow<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a></li><li class="footer__item"><a href="https://video.100ask.net/" target="_blank" rel="noopener noreferrer" class="footer__link-item">VideoCenter<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a></li><li class="footer__item"><a href="https://twitter.com/dongshanpi" target="_blank" rel="noopener noreferrer" class="footer__link-item">Twitter<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a></li></ul></div><div class="col footer__col"><div class="footer__title">More</div><ul class="footer__items clean-list"><li class="footer__item"><a href="https://weidongshan.coding.net/public/" target="_blank" rel="noopener noreferrer" class="footer__link-item">Coding<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a></li><li class="footer__item"><a href="https://github.com/100askTeam" target="_blank" rel="noopener noreferrer" class="footer__link-item">GitHub<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a></li><li class="footer__item"><a href="https://gitee.com/weidongshan" target="_blank" rel="noopener noreferrer" class="footer__link-item">Gitee<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a></li></ul></div></div><div class="footer__bottom text--center"><div class="footer__copyright">Copyright © 2025 100askTeam, Inc. Built with Docusaurus.</div></div></div></footer></div>
+</body>
+</html>

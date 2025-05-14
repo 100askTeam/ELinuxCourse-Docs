@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkmy_website=self.webpackChunkmy_website||[]).push([[4195],{62841:(e,s,t)=>{t.r(s),t.d(s,{default:()=>n});t(67294);var r=t(16550),u=t(85893);function n(){return(0,u.jsx)(r.l_,{to:"docs/T113s3-Pro/BoardIntroduction"})}}}]);
