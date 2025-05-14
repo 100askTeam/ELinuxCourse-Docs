@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkmy_website=self.webpackChunkmy_website||[]).push([[195],{2841:(e,n,t)=>{t.r(n),t.d(n,{default:()=>r});t(7294);var s=t(6550),u=t(5893);function r(){return(0,u.jsx)(s.l_,{to:"docs/ZeroLearning-LinuxAPP/Introduction"})}}}]);
