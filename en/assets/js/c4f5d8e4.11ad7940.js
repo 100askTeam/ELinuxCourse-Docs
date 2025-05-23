@@ -1,1 +1,0 @@
-"use strict";(self.webpackChunkmy_website=self.webpackChunkmy_website||[]).push([[195],{2841:(e,t,n)=>{n.r(t),n.d(t,{default:()=>r});n(7294);var s=n(6550),u=n(5893);function r(){return(0,u.jsx)(s.l_,{to:"docs/Learn-Linux/Introduction"})}}}]);
