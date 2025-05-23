@@ -1,8 +1,8 @@
 ---
-sidebar_position: 4
+sidebar_position: 2
 ---
 
-# 配套开发板STM32MP157-PRO
+# STM32MP157-PRO开发板
 
 ## 产品链接
 - 天猫店铺：https://detail.tmall.com/item.htm?id=821692416521

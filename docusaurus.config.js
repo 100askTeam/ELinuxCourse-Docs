@@ -79,6 +79,12 @@ const config = {
             label: '嵌入式Linux学习指南',
           }, 
           {
+            type: 'docSidebar',
+            sidebarId: 'LinuxCourseList',
+            position: 'left',
+            label: '嵌入式Linux课程列表',
+          }, 
+          {
             href: 'https://github.com/100askTeam/linux-docs',
             label: 'GitHub',
             position: 'right',

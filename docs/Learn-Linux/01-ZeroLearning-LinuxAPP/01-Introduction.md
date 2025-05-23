@@ -10,4 +10,4 @@ sidebar_position: 1
 
 ## 学习路线
 
-![image-20241126161856166](images/pathlinux.png)
+![image-20241126161856166](images/0基础或只学习APP.jpg)

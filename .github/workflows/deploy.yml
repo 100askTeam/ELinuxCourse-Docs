@@ -36,4 +36,4 @@ jobs:
           github_token: ${{ secrets.CI_TOKEN }}
           # Build output to publish to the `gh-pages` branch:
           publish_dir: ./build
-          cname: linux.100ask.net
+          cname: linux.100ask.org

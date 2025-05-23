@@ -1,5 +1,5 @@
 ---
-sidebar_position: 2
+sidebar_position: 50
 ---
 
 # AI时代下的嵌入式Linux学习

@@ -9,4 +9,4 @@ sidebar_position: 1
 
 ## 学习路线
 
-![image-20241126161856166](images/Path.png)
+![image-20241126161856166](images/全栈Linux学习路线.jpg)
