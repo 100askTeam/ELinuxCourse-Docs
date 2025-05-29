@@ -18,7 +18,7 @@ function HomepageHeader() {
                 <p className='hero__subtitle'>{siteConfig.tagline}</p>
                 <div className={styles.buttons}>
                     <Link className='button button--secondary button--lg' to='/docs/intro'>
-                        开启您的嵌入式开发之旅 🚆
+                        开启您的嵌入式开发之旅🚆
                     </Link>
                 </div>
             </div>
@@ -43,11 +43,11 @@ export default function Home() {
                                 </div>
                             </div>
                             <div className={styles.boxContainer}>
-                                <div className={styles.whiteBox} onClick={() => {window.open('')}}>
+                                <div className={styles.whiteBox} onClick={() => {window.open('/docs/Linux-CourseList/ElinuxQuickBuildroot/Introduction')}}>
                                     <div>裁剪移植根文件系统：</div>
                                     <div>使用Buildroot构建根文件系统</div>
                                 </div>
-                                <div className={styles.whiteBox1} onClick={() => {window.open('')}}>
+                                <div className={styles.whiteBox1} onClick={() => {window.open('/docs/Linux-CourseList/eLinuxQuickROOTFS/Introduction')}}>
                                     <div>裁剪移植根文件系统：</div>
                                     <div>使用Busybox构建根文件系统</div>
                                 </div>
@@ -67,13 +67,13 @@ export default function Home() {
                                     <div className={styles.yellowBox}></div>
                                     <div>未录制</div>
                                 </div>
-                                <div className={styles.yellowBoxLarge2} onClick={() => {window.open('')}}>uboot裁剪移植</div>
-                                <div className={styles.yellowBoxLarge1} onClick={() => {window.open('')}}>内核裁剪移植</div>
-                                <div className={styles.right2} onClick={() => {window.open('')}}>
+                                <div className={styles.yellowBoxLarge2} onClick={() => {window.open('docs/Learn-Linux/LearnStudyPath')}}>uboot裁剪移植</div>
+                                <div className={styles.yellowBoxLarge1} onClick={() => {window.open('docs/Learn-Linux/LearnStudyPath')}}>内核裁剪移植</div>
+                                <div className={styles.right2} onClick={() => {window.open('/docs/Linux-CourseList/ElinuxQuickBuildroot/Introduction')}}>
                                     <div>裁剪移植根文件系统：</div>
                                     <div>使用Buildroot构建根文件系统</div>
                                 </div>
-                                <div className={styles.right1} onClick={() => {window.open('')}}>
+                                <div className={styles.right1} onClick={() => {window.open('/docs/Linux-CourseList/eLinuxQuickROOTFS/Introduction')}}>
                                     <div>裁剪移植根文件系统：</div>
                                     <div>使用Busybox构建根文件系统</div>
                                 </div>
@@ -90,7 +90,7 @@ export default function Home() {
                     <div className={styles.roadmapRow}>
                         <div className={styles.projectSection}>
                             <div className={styles.duiqi1}>
-                                <div className={styles.redBoxLarge} onClick={() => {window.open('')}}>
+                                <div className={styles.redBoxLarge} onClick={() => {window.open('/docs/Linux-CourseList/QTIndustrialIoTOpenOCDModbus/Introduction')}}>
                                     <div>QT工业物联网开发实践</div>
                                     <div>OpenOCD烧录与Modbus通信</div>
                                 </div>
@@ -100,18 +100,18 @@ export default function Home() {
                                 </div>
                             </div>
                             <div className={styles.duiqi}>
-                                <div className={styles.whiteBoxs} onClick={() => {window.open('')}}>
+                                <div className={styles.whiteBoxs} onClick={() => {window.open('/docs/Linux-CourseList/SmartHomeVideoSystem/Introduction')}}>
                                     <div>手把手教你如何从零建</div>
                                     <div>智慧家居中的视频监控系统</div>
                                 </div>
-                                <div className={styles.redBoxLarges} onClick={() => {window.open('')}}>嵌入式Linux相机</div>
+                                <div className={styles.redBoxLarges} onClick={() => {window.open('/docs/Linux-CourseList/ElinuxCamera/Introduction')}}>嵌入式Linux相机</div>
                             </div>
                             <div className={styles.duiqi}>
-                                <div className={styles.whiteBoxs} onClick={() => {window.open('')}}>
+                                <div className={styles.whiteBoxs} onClick={() => {window.open('/docs/Linux-CourseList/ELinuxMQTT/Introduction')}}>
                                     <div>使用MQTT</div>
                                     <div>实现智能家居</div>
                                 </div>
-                                <div className={styles.whiteBox} onClick={() => {window.open('')}}>
+                                <div className={styles.whiteBox} onClick={() => {window.open('/docs/Linux-CourseList/ElinuxDigitalphotoFileBrowser/Introduction')}}>
                                     <div>数码相框与</div>
                                     <div>文件浏览器</div>
                                 </div>
@@ -119,18 +119,18 @@ export default function Home() {
                             <div className={styles.arrow}>
                             </div>
                             <div className={styles.yellowBorderedBox}></div>
-                            <div className={styles.duiqi2} onClick={() => {window.open('')}}>
+                            <div className={styles.duiqi2} onClick={() => {window.open('/docs/Linux-CourseList/lvgl_v8.2/Introduction')}}>
                                 <div className={styles.whiteBoxs}>
                                     <div>百问网LVGL(v8)系列课程</div>
                                     <div>基于lvgl v8.2版本</div>
                                 </div>
-                                <div className={styles.whiteBox} onClick={() => {window.open('')}}>
+                                <div className={styles.whiteBox} onClick={() => {window.open('/docs/Linux-CourseList/ELinuxeBook/Introduction')}}>
                                     <div>嵌入式Linux</div>
                                     <div>电子书阅读器</div>
                                 </div>
                             </div>
                         </div>
-                        <div className={styles.whiteBox3} onClick={() => {window.open('')}}>
+                        <div className={styles.whiteBox3} onClick={() => {window.open('/docs/Linux-CourseList/Part6/Introduction')}}>
                             <div>第6篇</div>
                             <div>嵌入式Linux项目基础</div>
                         </div>
@@ -169,14 +169,14 @@ export default function Home() {
                                     <div className={styles.greenBox}></div>
                                     <div>收费</div>
                                 </div>
-                                <div className={styles.whiteBox6} onClick={() => {window.open('')}}>
+                                <div className={styles.whiteBox6} onClick={() => {window.open('https://ldd.100ask.net')}}>
                                     <div>驱动大全</div>
                                     <div className={styles.disflex}>(
                                         <div className={styles.red}>非常系统、深入</div>
                                         )
                                     </div>
                                 </div>
-                                <div className={styles.whiteBox5} onClick={() => {window.open('')}}>
+                                <div className={styles.whiteBox5} onClick={() => {window.open('/docs/Linux-CourseList/Part5/Introduction')}}>
                                     <div className={styles.disflex}>第5篇(
                                         <div className={styles.red}>各类理论</div>
                                         )
@@ -203,7 +203,7 @@ export default function Home() {
                         <div className={styles.rightSection}>
                             <div className={styles.learningPath}>
                                 <div className={styles.boxItem1}>
-                                    <div className={styles.whiteBoxWides} onClick={() => {window.open('')}}>
+                                    <div className={styles.whiteBoxWides} onClick={() => {window.open('/docs/Linux-CourseList/LLDQuick/Introduction')}}>
                                         <div>嵌入式Linux驱动开发入门</div>
                                         <div className={styles.disflex}>实验班(
                                             <div className={styles.red}>套模块，快速</div>
@@ -211,7 +211,7 @@ export default function Home() {
                                         </div>
                                     </div>
                                     <div className={styles.arrowheng}></div>
-                                    <div className={styles.whiteBoxWide} onClick={() => {window.open('')}}>
+                                    <div className={styles.whiteBoxWide} onClick={() => {window.open('/docs/Linux-CourseList/27-70dayLinuxQuickDev/Introduction')}}>
                                         <div>70天30节Linux驱动开发</div>
                                         <div className={styles.disflex}>快速入门系列课程(
                                             <div className={styles.red}>非常细</div>
@@ -226,7 +226,7 @@ export default function Home() {
                             </div>
                             <div className={styles.learningPath}>
                                 <div className={styles.boxItem2}>
-                                    <div className={styles.whiteBoxWides} onClick={() => {window.open('')}}>
+                                    <div className={styles.whiteBoxWides} onClick={() => {window.open('/docs/Linux-CourseList/ElinuxAPPQuick/Introduction')}}>
                                         <div>嵌入式Linux应用开发入门</div>
                                         <div className={styles.disflex}>实验班(
                                             <div className={styles.red}>快速做第1个项目</div>
@@ -234,7 +234,7 @@ export default function Home() {
                                         </div>
                                     </div>
                                     <div className={styles.arrowheng}></div>
-                                    <div className={styles.whiteBoxWide} onClick={() => {window.open('')}}>
+                                    <div className={styles.whiteBoxWide} onClick={() => {window.open('/docs/Linux-CourseList/Part4/Introduction')}}>
                                         <div className={styles.disflex}>第4篇(
                                             <div className={styles.red}>各类基础</div>
                                             )
@@ -249,12 +249,12 @@ export default function Home() {
                             </div>
                             <div className={styles.learningPath}>
                                 <div className={styles.boxItem3}>
-                                    <div className={styles.whiteBoxWides} onClick={() => {window.open('')}}>
+                                    <div className={styles.whiteBoxWides} onClick={() => {window.open('/docs/Linux-CourseList/Part2/Introduction')}}>
                                         <div>第2篇</div>
                                         <div>安装虚拟机/Ubuntu基本操作</div>
                                     </div>
                                     <div className={styles.arrowheng}></div>
-                                    <div className={styles.whiteBoxWide} onClick={() => {window.open('')}}>
+                                    <div className={styles.whiteBoxWide} onClick={() => {window.open('/docs/Linux-CourseList/Part3/Introduction')}}>
                                         <div>第3篇</div>
                                         <div>环境搭建与开发板操作</div>
                                     </div>
@@ -265,7 +265,7 @@ export default function Home() {
                                 </div>
                             </div>
                             <div className={styles.disflex}>
-                                <div className={styles.whiteBoxLarge} onClick={() => {window.open('')}}>
+                                <div className={styles.whiteBoxLarge} onClick={() => {window.open('/docs/Linux-CourseList/CLanguageBasic/Introduction')}}>
                                     <div>C语言基础语法与STM32实践</div>
                                 </div>
                                 <div className={styles.labelBox}>

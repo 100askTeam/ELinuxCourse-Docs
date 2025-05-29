@@ -8,5 +8,3 @@ sidebar_position: 1
 按照下图从下往上学习。
 
 ## 学习路线
-
-![image-20241126161856166](images/全栈Linux学习路线.jpg)

@@ -8,7 +8,7 @@ import {themes as prismThemes} from 'prism-react-renderer';
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
-  title: '韦东山嵌入式Linux开发系列课程',
+  title: '韦东山Linux',
   tagline: 'DshanPI Linux Boards Docs.',
   favicon: 'img/favicon.ico',
 
@@ -66,7 +66,7 @@ const config = {
       // Replace with your project's social card
       image: 'img/docusaurus-social-card.jpg',
       navbar: {
-        title: '韦东山嵌入式Linux系列课程',
+        title: '韦东山Linux',
         logo: {
           alt: '东山PI',
           src: 'img/logo.svg',

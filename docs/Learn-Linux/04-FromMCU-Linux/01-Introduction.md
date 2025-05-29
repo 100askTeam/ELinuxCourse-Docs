@@ -8,9 +8,6 @@ sidebar_position: 1
 按照下图从下往上学习。
 
 ## 学习路线
-介绍
-
-![](images/从单片机转Linux.jpg)
 
 ![image-20241126161856166](images/pathmcu.png)
 
