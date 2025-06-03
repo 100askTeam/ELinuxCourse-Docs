@@ -14,4 +14,4 @@ sidebar_position: 1
 
 ## 全栈Linux学习
 
-学习路线详细介绍：[/docs/Learn-Linux/DepthStudy-ELinux/BoardIntroduction](/docs/Learn-Linux/DepthStudy-ELinux/BoardIntroduction)
+学习路线详细介绍：[/docs/Learn-Linux/DepthStudy-ELinux/Introduction](/docs/Learn-Linux/DepthStudy-ELinux/Introduction)
