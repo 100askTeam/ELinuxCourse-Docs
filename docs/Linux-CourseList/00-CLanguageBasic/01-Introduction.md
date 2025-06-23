@@ -2,6 +2,12 @@
 sidebar_position: 1
 ---
 
+:::tip
+
+课程目录观看方式访问：[/docs/Linux-CourseList/Part1/视频_文档_源码对照表_online](/docs/Linux-CourseList/Part1/视频_文档_源码对照表_online)
+
+:::
+
 # 课程介绍
 **课程定位**：打通"C语言理论 → 嵌入式硬件操作"的任督二脉
 

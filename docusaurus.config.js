@@ -33,7 +33,9 @@ const config = {
     defaultLocale: 'zh-Hans',
     locales: ['zh-Hans', 'en'],
   },
-
+  markdown: {
+    mermaid: true,
+  },
   presets: [
     [
       'classic',
@@ -171,6 +173,9 @@ const config = {
       prism: {
         theme: prismThemes.github,
         darkTheme: prismThemes.dracula,
+      },
+      mermaid: {
+        theme: {light: 'neutral', dark: 'forest'},
       },
     }),
 };
