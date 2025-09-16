@@ -85,7 +85,19 @@ const config = {
             sidebarId: 'LinuxCourseList',
             position: 'left',
             label: '嵌入式Linux课程列表',
+          },
+          {
+            type: 'docSidebar',
+            sidebarId: 'KnowledgeNotes',
+            position: 'left',
+            label: '官方笔记知识库',
           }, 
+          {
+            type: 'docSidebar',
+            sidebarId: 'StudyNotes',
+            position: 'left',
+            label: '学员笔记',
+          },           
           {
             href: 'https://github.com/100askTeam/linux-docs',
             label: 'GitHub',
