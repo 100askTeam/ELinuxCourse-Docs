@@ -1,4 +1,6 @@
 ---
+title: 视频、文档与源码对照表
+sidebar_label: 视频、文档与源码
 sidebar_position: 2
 ---
 

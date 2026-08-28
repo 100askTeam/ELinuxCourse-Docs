@@ -606,3 +606,376 @@
   width: 32px;
   height: 32px;
 }
+
+/* 保留原路线图布局，在视觉和交互层做渐进增强。 */
+.roadmapViewport {
+  position: relative;
+  width: 100%;
+  padding: 0 20px 46px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  background:
+    radial-gradient(circle at 12% 4%, rgba(47, 128, 237, 0.08), transparent 28%),
+    radial-gradient(circle at 88% 30%, rgba(19, 163, 123, 0.08), transparent 26%),
+    #f6f8fb;
+  scrollbar-color: #a9b8ca transparent;
+  scrollbar-width: thin;
+}
+
+.roadmapViewport::-webkit-scrollbar {
+  height: 8px;
+}
+
+.roadmapViewport::-webkit-scrollbar-thumb {
+  border-radius: 99px;
+  background: #a9b8ca;
+}
+
+.scrollHint {
+  display: none;
+}
+
+.roadmapContainer {
+  box-sizing: border-box;
+  margin-top: 54px;
+  padding: 110px 0 30px;
+  isolation: isolate;
+  overflow: hidden;
+  color: #172033;
+  border: 1px solid rgba(190, 202, 217, 0.78);
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.82);
+  box-shadow: 0 24px 70px rgba(42, 62, 92, 0.11);
+}
+
+.roadmapBackdrop {
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  opacity: 0.78;
+  pointer-events: none;
+}
+
+.roadmapBackdrop canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.roadmapSection {
+  z-index: 1;
+}
+
+.projectSection {
+  border: 1px solid #ccd7e4;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.72);
+  box-shadow: 0 12px 34px rgba(31, 49, 75, 0.07);
+}
+
+.roadmapHalf,
+.roadmapHalf2,
+.dividerLine {
+  border-color: #b9c7d8;
+}
+
+.line {
+  border-color: #b9c7d8;
+}
+
+.xuexi {
+  color: #65758b;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+
+:is(
+  .whiteBox,
+  .whiteBox1,
+  .whiteBox3,
+  .whiteBox5,
+  .whiteBox6,
+  .whiteBoxLarge,
+  .whiteBoxWide,
+  .whiteBoxWides,
+  .whiteBoxs,
+  .right1,
+  .right2,
+  .yellowBoxLarge1,
+  .yellowBoxLarge2,
+  .redBoxLarge,
+  .redBoxLarges
+) {
+  box-sizing: border-box;
+  cursor: pointer;
+  color: #172033;
+  border-width: 1px;
+  border-color: #cad5e2;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.94);
+  box-shadow: 0 7px 20px rgba(35, 55, 80, 0.08);
+  font-size: 14px;
+  font-weight: 650;
+  line-height: 1.45;
+  transition:
+    transform 180ms ease,
+    border-color 180ms ease,
+    box-shadow 180ms ease,
+    background-color 180ms ease;
+}
+
+:is(
+  .whiteBox,
+  .whiteBox1,
+  .whiteBox3,
+  .whiteBox5,
+  .whiteBox6,
+  .whiteBoxLarge,
+  .whiteBoxWide,
+  .whiteBoxWides,
+  .whiteBoxs,
+  .right1,
+  .right2,
+  .yellowBoxLarge1,
+  .yellowBoxLarge2,
+  .redBoxLarge,
+  .redBoxLarges
+):hover {
+  z-index: 8;
+  border-color: #7f95ad;
+  transform: translateY(-4px) scale(1.018);
+  box-shadow: 0 15px 30px rgba(35, 55, 80, 0.16);
+}
+
+:is(
+  .whiteBox,
+  .whiteBox1,
+  .whiteBox3,
+  .whiteBox5,
+  .whiteBox6,
+  .whiteBoxLarge,
+  .whiteBoxWide,
+  .whiteBoxWides,
+  .whiteBoxs,
+  .right1,
+  .right2,
+  .yellowBoxLarge1,
+  .yellowBoxLarge2,
+  .redBoxLarge,
+  .redBoxLarges
+):focus-visible {
+  z-index: 9;
+  outline: 3px solid rgba(47, 128, 237, 0.28);
+  outline-offset: 3px;
+  transform: translateY(-2px);
+}
+
+.roadmapHalf :is(.whiteBox, .whiteBox1),
+:is(.right1, .right2) {
+  border-color: #9cc9f3;
+  background: linear-gradient(135deg, rgba(236, 247, 255, 0.98), rgba(247, 251, 255, 0.98));
+}
+
+:is(.yellowBoxLarge1, .yellowBoxLarge2) {
+  color: #674714;
+  border-color: #efbd62;
+  background: linear-gradient(135deg, #fff2d2, #ffe6aa);
+}
+
+.yellowBox,
+.yellowBorderedBox {
+  border-color: #efbd62;
+  border-radius: 11px;
+  background: rgba(255, 232, 177, 0.45);
+}
+
+:is(.redBoxLarge, .redBoxLarges) {
+  color: #71372e;
+  border-color: #eea194;
+  background: linear-gradient(135deg, #fff0ed, #ffe3de);
+}
+
+.redLabel {
+  border: 0;
+  border-radius: 8px;
+  background: #ef7565;
+  box-shadow: 0 4px 12px rgba(233, 101, 86, 0.2);
+}
+
+.whiteBox6 {
+  color: #145c48;
+  border-color: #75c7ae;
+  background: linear-gradient(135deg, #def7ee, #c6eddf);
+}
+
+.greenBox {
+  border: 0;
+  border-radius: 8px;
+  background: #49b995;
+  box-shadow: 0 4px 12px rgba(19, 163, 123, 0.18);
+}
+
+.whiteBox3 {
+  border-color: #d5b2f2;
+  background: linear-gradient(135deg, #f7efff, #f0e2ff);
+}
+
+:is(.boxItem1, .boxItem2, .boxItem3) {
+  border-width: 1px;
+  border-color: #c9d5e2;
+  border-radius: 15px;
+  background: rgba(255, 255, 255, 0.62);
+  box-shadow: 0 8px 22px rgba(40, 58, 82, 0.06);
+}
+
+.boxItem1 :is(.whiteBoxWides, .whiteBoxWide) {
+  border-left: 4px solid #2f80ed;
+}
+
+.boxItem2 :is(.whiteBoxWides, .whiteBoxWide) {
+  border-left: 4px solid #13a37b;
+}
+
+.boxItem3 :is(.whiteBoxWides, .whiteBoxWide) {
+  border-left: 4px solid #f2a33b;
+}
+
+.whiteBoxLarge {
+  border-left: 4px solid #7f63d9;
+}
+
+.labelBox {
+  min-width: 48px;
+  padding: 6px 8px;
+  color: #53657b;
+  border: 1px solid #d4dde8;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.78);
+  font-weight: 700;
+  line-height: 1.35;
+}
+
+.red {
+  color: #d95040;
+  font-weight: 750;
+}
+
+:is(.character, .meditatingCharacter, .study) {
+  filter: drop-shadow(0 10px 18px rgba(34, 50, 74, 0.12));
+  transition: transform 220ms ease, filter 220ms ease;
+}
+
+.characterContainer:hover :is(.character, .meditatingCharacter, .study) {
+  transform: translateY(-3px);
+  filter: drop-shadow(0 15px 24px rgba(34, 50, 74, 0.18));
+}
+
+:is(.cloudImage, .cloudImage1, .cloudImage3, .cloudImage4) {
+  transition: transform 180ms ease, filter 180ms ease;
+}
+
+:is(.cloudImage, .cloudImage1, .cloudImage3, .cloudImage4):hover {
+  transform: translateY(-2px) scale(1.035);
+  filter: saturate(1.06);
+}
+
+:global([data-theme='dark']) .roadmapViewport {
+  background:
+    radial-gradient(circle at 12% 4%, rgba(47, 128, 237, 0.13), transparent 28%),
+    radial-gradient(circle at 88% 30%, rgba(19, 163, 123, 0.12), transparent 26%),
+    #0d1420;
+}
+
+:global([data-theme='dark']) .roadmapContainer {
+  color: #e9eef5;
+  border-color: #2b3b50;
+  background: rgba(15, 24, 37, 0.9);
+}
+
+:global([data-theme='dark']) :is(.projectSection, .boxItem1, .boxItem2, .boxItem3) {
+  border-color: #34465d;
+  background: rgba(18, 30, 45, 0.76);
+}
+
+:global([data-theme='dark']) :is(
+  .whiteBox,
+  .whiteBox1,
+  .whiteBox3,
+  .whiteBox5,
+  .whiteBox6,
+  .whiteBoxLarge,
+  .whiteBoxWide,
+  .whiteBoxWides,
+  .whiteBoxs,
+  .right1,
+  .right2,
+  .yellowBoxLarge1,
+  .yellowBoxLarge2,
+  .redBoxLarge,
+  .redBoxLarges
+) {
+  color: #eaf0f7;
+  border-color: #425671;
+  background: rgba(24, 38, 56, 0.94);
+}
+
+:global([data-theme='dark']) .labelBox {
+  color: #b8c5d5;
+  border-color: #3c4d63;
+  background: rgba(21, 33, 49, 0.9);
+}
+
+@media screen and (max-width: 1240px) {
+  .roadmapViewport {
+    padding-right: 16px;
+    padding-left: 16px;
+  }
+
+  .roadmapContainer {
+    margin-right: auto;
+    margin-left: auto;
+  }
+
+  .scrollHint {
+    position: sticky;
+    z-index: 20;
+    left: 16px;
+    display: block;
+    width: max-content;
+    margin: 20px 0 -36px;
+    padding: 7px 12px;
+    color: #4e6076;
+    border: 1px solid #d0dae6;
+    border-radius: 99px;
+    background: rgba(255, 255, 255, 0.92);
+    box-shadow: 0 6px 18px rgba(39, 57, 81, 0.08);
+    font-size: 12px;
+    font-weight: 700;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :is(
+    .whiteBox,
+    .whiteBox1,
+    .whiteBox3,
+    .whiteBox5,
+    .whiteBox6,
+    .whiteBoxLarge,
+    .whiteBoxWide,
+    .whiteBoxWides,
+    .whiteBoxs,
+    .right1,
+    .right2,
+    .yellowBoxLarge1,
+    .yellowBoxLarge2,
+    .redBoxLarge,
+    .redBoxLarges,
+    .character,
+    .meditatingCharacter,
+    .study
+  ) {
+    transition: none;
+  }
+}

@@ -79,7 +79,13 @@ const config = {
             sidebarId: 'LearnLinux',
             position: 'left',
             label: '嵌入式Linux学习指南',
-          }, 
+          },
+          {
+            type: 'docSidebar',
+            sidebarId: 'LinuxApplicationDevelopmentManual',
+            position: 'left',
+            label: '嵌入式Linux应用开发完全手册',
+          },
           {
             type: 'docSidebar',
             sidebarId: 'LinuxCourseList',

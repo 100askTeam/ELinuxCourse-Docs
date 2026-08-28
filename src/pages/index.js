@@ -1,36 +1,155 @@
-import clsx from 'clsx'
-import Link from '@docusaurus/Link'
-import useDocusaurusContext from '@docusaurus/useDocusaurusContext'
+import {useEffect, useRef} from 'react'
 import Layout from '@theme/Layout'
-import HomepageFeatures from '@site/src/components/HomepageFeatures'
+import * as THREE from 'three'
 
-import Heading from '@theme/Heading'
 import styles from './index.module.css'
 
-function HomepageHeader() {
-    const {siteConfig} = useDocusaurusContext()
-    return (
-        <header className={clsx('hero hero--primary', styles.heroBanner)}>
-            <div className='container'>
-                <Heading as='h1' className='hero__title'>
-                    {siteConfig.title}
-                </Heading>
-                <p className='hero__subtitle'>{siteConfig.tagline}</p>
-                <div className={styles.buttons}>
-                    <Link className='button button--secondary button--lg' to='/docs/intro'>
-                        开启您的嵌入式开发之旅🚆
-                    </Link>
-                </div>
-            </div>
-        </header>
-    )
+function cardNavigation(href) {
+    const navigate = () => {
+        const normalizedHref = href.startsWith('http') || href.startsWith('/') ? href : `/${href}`
+        if (normalizedHref.startsWith('http')) {
+            window.open(normalizedHref, '_blank', 'noopener,noreferrer')
+        } else {
+            window.location.assign(normalizedHref)
+        }
+    }
+
+    return {
+        role: 'link',
+        tabIndex: 0,
+        onClick: navigate,
+        onKeyDown: (event) => {
+            if (event.key === 'Enter' || event.key === ' ') {
+                event.preventDefault()
+                navigate()
+            }
+        },
+    }
+}
+
+function RoadmapBackdrop() {
+    const mountRef = useRef(null)
+
+    useEffect(() => {
+        const mount = mountRef.current
+        if (!mount) return undefined
+
+        const scene = new THREE.Scene()
+        const camera = new THREE.PerspectiveCamera(42, 1, 0.1, 30)
+        camera.position.set(0, 0, 8)
+
+        let renderer
+        try {
+            renderer = new THREE.WebGLRenderer({alpha: true, antialias: true})
+        } catch {
+            return undefined
+        }
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5))
+        renderer.outputColorSpace = THREE.SRGBColorSpace
+        mount.appendChild(renderer.domElement)
+
+        const group = new THREE.Group()
+        scene.add(group)
+
+        const geometry = new THREE.BoxGeometry(1.15, 0.42, 0.22)
+        const edgeGeometry = new THREE.EdgesGeometry(geometry)
+        const colors = [0x2f80ed, 0x13a37b, 0xf2a33b, 0xe96556]
+        const meshes = []
+
+        for (let index = 0; index < 14; index += 1) {
+            const material = new THREE.MeshStandardMaterial({
+                color: colors[index % colors.length],
+                transparent: true,
+                opacity: 0.12,
+                roughness: 0.62,
+                metalness: 0.08,
+            })
+            const mesh = new THREE.Mesh(geometry, material)
+            mesh.position.set(
+                ((index % 4) - 1.5) * 2.35 + (index % 2 ? 0.32 : -0.18),
+                (Math.floor(index / 4) - 1.4) * 1.7,
+                -1.1 - (index % 3) * 0.45,
+            )
+            mesh.rotation.z = (index % 2 ? 1 : -1) * 0.045
+            mesh.userData.offset = index * 0.7
+            mesh.userData.baseY = mesh.position.y
+
+            const edgeMaterial = new THREE.LineBasicMaterial({
+                color: colors[index % colors.length],
+                transparent: true,
+                opacity: 0.2,
+            })
+            mesh.add(new THREE.LineSegments(edgeGeometry, edgeMaterial))
+            group.add(mesh)
+            meshes.push(mesh)
+        }
+
+        scene.add(new THREE.AmbientLight(0xffffff, 1.8))
+        const keyLight = new THREE.DirectionalLight(0xffffff, 2.4)
+        keyLight.position.set(4, 6, 8)
+        scene.add(keyLight)
+
+        const pointerTarget = {x: 0, y: 0}
+        const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+        let animationFrame = 0
+
+        const resize = () => {
+            const width = mount.clientWidth
+            const height = mount.clientHeight
+            if (!width || !height) return
+            renderer.setSize(width, height, false)
+            camera.aspect = width / height
+            camera.updateProjectionMatrix()
+            renderer.render(scene, camera)
+        }
+
+        const handlePointerMove = (event) => {
+            const bounds = mount.getBoundingClientRect()
+            pointerTarget.x = ((event.clientX - bounds.left) / bounds.width - 0.5) * 0.13
+            pointerTarget.y = ((event.clientY - bounds.top) / bounds.height - 0.5) * 0.09
+        }
+
+        const animate = (time) => {
+            group.rotation.y += (pointerTarget.x - group.rotation.y) * 0.035
+            group.rotation.x += (-pointerTarget.y - group.rotation.x) * 0.035
+            meshes.forEach((mesh) => {
+                mesh.position.y = mesh.userData.baseY + Math.sin(time * 0.00045 + mesh.userData.offset) * 0.035
+            })
+            renderer.render(scene, camera)
+            animationFrame = window.requestAnimationFrame(animate)
+        }
+
+        const resizeObserver = new ResizeObserver(resize)
+        resizeObserver.observe(mount)
+        mount.parentElement?.addEventListener('pointermove', handlePointerMove)
+        resize()
+        if (!reducedMotion) animationFrame = window.requestAnimationFrame(animate)
+
+        return () => {
+            window.cancelAnimationFrame(animationFrame)
+            resizeObserver.disconnect()
+            mount.parentElement?.removeEventListener('pointermove', handlePointerMove)
+            geometry.dispose()
+            edgeGeometry.dispose()
+            meshes.forEach((mesh) => {
+                mesh.material.dispose()
+                mesh.children.forEach((child) => child.material?.dispose())
+            })
+            renderer.dispose()
+            renderer.domElement.remove()
+        }
+    }, [])
+
+    return <div ref={mountRef} className={styles.roadmapBackdrop} aria-hidden='true'/>
 }
 
 export default function Home() {
-    const {siteConfig} = useDocusaurusContext()
     return (
-        <Layout title={`Hello from ${siteConfig.title}`} description='Description will go into a meta tag in <head />'>
-            <div className={styles.roadmapContainer}>
+        <Layout title='嵌入式Linux学习路线图' description='百问网嵌入式Linux应用、驱动、项目与系统移植课程学习路线。'>
+            <div className={styles.roadmapViewport}>
+              <div className={styles.scrollHint}>← 左右滑动查看完整学习路线 →</div>
+              <div className={styles.roadmapContainer}>
+                <RoadmapBackdrop/>
                 <div className={styles.roadmapSection}>
                     <div className={styles.roadmapRow}>
                         <div className={styles.roadmapHalf}>
@@ -43,11 +162,11 @@ export default function Home() {
                                 </div>
                             </div>
                             <div className={styles.boxContainer}>
-                                <div className={styles.whiteBox} onClick={() => {window.open('/docs/Linux-CourseList/ElinuxQuickBuildroot/Introduction')}}>
+                                <div className={styles.whiteBox} {...cardNavigation('/docs/Linux-CourseList/ElinuxQuickBuildroot/Introduction')}>
                                     <div>裁剪移植根文件系统：</div>
                                     <div>使用Buildroot构建根文件系统</div>
                                 </div>
-                                <div className={styles.whiteBox1} onClick={() => {window.open('/docs/Linux-CourseList/eLinuxQuickROOTFS/Introduction')}}>
+                                <div className={styles.whiteBox1} {...cardNavigation('/docs/Linux-CourseList/eLinuxQuickROOTFS/Introduction')}>
                                     <div>裁剪移植根文件系统：</div>
                                     <div>使用Busybox构建根文件系统</div>
                                 </div>
@@ -67,13 +186,13 @@ export default function Home() {
                                     <div className={styles.yellowBox}></div>
                                     <div>未录制</div>
                                 </div>
-                                <div className={styles.yellowBoxLarge2} onClick={() => {window.open('docs/Learn-Linux/LearnStudyPath')}}>uboot裁剪移植</div>
-                                <div className={styles.yellowBoxLarge1} onClick={() => {window.open('docs/Learn-Linux/LearnStudyPath')}}>内核裁剪移植</div>
-                                <div className={styles.right2} onClick={() => {window.open('/docs/Linux-CourseList/ElinuxQuickBuildroot/Introduction')}}>
+                                <div className={styles.yellowBoxLarge2} {...cardNavigation('docs/Learn-Linux/LearnStudyPath')}>uboot裁剪移植</div>
+                                <div className={styles.yellowBoxLarge1} {...cardNavigation('docs/Learn-Linux/LearnStudyPath')}>内核裁剪移植</div>
+                                <div className={styles.right2} {...cardNavigation('/docs/Linux-CourseList/ElinuxQuickBuildroot/Introduction')}>
                                     <div>裁剪移植根文件系统：</div>
                                     <div>使用Buildroot构建根文件系统</div>
                                 </div>
-                                <div className={styles.right1} onClick={() => {window.open('/docs/Linux-CourseList/eLinuxQuickROOTFS/Introduction')}}>
+                                <div className={styles.right1} {...cardNavigation('/docs/Linux-CourseList/eLinuxQuickROOTFS/Introduction')}>
                                     <div>裁剪移植根文件系统：</div>
                                     <div>使用Busybox构建根文件系统</div>
                                 </div>
@@ -90,28 +209,28 @@ export default function Home() {
                     <div className={styles.roadmapRow}>
                         <div className={styles.projectSection}>
                             <div className={styles.duiqi1}>
-                                <div className={styles.redBoxLarge} onClick={() => {window.open('/docs/Linux-CourseList/QTIndustrialIoTOpenOCDModbus/Introduction')}}>
+                                <div className={styles.redBoxLarge} {...cardNavigation('/docs/Linux-CourseList/QTIndustrialIoTOpenOCDModbus/Introduction')}>
                                     <div>QT工业物联网开发实践</div>
                                     <div>OpenOCD烧录与Modbus通信</div>
                                 </div>
-                                <div className={styles.redBoxLarge1} onClick={() => {window.open('')}}>
+                                <div className={styles.redBoxLarge1} >
                                     <div className={styles.redLabel}></div>
                                     <div>推荐学习的项目</div>
                                 </div>
                             </div>
                             <div className={styles.duiqi}>
-                                <div className={styles.whiteBoxs} onClick={() => {window.open('/docs/Linux-CourseList/SmartHomeVideoSystem/Introduction')}}>
+                                <div className={styles.whiteBoxs} {...cardNavigation('/docs/Linux-CourseList/SmartHomeVideoSystem/Introduction')}>
                                     <div>手把手教你如何从零建</div>
                                     <div>智慧家居中的视频监控系统</div>
                                 </div>
-                                <div className={styles.redBoxLarges} onClick={() => {window.open('/docs/Linux-CourseList/ElinuxCamera/Introduction')}}>嵌入式Linux相机</div>
+                                <div className={styles.redBoxLarges} {...cardNavigation('/docs/Linux-CourseList/ElinuxCamera/Introduction')}>嵌入式Linux相机</div>
                             </div>
                             <div className={styles.duiqi}>
-                                <div className={styles.whiteBoxs} onClick={() => {window.open('/docs/Linux-CourseList/ELinuxMQTT/Introduction')}}>
+                                <div className={styles.whiteBoxs} {...cardNavigation('/docs/Linux-CourseList/ELinuxMQTT/Introduction')}>
                                     <div>使用MQTT</div>
                                     <div>实现智能家居</div>
                                 </div>
-                                <div className={styles.whiteBox} onClick={() => {window.open('/docs/Linux-CourseList/ElinuxDigitalphotoFileBrowser/Introduction')}}>
+                                <div className={styles.whiteBox} {...cardNavigation('/docs/Linux-CourseList/ElinuxDigitalphotoFileBrowser/Introduction')}>
                                     <div>数码相框与</div>
                                     <div>文件浏览器</div>
                                 </div>
@@ -119,18 +238,18 @@ export default function Home() {
                             <div className={styles.arrow}>
                             </div>
                             <div className={styles.yellowBorderedBox}></div>
-                            <div className={styles.duiqi2} onClick={() => {window.open('/docs/Linux-CourseList/lvgl_v8.2/Introduction')}}>
-                                <div className={styles.whiteBoxs}>
+                            <div className={styles.duiqi2}>
+                                <div className={styles.whiteBoxs} {...cardNavigation('/docs/Linux-CourseList/lvgl_v8.2/Introduction')}>
                                     <div>百问网LVGL(v8)系列课程</div>
                                     <div>基于lvgl v8.2版本</div>
                                 </div>
-                                <div className={styles.whiteBox} onClick={() => {window.open('/docs/Linux-CourseList/ELinuxeBook/Introduction')}}>
+                                <div className={styles.whiteBox} {...cardNavigation('/docs/Linux-CourseList/ELinuxeBook/Introduction')}>
                                     <div>嵌入式Linux</div>
                                     <div>电子书阅读器</div>
                                 </div>
                             </div>
                         </div>
-                        <div className={styles.whiteBox3} onClick={() => {window.open('/docs/Linux-CourseList/Part6/Introduction')}}>
+                        <div className={styles.whiteBox3} {...cardNavigation('/docs/Linux-CourseList/Part6/Introduction')}>
                             <div>第6篇</div>
                             <div>嵌入式Linux项目基础</div>
                         </div>
@@ -169,14 +288,14 @@ export default function Home() {
                                     <div className={styles.greenBox}></div>
                                     <div>收费</div>
                                 </div>
-                                <div className={styles.whiteBox6} onClick={() => {window.open('https://ldd.100ask.net')}}>
+                                <div className={styles.whiteBox6} {...cardNavigation('https://ldd.100ask.net')}>
                                     <div>驱动大全</div>
                                     <div className={styles.disflex}>(
                                         <div className={styles.red}>非常系统、深入</div>
                                         )
                                     </div>
                                 </div>
-                                <div className={styles.whiteBox5} onClick={() => {window.open('/docs/Linux-CourseList/Part5/Introduction')}}>
+                                <div className={styles.whiteBox5} {...cardNavigation('/docs/Linux-CourseList/Part5/Introduction')}>
                                     <div className={styles.disflex}>第5篇(
                                         <div className={styles.red}>各类理论</div>
                                         )
@@ -203,7 +322,7 @@ export default function Home() {
                         <div className={styles.rightSection}>
                             <div className={styles.learningPath}>
                                 <div className={styles.boxItem1}>
-                                    <div className={styles.whiteBoxWides} onClick={() => {window.open('/docs/Linux-CourseList/LLDQuick/Introduction')}}>
+                                    <div className={styles.whiteBoxWides} {...cardNavigation('/docs/Linux-CourseList/LLDQuick/Introduction')}>
                                         <div>嵌入式Linux驱动开发入门</div>
                                         <div className={styles.disflex}>实验班(
                                             <div className={styles.red}>套模块，快速</div>
@@ -211,7 +330,7 @@ export default function Home() {
                                         </div>
                                     </div>
                                     <div className={styles.arrowheng}></div>
-                                    <div className={styles.whiteBoxWide} onClick={() => {window.open('/docs/Linux-CourseList/27-70dayLinuxQuickDev/Introduction')}}>
+                                    <div className={styles.whiteBoxWide} {...cardNavigation('/docs/Linux-CourseList/27-70dayLinuxQuickDev/Introduction')}>
                                         <div>70天30节Linux驱动开发</div>
                                         <div className={styles.disflex}>快速入门系列课程(
                                             <div className={styles.red}>非常细</div>
@@ -226,7 +345,7 @@ export default function Home() {
                             </div>
                             <div className={styles.learningPath}>
                                 <div className={styles.boxItem2}>
-                                    <div className={styles.whiteBoxWides} onClick={() => {window.open('/docs/Linux-CourseList/ElinuxAPPQuick/Introduction')}}>
+                                    <div className={styles.whiteBoxWides} {...cardNavigation('/docs/Linux-CourseList/ElinuxAPPQuick/Introduction')}>
                                         <div>嵌入式Linux应用开发入门</div>
                                         <div className={styles.disflex}>实验班(
                                             <div className={styles.red}>快速做第1个项目</div>
@@ -234,7 +353,7 @@ export default function Home() {
                                         </div>
                                     </div>
                                     <div className={styles.arrowheng}></div>
-                                    <div className={styles.whiteBoxWide} onClick={() => {window.open('/docs/Linux-CourseList/Part4/Introduction')}}>
+                                    <div className={styles.whiteBoxWide} {...cardNavigation('/docs/Linux-CourseList/Part4/Introduction')}>
                                         <div className={styles.disflex}>第4篇(
                                             <div className={styles.red}>各类基础</div>
                                             )
@@ -249,12 +368,12 @@ export default function Home() {
                             </div>
                             <div className={styles.learningPath}>
                                 <div className={styles.boxItem3}>
-                                    <div className={styles.whiteBoxWides} onClick={() => {window.open('/docs/Linux-CourseList/Part2/Introduction')}}>
+                                    <div className={styles.whiteBoxWides} {...cardNavigation('/docs/Linux-CourseList/Part2/Introduction')}>
                                         <div>第2篇</div>
                                         <div>安装虚拟机/Ubuntu基本操作</div>
                                     </div>
                                     <div className={styles.arrowheng}></div>
-                                    <div className={styles.whiteBoxWide} onClick={() => {window.open('/docs/Linux-CourseList/Part3/Introduction')}}>
+                                    <div className={styles.whiteBoxWide} {...cardNavigation('/docs/Linux-CourseList/Part3/Introduction')}>
                                         <div>第3篇</div>
                                         <div>环境搭建与开发板操作</div>
                                     </div>
@@ -265,7 +384,7 @@ export default function Home() {
                                 </div>
                             </div>
                             <div className={styles.disflex}>
-                                <div className={styles.whiteBoxLarge} onClick={() => {window.open('/docs/Linux-CourseList/CLanguageBasic/Introduction')}}>
+                                <div className={styles.whiteBoxLarge} {...cardNavigation('/docs/Linux-CourseList/CLanguageBasic/Introduction')}>
                                     <div>C语言基础语法与STM32实践</div>
                                 </div>
                                 <div className={styles.labelBox}>
@@ -276,6 +395,7 @@ export default function Home() {
                         </div>
                     </div>
                 </div>
+              </div>
             </div>
         </Layout>
     )

@@ -23,6 +23,7 @@
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
     "start": "^5.1.0",
+    "three": "0.185.0",
     "yarn": "^1.22.21"
   },
   "devDependencies": {
