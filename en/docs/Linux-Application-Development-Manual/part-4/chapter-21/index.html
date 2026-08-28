@@ -1,0 +1,1212 @@
+<!doctype html>
+<html lang="en" dir="ltr" class="docs-wrapper plugin-docs plugin-id-default docs-version-current docs-doc-page docs-doc-id-Linux-Application-Development-Manual/part-4/chapter-21" data-has-hydrated="false">
+<head>
+<meta charset="UTF-8">
+<meta name="generator" content="Docusaurus v3.0.1">
+<title data-rh="true">第10章 I2C应用编程 | 韦东山Linux</title><meta data-rh="true" name="viewport" content="width=device-width,initial-scale=1"><meta data-rh="true" name="twitter:card" content="summary_large_image"><meta data-rh="true" property="og:image" content="https://linux.100ask.net/en/img/docusaurus-social-card.jpg"><meta data-rh="true" name="twitter:image" content="https://linux.100ask.net/en/img/docusaurus-social-card.jpg"><meta data-rh="true" property="og:url" content="https://linux.100ask.net/en/docs/Linux-Application-Development-Manual/part-4/chapter-21"><meta data-rh="true" property="og:locale" content="en"><meta data-rh="true" property="og:locale:alternate" content="zh_Hans"><meta data-rh="true" name="docusaurus_locale" content="en"><meta data-rh="true" name="docsearch:language" content="en"><meta data-rh="true" name="docusaurus_version" content="current"><meta data-rh="true" name="docusaurus_tag" content="docs-default-current"><meta data-rh="true" name="docsearch:version" content="current"><meta data-rh="true" name="docsearch:docusaurus_tag" content="docs-default-current"><meta data-rh="true" property="og:title" content="第10章 I2C应用编程 | 韦东山Linux"><meta data-rh="true" name="description" content="10.1 I2C视频介绍"><meta data-rh="true" property="og:description" content="10.1 I2C视频介绍"><link data-rh="true" rel="icon" href="/en/img/favicon.ico"><link data-rh="true" rel="canonical" href="https://linux.100ask.net/en/docs/Linux-Application-Development-Manual/part-4/chapter-21"><link data-rh="true" rel="alternate" href="https://linux.100ask.net/docs/Linux-Application-Development-Manual/part-4/chapter-21" hreflang="zh-Hans"><link data-rh="true" rel="alternate" href="https://linux.100ask.net/en/docs/Linux-Application-Development-Manual/part-4/chapter-21" hreflang="en"><link data-rh="true" rel="alternate" href="https://linux.100ask.net/docs/Linux-Application-Development-Manual/part-4/chapter-21" hreflang="x-default"><link rel="stylesheet" href="/en/assets/css/styles.f22fa3d1.css">
+<script src="/en/assets/js/runtime~main.5483192b.js" defer="defer"></script>
+<script src="/en/assets/js/main.42c7fc72.js" defer="defer"></script>
+</head>
+<body class="navigation-with-keyboard">
+<script>!function(){function t(t){document.documentElement.setAttribute("data-theme",t)}var e=function(){try{return new URLSearchParams(window.location.search).get("docusaurus-theme")}catch(t){}}()||function(){try{return localStorage.getItem("theme")}catch(t){}}();t(null!==e?e:"light")}(),function(){try{const c=new URLSearchParams(window.location.search).entries();for(var[t,e]of c)if(t.startsWith("docusaurus-data-")){var a=t.replace("docusaurus-data-","data-");document.documentElement.setAttribute(a,e)}}catch(t){}}()</script><div id="__docusaurus"><div role="region" aria-label="Skip to main content"><a class="skipToContent_fXgn" href="#__docusaurus_skipToContent_fallback">Skip to main content</a></div><nav aria-label="Main" class="navbar navbar--fixed-top"><div class="navbar__inner"><div class="navbar__items"><button aria-label="Toggle navigation bar" aria-expanded="false" class="navbar__toggle clean-btn" type="button"><svg width="30" height="30" viewBox="0 0 30 30" aria-hidden="true"><path stroke="currentColor" stroke-linecap="round" stroke-miterlimit="10" stroke-width="2" d="M4 7h22M4 15h22M4 23h22"></path></svg></button><a class="navbar__brand" href="/en/"><div class="navbar__logo"><img src="/en/img/logo.svg" alt="东山PI" class="themedComponent_mlkZ themedComponent--light_NVdE"><img src="/en/img/logo.svg" alt="东山PI" class="themedComponent_mlkZ themedComponent--dark_xIcU"></div><b class="navbar__title text--truncate">韦东山Linux</b></a><a class="navbar__item navbar__link" href="/en/docs/Learn-Linux/LearnStudyPath">嵌入式Linux学习指南</a><a aria-current="page" class="navbar__item navbar__link navbar__link--active" href="/en/docs/Linux-Application-Development-Manual">嵌入式Linux应用开发完全手册</a><a class="navbar__item navbar__link" href="/en/docs/Linux-CourseList/Introduction">嵌入式Linux课程列表</a><a class="navbar__item navbar__link" href="/en/docs/Knowledge-Notes/InputSystem">官方笔记知识库</a><a class="navbar__item navbar__link" href="/en/docs/Study-Notes/intro">学员笔记</a></div><div class="navbar__items navbar__items--right"><a href="https://github.com/100askTeam/linux-docs" target="_blank" rel="noopener noreferrer" class="navbar__item navbar__link">GitHub<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a><div class="toggle_vylO colorModeToggle_DEke"><button class="clean-btn toggleButton_gllP toggleButtonDisabled_aARS" type="button" disabled="" title="Switch between dark and light mode (currently light mode)" aria-label="Switch between dark and light mode (currently light mode)" aria-live="polite"><svg viewBox="0 0 24 24" width="24" height="24" class="lightToggleIcon_pyhR"><path fill="currentColor" d="M12,9c1.65,0,3,1.35,3,3s-1.35,3-3,3s-3-1.35-3-3S10.35,9,12,9 M12,7c-2.76,0-5,2.24-5,5s2.24,5,5,5s5-2.24,5-5 S14.76,7,12,7L12,7z M2,13l2,0c0.55,0,1-0.45,1-1s-0.45-1-1-1l-2,0c-0.55,0-1,0.45-1,1S1.45,13,2,13z M20,13l2,0c0.55,0,1-0.45,1-1 s-0.45-1-1-1l-2,0c-0.55,0-1,0.45-1,1S19.45,13,20,13z M11,2v2c0,0.55,0.45,1,1,1s1-0.45,1-1V2c0-0.55-0.45-1-1-1S11,1.45,11,2z M11,20v2c0,0.55,0.45,1,1,1s1-0.45,1-1v-2c0-0.55-0.45-1-1-1C11.45,19,11,19.45,11,20z M5.99,4.58c-0.39-0.39-1.03-0.39-1.41,0 c-0.39,0.39-0.39,1.03,0,1.41l1.06,1.06c0.39,0.39,1.03,0.39,1.41,0s0.39-1.03,0-1.41L5.99,4.58z M18.36,16.95 c-0.39-0.39-1.03-0.39-1.41,0c-0.39,0.39-0.39,1.03,0,1.41l1.06,1.06c0.39,0.39,1.03,0.39,1.41,0c0.39-0.39,0.39-1.03,0-1.41 L18.36,16.95z M19.42,5.99c0.39-0.39,0.39-1.03,0-1.41c-0.39-0.39-1.03-0.39-1.41,0l-1.06,1.06c-0.39,0.39-0.39,1.03,0,1.41 s1.03,0.39,1.41,0L19.42,5.99z M7.05,18.36c0.39-0.39,0.39-1.03,0-1.41c-0.39-0.39-1.03-0.39-1.41,0l-1.06,1.06 c-0.39,0.39-0.39,1.03,0,1.41s1.03,0.39,1.41,0L7.05,18.36z"></path></svg><svg viewBox="0 0 24 24" width="24" height="24" class="darkToggleIcon_wfgR"><path fill="currentColor" d="M9.37,5.51C9.19,6.15,9.1,6.82,9.1,7.5c0,4.08,3.32,7.4,7.4,7.4c0.68,0,1.35-0.09,1.99-0.27C17.45,17.19,14.93,19,12,19 c-3.86,0-7-3.14-7-7C5,9.07,6.81,6.55,9.37,5.51z M12,3c-4.97,0-9,4.03-9,9s4.03,9,9,9s9-4.03,9-9c0-0.46-0.04-0.92-0.1-1.36 c-0.98,1.37-2.58,2.26-4.4,2.26c-2.98,0-5.4-2.42-5.4-5.4c0-1.81,0.89-3.42,2.26-4.4C12.92,3.04,12.46,3,12,3L12,3z"></path></svg></button></div><div class="navbarSearchContainer_Bca1"></div></div></div><div role="presentation" class="navbar-sidebar__backdrop"></div></nav><div id="__docusaurus_skipToContent_fallback" class="main-wrapper mainWrapper_z2l0"><div class="docsWrapper_hBAB"><button aria-label="Scroll back to top" class="clean-btn theme-back-to-top-button backToTopButton_sjWU" type="button"></button><div class="docRoot_UBD9"><aside class="theme-doc-sidebar-container docSidebarContainer_YfHR"><div class="sidebarViewport_aRkj"><div class="sidebar_njMd"><nav aria-label="Docs sidebar" class="menu thin-scrollbar menu_SIkG"><ul class="theme-doc-sidebar-menu menu__list"><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class="menu__link" href="/en/docs/Linux-Application-Development-Manual">手册首页</a></li><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item menu__list-item--collapsed"><div class="menu__list-item-collapsible"><a class="menu__link menu__link--sublist" aria-expanded="false" href="/en/docs/category/第一篇-学习路线教程介绍资料下载">第一篇 学习路线、教程介绍、资料下载</a><button aria-label="Expand sidebar category &#x27;第一篇 学习路线、教程介绍、资料下载&#x27;" type="button" class="clean-btn menu__caret"></button></div></li><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item menu__list-item--collapsed"><div class="menu__list-item-collapsible"><a class="menu__link menu__link--sublist" aria-expanded="false" href="/en/docs/category/第二篇-ubuntu-基本操作">第二篇 Ubuntu 基本操作</a><button aria-label="Expand sidebar category &#x27;第二篇 Ubuntu 基本操作&#x27;" type="button" class="clean-btn menu__caret"></button></div></li><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item menu__list-item--collapsed"><div class="menu__list-item-collapsible"><a class="menu__link menu__link--sublist" aria-expanded="false" href="/en/docs/category/第三篇-环境搭建与开发板操作">第三篇 环境搭建与开发板操作</a><button aria-label="Expand sidebar category &#x27;第三篇 环境搭建与开发板操作&#x27;" type="button" class="clean-btn menu__caret"></button></div></li><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item"><div class="menu__list-item-collapsible"><a class="menu__link menu__link--sublist menu__link--active" aria-expanded="true" href="/en/docs/category/第四篇-嵌入式-linux-应用开发基础知识">第四篇 嵌入式 Linux 应用开发基础知识</a><button aria-label="Collapse sidebar category &#x27;第四篇 嵌入式 Linux 应用开发基础知识&#x27;" type="button" class="clean-btn menu__caret"></button></div><ul style="display:block;overflow:visible;height:auto" class="menu__list"><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/en/docs/Linux-Application-Development-Manual/part-4/chapter-12">第1章 HelloWorld背后没那么简单</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/en/docs/Linux-Application-Development-Manual/part-4/chapter-13">第2章 GCC编译器的使用</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/en/docs/Linux-Application-Development-Manual/part-4/chapter-14">第3章 Makefile的使用</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/en/docs/Linux-Application-Development-Manual/part-4/chapter-15">第4章 文件IO</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/en/docs/Linux-Application-Development-Manual/part-4/chapter-16">第5章 Framebuffer应用编程</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/en/docs/Linux-Application-Development-Manual/part-4/chapter-17">第6章 文字显示</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/en/docs/Linux-Application-Development-Manual/part-4/chapter-18">第7章 输入系统应用编程</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/en/docs/Linux-Application-Development-Manual/part-4/chapter-19">第8章 网络通信</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/en/docs/Linux-Application-Development-Manual/part-4/chapter-20">第9章 多线程编程</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link menu__link--active" aria-current="page" tabindex="0" href="/en/docs/Linux-Application-Development-Manual/part-4/chapter-21">第10章 I2C应用编程</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/en/docs/Linux-Application-Development-Manual/part-4/chapter-22">第11章 Linux串口应用编程</a></li></ul></li><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item menu__list-item--collapsed"><div class="menu__list-item-collapsible"><a class="menu__link menu__link--sublist" aria-expanded="false" href="/en/docs/category/第五篇-嵌入式-linux-驱动开发基础知识">第五篇 嵌入式 Linux 驱动开发基础知识</a><button aria-label="Expand sidebar category &#x27;第五篇 嵌入式 Linux 驱动开发基础知识&#x27;" type="button" class="clean-btn menu__caret"></button></div></li><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item menu__list-item--collapsed"><div class="menu__list-item-collapsible"><a class="menu__link menu__link--sublist" aria-expanded="false" href="/en/docs/category/第八篇-其他应用">第八篇 其他应用</a><button aria-label="Expand sidebar category &#x27;第八篇 其他应用&#x27;" type="button" class="clean-btn menu__caret"></button></div></li></ul></nav></div></div></aside><main class="docMainContainer_TBSr"><div class="container padding-top--md padding-bottom--lg"><div class="row"><div class="col docItemCol_VOVn"><div class="docItemContainer_Djhp"><article><nav class="theme-doc-breadcrumbs breadcrumbsContainer_Z_bl" aria-label="Breadcrumbs"><ul class="breadcrumbs" itemscope="" itemtype="https://schema.org/BreadcrumbList"><li class="breadcrumbs__item"><a aria-label="Home page" class="breadcrumbs__link" href="/en/"><svg viewBox="0 0 24 24" class="breadcrumbHomeIcon_YNFT"><path d="M10 19v-5h4v5c0 .55.45 1 1 1h3c.55 0 1-.45 1-1v-7h1.7c.46 0 .68-.57.33-.87L12.67 3.6c-.38-.34-.96-.34-1.34 0l-8.36 7.53c-.34.3-.13.87.33.87H5v7c0 .55.45 1 1 1h3c.55 0 1-.45 1-1z" fill="currentColor"></path></svg></a></li><li itemscope="" itemprop="itemListElement" itemtype="https://schema.org/ListItem" class="breadcrumbs__item"><a class="breadcrumbs__link" itemprop="item" href="/en/docs/category/第四篇-嵌入式-linux-应用开发基础知识"><span itemprop="name">第四篇 嵌入式 Linux 应用开发基础知识</span></a><meta itemprop="position" content="1"></li><li itemscope="" itemprop="itemListElement" itemtype="https://schema.org/ListItem" class="breadcrumbs__item breadcrumbs__item--active"><span class="breadcrumbs__link" itemprop="name">第10章 I2C应用编程</span><meta itemprop="position" content="2"></li></ul></nav><div class="tocCollapsible_ETCw theme-doc-toc-mobile tocMobile_ITEo"><button type="button" class="clean-btn tocCollapsibleButton_TO0P">On this page</button></div><div class="theme-doc-markdown markdown"><header><h1>第10章 I2C应用编程</h1></header><a id="_Toc197788657"></a>
+<a id="_Toc197788658"></a>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="101-i2c视频介绍">10.1 I2C视频介绍<a href="#101-i2c视频介绍" class="hash-link" aria-label="Direct link to 10.1 I2C视频介绍" title="Direct link to 10.1 I2C视频介绍">​</a></h2>
+<p>参考资料：I2Ctools</p>
+<p><a href="https://mirrors.edge.kernel.org/pub/software/utils/i2c-tools/" target="_blank" rel="noopener noreferrer">https://mirrors.edge.kernel.org/pub/software/utils/i2c-tools/</a></p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="1011-i2c硬件框架">10.1.1 I2C硬件框架<a href="#1011-i2c硬件框架" class="hash-link" aria-label="Direct link to 10.1.1 I2C硬件框架" title="Direct link to 10.1.1 I2C硬件框架">​</a></h3>
+<p><img loading="lazy" alt="图示
+描述已自动生成" src="/en/assets/images/manual-320-8e4a83c486412911113cef7aafd7df61.png" width="1316" height="833" class="img_ev3q"></p>
+<p>图 10.1 I2C总线拓扑图</p>
+<ul>
+<li>在一个芯片(SoC)内部，有一个或多个I2C控制器</li>
+<li>在一个I2C控制器上，可以连接一个或多个I2C设备</li>
+<li>I2C总线只需要2条线：时钟线SCL、数据线SDA</li>
+<li>在I2C总线的SCL、SDA线上，都有上拉电阻</li>
+</ul>
+<a id="X7df6fa8647c5725910780dcd7aa9c37bae37f63"></a>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="1012-i2c软件框架">10.1.2 I2C软件框架<a href="#1012-i2c软件框架" class="hash-link" aria-label="Direct link to 10.1.2 I2C软件框架" title="Direct link to 10.1.2 I2C软件框架">​</a></h3>
+<p><img loading="lazy" alt="图形用户界面, 文本, 应用程序, 电子邮件
+描述已自动生成" src="/en/assets/images/manual-321-77888d40e5d41c503d1a18d072c55795.png" width="978" height="579" class="img_ev3q"></p>
+<p>图 10.2 I2C软件框架</p>
+<p>以I2C接口的存储设备AT24C02为例：</p>
+<ul>
+<li>APP：<!-- -->
+<ul>
+<li>提出要求：把字符串&quot;<a href="file:///E:%5CVXwork%5CWXWork%5C1688850409580420%5CCache%5CFile%5C2021-08%5Cwww.100ask.net" target="_blank" rel="noopener noreferrer">www.100ask.net</a>&quot;写入AT24C02地址16开始的地方</li>
+<li>它是大爷，不关心底层实现的细节</li>
+<li>它只需要调用设备驱动程序提供的接口</li>
+</ul>
+</li>
+<li>AT24C02驱动：<!-- -->
+<ul>
+<li>它知道AT24C02要求的地址、数据格式</li>
+<li>它知道发出什么信号才能让AT24C02执行擦除、烧写工作</li>
+<li>它知道怎么判断数据是否烧写成功</li>
+<li>它构造好一系列的数据，发给I2C控制器</li>
+</ul>
+</li>
+<li>I2C控制器驱动<!-- -->
+<ul>
+<li>它根据I2C协议发出各类信号：I2C设备地址、I2C存储地址、数据</li>
+<li>它根据I2C协议判断</li>
+</ul>
+</li>
+</ul>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="1013-我们讲什么">10.1.3 我们讲什么<a href="#1013-我们讲什么" class="hash-link" aria-label="Direct link to 10.1.3 我们讲什么" title="Direct link to 10.1.3 我们讲什么">​</a></h3>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ol>
+<li>对于Linux</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p><img loading="lazy" alt="图示
+描述已自动生成" src="/en/assets/images/manual-322-70b60b0755ae989a1dd71f60d577575c.png" width="1073" height="591" class="img_ev3q"></p>
+<p>图 10.3 Linux I2C结构</p>
+<p>从上到下：</p>
+<ul>
+<li>先讲I2C协议</li>
+<li>APP可以通过两类驱动程序访问设备<!-- -->
+<ul>
+<li>I2C设备自己的驱动程序</li>
+<li>内核自带的i2c-dev.c驱动程序，它是i2c控制器驱动程序暴露给用户空间的驱动  程序(i2c-dev.c)</li>
+</ul>
+</li>
+<li>I2C Device Driver<!-- -->
+<ul>
+<li>I2C设备自己的驱动程序</li>
+<li>内核自带的i2c-dev.c驱动程序，它是i2c控制器驱动程序暴露给用户空间的驱动程序(i2c-dev.c)</li>
+</ul>
+</li>
+<li>I2C Controller Driver<!-- -->
+<ul>
+<li>芯片I2C控制器的驱动程序(称为adapter)</li>
+<li>使用GPIO模拟的I2C控制器驱动程序(i2c-gpio.c)<!-- -->
+<ul>
+<li>
+<ul>
+<li>
+<ol>
+<li>对于单片机/裸机</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p><img loading="lazy" alt="图示
+描述已自动生成" src="/en/assets/images/manual-323-05af8a2672fa3f03a18705d39f3ef161.png" width="731" height="583" class="img_ev3q"></p>
+<p>图 10.4 单片机I2C结构</p>
+<p>从上到下：</p>
+<ul>
+<li>先讲I2C协议</li>
+<li>APP</li>
+<li>I2C Device Driver</li>
+<li>I2C Controller Driver(也被称为adapter)</li>
+</ul>
+<a id="_Toc197788659"></a>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="102-i2c协议">10.2 I2C协议<a href="#102-i2c协议" class="hash-link" aria-label="Direct link to 10.2 I2C协议" title="Direct link to 10.2 I2C协议">​</a></h2>
+<p>参考资料：</p>
+<p>i2c_spec.pdf</p>
+<a id="Xfe46f7e7996f168fe370525d4944204fd619b8d"></a>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="1021-硬件连接">10.2.1 硬件连接<a href="#1021-硬件连接" class="hash-link" aria-label="Direct link to 10.2.1 硬件连接" title="Direct link to 10.2.1 硬件连接">​</a></h3>
+<p>I2C在硬件上的接法如下所示，主控芯片引出两条线SCL,SDA线，在一条I2C总线上可以接很多I2C设备，我们还会放一个上拉电阻（放一个上拉电阻的原因以后我们再说）。</p>
+<p><img loading="lazy" alt="图示, 示意图
+描述已自动生成" src="/en/assets/images/manual-324-03df1d2f4385273c130870a256b53243.png" width="625" height="427" class="img_ev3q"></p>
+<p>图 10.5 I2C硬件连接</p>
+<a id="Xd16764ea31de7baeaca2461b5aaabe73e49aae5"></a>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="1022-传输数据类比">10.2.2 传输数据类比<a href="#1022-传输数据类比" class="hash-link" aria-label="Direct link to 10.2.2 传输数据类比" title="Direct link to 10.2.2 传输数据类比">​</a></h3>
+<p>怎么通过I2C传输数据，我们需要把数据从主设备发送到从设备上去，也需要把数据从从设备传送到主设备上去，数据涉及到双向传输。</p>
+<p>举个例子：</p>
+<p><img loading="lazy" alt="文本, 图标
+描述已自动生成" src="/en/assets/images/manual-325-dbcc430942d5f1e6cb8ec70a999321ef.png" width="959" height="311" class="img_ev3q"></p>
+<p>图 10.6 I2C举例示意图</p>
+<p>体育老师：可以把球发给学生，也可以把球从学生中接过来。</p>
+<ul>
+<li>发球：<!-- -->
+<ul>
+<li>老师：开始了(start)</li>
+<li>老师：A！我要发球给你！(地址/方向)</li>
+<li>学生A：到！(回应)</li>
+<li>老师把球发出去（传输）</li>
+<li>A收到球之后，应该告诉老师一声（回应）</li>
+<li>老师：结束（停止）</li>
+</ul>
+</li>
+<li>接球：<!-- -->
+<ul>
+<li>老师：开始了(start)</li>
+<li>老师：B！把球发给我！(地址/方向)</li>
+<li>学生B：到！</li>
+<li>B把球发给老师（传输）</li>
+<li>老师收到球之后，给B说一声，表示收到球了（回应）</li>
+<li>老师：结束（停止）</li>
+</ul>
+</li>
+</ul>
+<p>我们就使用这个简单的例子，来解释一下IIC的传输协议：</p>
+<ul>
+<li>老师说开始了，表示开始信号(start)</li>
+<li>老师提醒某个学生要发球，表示发送地址和方向(address/read/write)</li>
+<li>老师发球/接球，表示数据的传输</li>
+<li>收到球要回应：回应信号(ACK)</li>
+<li>老师说结束，表示IIC传输结束(P)</li>
+</ul>
+<a id="X5b07de2e0a76b58346df9d9ce1a6c963afe7647"></a>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="1023-iic传输数据的格式">10.2.3 IIC传输数据的格式<a href="#1023-iic传输数据的格式" class="hash-link" aria-label="Direct link to 10.2.3 IIC传输数据的格式" title="Direct link to 10.2.3 IIC传输数据的格式">​</a></h3>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ol>
+<li><a id="Xdc618fb81c4d5b4df1c13295fb963422cb53652"></a>写操作</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>流程如下：</p>
+<ul>
+<li>主芯片要发出一个start信号</li>
+<li>然后发出一个设备地址(用来确定是往哪一个芯片写数据)，方向(读/写，0表示写，1表示读)</li>
+<li>从设备回应(用来确定这个设备是否存在)，然后就可以传输数据</li>
+<li>主设备发送一个字节数据给从设备，并等待回应</li>
+<li>每传输一字节数据，接收方要有一个回应信号（确定数据是否接受完成)，然后再传输下一个数据。</li>
+<li>数据发送完之后，主芯片就会发送一个停止信号。</li>
+<li>下图：白色背景表示&quot;主→从&quot;，灰色背景表示&quot;从→主&quot;</li>
+</ul>
+<p><img loading="lazy" alt="图示
+描述已自动生成" src="/en/assets/images/manual-326-7e3b0008ff5377885e05acd335b30b5b.png" width="969" height="144" class="img_ev3q"></p>
+<p>图 10.7 I2C写传输格式</p>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ol>
+<li><a id="Xbd3c06919e511e35788f6b3f982cb8b841b4003"></a>读操作</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>流程如下：</p>
+<ul>
+<li>主芯片要发出一个start信号</li>
+<li>然后发出一个设备地址(用来确定是往哪一个芯片写数据)，方向(读/写，0表示写，1表示读)</li>
+<li>从设备回应(用来确定这个设备是否存在)，然后就可以传输数据</li>
+<li>从设备发送一个字节数据给主设备，并等待回应</li>
+<li>每传输一字节数据，接收方要有一个回应信号（确定数据是否接受完成)，然后再传输下一个数据。</li>
+<li>数据发送完之后，主芯片就会发送一个停止信号。</li>
+</ul>
+<p>下图：白色背景表示&quot;主→从&quot;，灰色背景表示&quot;从→主&quot;</p>
+<p><img loading="lazy" alt="图示
+描述已自动生成" src="/en/assets/images/manual-327-04db220927b03f020ecbbc326377850d.png" width="981" height="155" class="img_ev3q"></p>
+<p>图 10.8 I2C读传输格式</p>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ol>
+<li><a id="Xd3f550b02c44f4570ccf454fd31762d0ebb784c"></a>I2C信号</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>I2C协议中数据传输的单位是字节，也就是8位。但是要用到9个时钟：前面8个时钟用来传输8数据，第9个时钟用来传输回应信号。传输时，先传输最高位(MSB)。</p>
+<ul>
+<li>开始信号（S）：SCL为高电平时，SDA山高电平向低电平跳变，开始传送数据。</li>
+<li>结束信号（P）：SCL为高电平时，SDA由低电平向高电平跳变，结束传送数据。</li>
+<li>响应信号(ACK)：接收器在接收到8位数据后，在第9个时钟周期，拉低SDA</li>
+<li>SDA上传输的数据必须在SCL为高电平期间保持稳定，SDA上的数据只能在SCL为低电平期间变化</li>
+</ul>
+<p>I2C协议信号如下：</p>
+<p><img loading="lazy" alt="图示
+描述已自动生成" src="/en/assets/images/manual-328-bce135f87270d68977e4ac81f32fd9b7.png" width="1122" height="379" class="img_ev3q"></p>
+<p>图 10.9 I2C协议信号</p>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ol>
+<li><a id="X6c5d253dcee2c137b1493fa520af1141445fc80"></a>协议细节</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>如何在SDA上实现双向传输？<!-- -->
+<ul>
+<li>主芯片通过一根SDA线既可以把数据发给从设备，也可以从SDA上读取数据，连接SDA线的引脚里面必然有两个引脚（发送引脚/接受引脚）。</li>
+</ul>
+</li>
+<li>主、从设备都可以通过SDA发送数据，肯定不能同时发送数据，怎么错开时间？在9个时钟里：<!-- -->
+<ul>
+<li>前8个时钟由主设备发送数据的话，第9个时钟就由从设备发送数据；</li>
+<li>前8个时钟由从设备发送数据的话，第9个时钟就由主设备发送数据。</li>
+</ul>
+</li>
+<li>双方设备中，某个设备发送数据 时，另一方怎样才能不影响SDA上的数据？<!-- -->
+<ul>
+<li>设备的SDA中有一个三极管，使用开极/开漏电路(三极管是开极，CMOS管是开漏，作用一样)，如下图：</li>
+</ul>
+</li>
+</ul>
+<p><img loading="lazy" alt="fig:" src="/en/assets/images/manual-329-63a56dbfdce814ead76e81ce4b1ca8e9.png" width="682" height="392" class="img_ev3q"></p>
+<p>图 10.10 I2C上拉/开漏电路</p>
+<p>真值表如下：</p>
+<p><img loading="lazy" alt="fig:" src="data:image/png;base64,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" width="416" height="225" class="img_ev3q"></p>
+<p>图 10.11 开漏真值表</p>
+<p>从真值表和电路图我们可以知道：</p>
+<ul>
+<li>当某一个芯片不想影响SDA线时，那就不驱动这个三极管</li>
+<li>想让SDA输出高电平，双方都不驱动三极管(SDA通过上拉电阻变为高电平)</li>
+<li>想让SDA输出低电平，就驱动三极管</li>
+</ul>
+<p>从下面的例子可以看看数据是怎么传的（实现双向传输）。
+举例：主设备发送（8bit）给从设备</p>
+<ul>
+<li>前8个clk<!-- -->
+<ul>
+<li>从设备不要影响SDA，从设备不驱动三极管</li>
+<li>主设备决定数据，主设备要发送1时不驱动三极管，要发送0时驱动三极管</li>
+</ul>
+</li>
+<li>第9个clk，由从设备决定数据<!-- -->
+<ul>
+<li>主设备不驱动三极管</li>
+<li>从设备决定数据，要发出回应信号的话，就驱动三极管让SDA变为0</li>
+</ul>
+</li>
+</ul>
+<p>从这里也可以知道ACK信号是低电平</p>
+<p>从上面的例子，就可以知道怎样在一条线上实现双向传输，这就是SDA上要使用上拉电阻的原因。</p>
+<p>为何SCL也要使用上拉电阻？在第9个时钟之后，如果有某一方需要更多的时间来处理数据，它可以一直驱动三极管把SCL拉低。
+当SCL为低电平时候，大家都不应该使用IIC总线，只有当SCL从低电平变为高电平的时候，IIC总线才能被使用。</p>
+<p>当它就绪后，就可以不再驱动三极管，这是上拉电阻把SCL变为高电平，其他设备就可以继续使用I2C总线了。</p>
+<p>对于IIC协议它只能规定怎么传输数据，数据是什么含义由从设备决定。</p>
+<a id="_Toc197788660"></a>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="103-smbus协议">10.3 SMBus协议<a href="#103-smbus协议" class="hash-link" aria-label="Direct link to 10.3 SMBus协议" title="Direct link to 10.3 SMBus协议">​</a></h2>
+<p>参考资料：</p>
+<ul>
+<li>Linux内核文档：Documentation\i2c\smbus-protocol.rst</li>
+<li>SMBus协议：</li>
+<li><a href="http://www.smbus.org/specs/" target="_blank" rel="noopener noreferrer">http://www.smbus.org/specs/</a></li>
+<li>SMBus_3_0_20141220.pdf</li>
+<li>I2CTools:</li>
+</ul>
+<p><a href="https://mirrors.edge.kernel.org/pub/software/utils/i2c-tools/" target="_blank" rel="noopener noreferrer">https://mirrors.edge.kernel.org/pub/software/utils/i2c-tools/</a></p>
+<a id="X945bd7e7dd46c0f9677ec37af1a5789b80ee2f9"></a>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="1031-smbus是i2c协议的一个子集">10.3.1 SMBus是I2C协议的一个子集<a href="#1031-smbus是i2c协议的一个子集" class="hash-link" aria-label="Direct link to 10.3.1 SMBus是I2C协议的一个子集" title="Direct link to 10.3.1 SMBus是I2C协议的一个子集">​</a></h3>
+<p>SMBus: System Management Bus，系统管理总线。
+SMBus最初的目的是为智能电池、充电电池、其他微控制器之间的通信链路而定义的。
+SMBus也被用来连接各种设备，包括电源相关设备，系统传感器，EEPROM通讯设备等等。
+SMBus 为系统和电源管理这样的任务提供了一条控制总线，使用 SMBus 的系统，设备之间发送和接收消息都是通过 SMBus，而不是使用单独的控制线，这样可以节省设备的管脚数。
+SMBus是基于I2C协议的，SMBus要求更严格，SMBus是I2C协议的子集。</p>
+<p><img loading="lazy" alt="图示, 维恩图
+描述已自动生成" src="/en/assets/images/manual-331-d42b098a200786ddced9b048e93b337b.png" width="361" height="204" class="img_ev3q"></p>
+<p>图 10.12 SMBus是I2C的子集</p>
+<p>SMBus有哪些更严格的要求？跟一般的I2C协议有哪些差别？</p>
+<ul>
+<li>VDD的极限值不一样<!-- -->
+<ul>
+<li>I2C协议：范围很广，甚至讨论了高达12V的情况</li>
+<li>SMBus：1.8V~5V</li>
+</ul>
+</li>
+<li>最小时钟频率、最大的Clock Stretching<!-- -->
+<ul>
+<li>Clock Stretching含义：某个设备需要更多时间进行内部的处理时，它可以把SCL拉低占住I2C总线</li>
+<li>I2C协议：时钟频率最小值无限制，Clock Stretching时长也没有限制</li>
+<li>SMBus：时钟频率最小值是10KHz，Clock Stretching的最大时间值也有限制</li>
+</ul>
+</li>
+<li>地址回应(Address Acknowledge)：一个I2C设备接收到它的设备地址后，是否必须发出回应信号？<!-- -->
+<ul>
+<li>I2C协议：没有强制要求必须发出回应信号</li>
+<li>SMBus：强制要求必须发出回应信号，这样对方才知道该设备的状态：busy，failed，或是被移除了</li>
+</ul>
+</li>
+<li>SMBus协议明确了数据的传输格式<!-- -->
+<ul>
+<li>I2C协议：它只定义了怎么传输数据，但是并没有定义数据的格式，这完全由设备来定义</li>
+<li>SMBus：定义了几种数据格式(后面分析)</li>
+</ul>
+</li>
+<li>REPEATED START Condition(重复发出S信号)</li>
+</ul>
+<p>比如读EEPROM时，涉及2个操作：</p>
+<ol>
+<li>把存储地址发给设备</li>
+<li>读数据</li>
+</ol>
+<p>在写、读之间，可以不发出P信号，而是直接发出S信号：这个S信号就是REPEATED START，如图 10.13所示</p>
+<p><img loading="lazy" alt="fig:" src="/en/assets/images/manual-332-f7b24003e1257071b87221ecee0fb479.png" width="663" height="140" class="img_ev3q"></p>
+<p><a id="_Ref108713474"></a>图 10.13 REPEATED START Condition</p>
+<ul>
+<li>SMBus Low Power Version：SMBus也有低功耗的版本</li>
+</ul>
+<a id="X307efd385fd925a31e32fbe752468ea0516c0fd"></a>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="1032-smbus协议分析">10.3.2 SMBus协议分析<a href="#1032-smbus协议分析" class="hash-link" aria-label="Direct link to 10.3.2 SMBus协议分析" title="Direct link to 10.3.2 SMBus协议分析">​</a></h3>
+<p>对于I2C协议，它只定义了怎么传输数据，但是并没有定义数据的格式，这完全由设备来定义。
+对于SMBus协议，它定义了几种数据格式。</p>
+<p>**注意：**下面文档中的Functionality flag是Linux的某个I2C控制器驱动所支持的功能。比如Functionality flag: I2C_FUNC_SMBUS_QUICK，表示 需要I2C控制器支持SMBus Quick Command</p>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ol>
+<li><a id="X94f6fde8ef883b7bbba8dbe52174cb3c70622f7"></a>symbols(符号)</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">S     (1 bit) : Start bit(开始位)Sr    (1 bit) : 重复的开始位P     (1 bit) : Stop bit(停止位)R/W#  (1 bit) : Read/Write bit. Rd equals 1, Wr equals 0.(读写位)A, N  (1 bit) : Accept and reverse accept bit.(回应位)Address(7 bits): I2C 7 bit address. Note that this can be expanded as usual to                get a 10 bit I2C address.                (地址位，7位地址)Command Code  (8 bits): Command byte, a data byte which often selects a register on                the device.                (命令字节，一般用来选择芯片内部的寄存器)Data Byte (8 bits): A plain data byte. Sometimes, I write DataLow, DataHigh                for 16 bit data.                (数据字节，8位；如果是16位数据的话，用2个字节来表示：DataLow、DataHigh)Count (8 bits): A data byte containing the length of a block operation.				(在block操作总，表示数据长度)[..]:           Data sent by I2C device, as opposed to data sent by the host                adapter.                (中括号表示I2C设备发送的数据，没有中括号表示host adapter发送的数据)</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="Copy code to clipboard" title="Copy" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ol>
+<li><a id="_Hlk108713553"></a><a id="X3ebcec46d83f8988a3286ed519a4fb59439f220"></a>SMBus Quick Command</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p><img loading="lazy" alt="图片包含 图示
+描述已自动生成" src="/en/assets/images/manual-333-1a9f2aec240d3656c6eb8e3a7584a400.png" width="424" height="102" class="img_ev3q"></p>
+<p>图 10.14 2 SMBus Quick Command</p>
+<p>只是用来发送一位数据：R/W#本意是用来表示读或写，但是在SMBus里可以用来表示其他含义。比如某些开关设备，可以根据这一位来决定是打开还是关闭。</p>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">Functionality flag: I2C_FUNC_SMBUS_QUICK</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="Copy code to clipboard" title="Copy" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ol>
+<li><a id="X80cda5adf425575aef90b931401a2ca502eda84"></a>3 SMBus Receive Byte</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p><img loading="lazy" alt="图示
+中度可信度描述已自动生成" src="/en/assets/images/manual-334-fbb2d08859a420fe0c0c1a7c13acfd04.png" width="630" height="109" class="img_ev3q"></p>
+<p>图 10.15 SMBus Receive Byte</p>
+<p>I2C-tools中的函数：i2c_smbus_read_byte()。读取一个字节，Host adapter接收到一个字节后不需要发出回应信号(上图中N表示不回应)。</p>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">Functionality flag: I2C_FUNC_SMBUS_READ_BYTE</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="Copy code to clipboard" title="Copy" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ol>
+<li><a id="X7bdc91f180049421a42bd3364b1f74fa71b07b8"></a>4 SMBus Send Byte</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p><img loading="lazy" alt="图片包含 图示
+描述已自动生成" src="/en/assets/images/manual-335-3e73833e6b47b4684c15f47ae47da8b3.png" width="629" height="103" class="img_ev3q"></p>
+<p>图 10.16 SMBus Send Byte</p>
+<p>I2C-tools中的函数：i2c_smbus_write_byte()。发送一个字节。</p>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">Functionality flag: I2C_FUNC_SMBUS_WRITE_BYTE</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="Copy code to clipboard" title="Copy" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ol>
+<li><a id="X092f8d394691d34fc18d25dd2c4fe8be1b04cee"></a>SMBus Read Byte</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p><img loading="lazy" alt="图片包含 箱线图
+描述已自动生成" src="/en/assets/images/manual-336-8bf8d74e061a4fe188f3c23f4a991b6d.png" width="667" height="178" class="img_ev3q"></p>
+<p>图 10.17 5 SMBus Read Byte</p>
+<p>I2C-tools中的函数：i2c_smbus_read_byte_data()。先发出Command Code(它一般表示芯片内部的寄存器地址)，再读取一个字节的数据。上面介绍的SMBus Receive Byte是不发送Comand，直接读取数据。</p>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">Functionality flag: I2C_FUNC_SMBUS_READ_BYTE_DATA</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="Copy code to clipboard" title="Copy" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ol>
+<li><a id="Xd61c4c139988d36079003f2cdcead76fb69c8c4"></a>6 SMBus Read Word</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p><img loading="lazy" alt="图形用户界面, 文本, 应用程序
+描述已自动生成" src="/en/assets/images/manual-337-20ceebff1e4dbbc18f2382bfdf8a06f4.png" width="945" height="177" class="img_ev3q"></p>
+<p>图 10.18 SMBus Read Word</p>
+<p>I2C-tools中的函数：i2c_smbus_read_word_data()。先发出Command Code(它一般表示芯片内部的寄存器地址)，再读取2个字节的数据。</p>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">Functionality flag: I2C_FUNC_SMBUS_READ_WORD_DATA</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="Copy code to clipboard" title="Copy" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ol>
+<li><a id="X23bbc6ba41a121ea5f6bd59e3874cfe272a17a3"></a>SMBus Write Byte</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p><img loading="lazy" src="/en/assets/images/manual-338-df287c621056d676eadf88d5c42171ab.png" width="940" height="103" class="img_ev3q"></p>
+<p>图 10.19 SMBus Write Byte</p>
+<p>I2C-tools中的函数：i2c_smbus_write_byte_data()。先发出Command Code(它一般表示芯片内部的寄存器地址)，再发出1个字节的数据。</p>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">Functionality flag: I2C_FUNC_SMBUS_WRITE_BYTE_DATA</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="Copy code to clipboard" title="Copy" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ol>
+<li><a id="X4b2bd6fbcf70181a5bd47a3082b0ebda4754828"></a>SMBus Write Word</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p><img loading="lazy" alt="图示
+中度可信度描述已自动生成" src="/en/assets/images/manual-339-aab75bb9228ae50dee7634cf00e4c162.png" width="630" height="180" class="img_ev3q"></p>
+<p>图 10.20 8 SMBus Write Word</p>
+<p>I2C-tools中的函数：i2c_smbus_write_word_data()。先发出Command Code(它一般表示芯片内部的寄存器地址)，再发出1个字节的数据。</p>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">Functionality flag: I2C_FUNC_SMBUS_WRITE_WORD_DATA</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="Copy code to clipboard" title="Copy" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ol>
+<li><a id="Xb7b077fb1f401e1d12eae78116473e80325ce0b"></a>SMBus Block Read</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p><img loading="lazy" alt="图形用户界面, 应用程序
+描述已自动生成" src="/en/assets/images/manual-340-45652d23012c982479666cc662846ca7.png" width="966" height="256" class="img_ev3q"></p>
+<p>图 10.21 9 SMBus Block Read</p>
+<p>I2C-tools中的函数：i2c_smbus_read_block_data()。先发出Command Code(它一般表示芯片内部的寄存器地址)，再发起度操作：</p>
+<ul>
+<li>先读到一个字节(Block Count)，表示后续要读的字节数</li>
+<li>然后读取全部数据</li>
+</ul>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">Functionality flag: I2C_FUNC_SMBUS_READ_BLOCK_DATA</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="Copy code to clipboard" title="Copy" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ol>
+<li><a id="X9bfcef2e9236691696b6a3d0735264a0712eb17"></a>SMBus Block Write</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p><img loading="lazy" alt="图片包含 图形用户界面
+描述已自动生成" src="/en/assets/images/manual-341-6d80ffae0c26a53aa22f2456c777670e.png" width="970" height="185" class="img_ev3q"></p>
+<p>图 10.22 10 SMBus Block Write</p>
+<p>I2C-tools中的函数：i2c_smbus_write_block_data()。先发出Command Code(它一般表示芯片内部的寄存器地址)，再发出1个字节的Byte Conut(表示后续要发出的数据字节数)，最后发出全部数据。</p>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">Functionality flag: I2C_FUNC_SMBUS_WRITE_BLOCK_DATA</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="Copy code to clipboard" title="Copy" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ol>
+<li><a id="_Hlk108714482"></a><a id="X23ac20d90a1edeb6427d0b797d6e459383ab7ac"></a>I2C Block Read</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>在一般的I2C协议中，也可以连续读出多个字节。它跟SMBus Block Read的差别在于设备发出的第1个数据不是长度N，如下图所示：</p>
+<p><img loading="lazy" alt="图形用户界面, 文本
+描述已自动生成" src="/en/assets/images/manual-342-5537dbb46d540d1611b13c2ea0dee6e6.png" width="794" height="182" class="img_ev3q"></p>
+<p>图 10.23 11 I2C Block Read</p>
+<p>I2C-tools中的函数：i2c_smbus_read_i2c_block_data()。先发出Command Code(它一般表示芯片内部的寄存器地址)，再发出1个字节的Byte Conut(表示后续要发出的数据字节数)，最后发出全部数据。</p>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">Functionality flag: I2C_FUNC_SMBUS_READ_I2C_BLOCK</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="Copy code to clipboard" title="Copy" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ol>
+<li><a id="X2f553092827e57678cc9f0325f2a8dd5b3f77ed"></a>I2C Block Write</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>在一般的I2C协议中，也可以连续发出多个字节。它跟SMBus Block Write的差别在于发出的第1个数据不是长度N，如下图所示：</p>
+<p><img loading="lazy" alt="表格
+描述已自动生成" src="/en/assets/images/manual-343-0387ead38ed70e8b1616bebb09e99b9e.png" width="793" height="123" class="img_ev3q"></p>
+<p>图 10.24 12 I2C Block Write</p>
+<p>I2C-tools中的函数：i2c_smbus_write_i2c_block_data()。先发出Command Code(它一般表示芯片内部的寄存器地址)，再发出1个字节的Byte Conut(表示后续要发出的数据字节数)，最后发出全部数据。</p>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">Functionality flag: I2C_FUNC_SMBUS_WRITE_I2C_BLOCK</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="Copy code to clipboard" title="Copy" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ol>
+<li><a id="Xad2be366853b08dcbaf199731f77a591bba5ba8"></a>SMBus Block Write - Block Read Process Call</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p><img loading="lazy" alt="fig:" src="/en/assets/images/manual-344-a8c7dac4c5562d824ed085a06af4a587.png" width="995" height="332" class="img_ev3q"></p>
+<p>图 10.25 13 SMBus Block Write - Block Read Process Call</p>
+<p>先写一块数据，再读一块数据。</p>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">Functionality flag: I2C_FUNC_SMBUS_BLOCK_PROC_CALL</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="Copy code to clipboard" title="Copy" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ol>
+<li><a id="Xe3902762da82b54b6c52f2e73c0274ba3833d6d"></a>Packet Error Checking (PEC)</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>PEC是一种错误校验码，如果使用PEC，那么在P信号之前，数据发送方要发送一个字节的PEC码(它是CRC-8码)。以SMBus Send Byte为例，下图中，一个未使用PEC，另一个使用PEC：</p>
+<p><img loading="lazy" alt="图形用户界面, 文本, 应用程序, 电子邮件
+描述已自动生成" src="/en/assets/images/manual-345-8bb6bdf310d7b68327f0ca5e95150215.png" width="930" height="213" class="img_ev3q"></p>
+<p>图 10.26 Packet Error Checking</p>
+<a id="X0ad42ad537fdb1e0718f55878ad7fe05f18d038"></a>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="1033-smbus和i2c的建议">10.3.3 SMBus和I2C的建议<a href="#1033-smbus和i2c的建议" class="hash-link" aria-label="Direct link to 10.3.3 SMBus和I2C的建议" title="Direct link to 10.3.3 SMBus和I2C的建议">​</a></h3>
+<p>因为很多设备都实现了SMBus，而不是更宽泛的I2C协议，所以优先使用SMBus。即使I2C控制器没有实现SMBus，软件方面也是可以使用I2C协议来模拟SMBus。所以：Linux建议优先使用SMBus。</p>
+<a id="_Toc197788661"></a>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="104-i2c系统的重要结构体">10.4 I2C系统的重要结构体<a href="#104-i2c系统的重要结构体" class="hash-link" aria-label="Direct link to 10.4 I2C系统的重要结构体" title="Direct link to 10.4 I2C系统的重要结构体">​</a></h2>
+<p>参考资料：</p>
+<ul>
+<li>Linux驱动程序:<em>（某版本的Linux，比如Linux-4.9.88）/drivers/i2c</em></li>
+<li>I2CTools:</li>
+</ul>
+<p><a href="https://mirrors.edge.kernel.org/pub/software/utils/i2c-tools/" target="_blank" rel="noopener noreferrer">https://mirrors.edge.kernel.org/pub/software/utils/i2c-tools/</a></p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="1041-重要结构体">10.4.1 重要结构体<a href="#1041-重要结构体" class="hash-link" aria-label="Direct link to 10.4.1 重要结构体" title="Direct link to 10.4.1 重要结构体">​</a></h3>
+<p>使用一句话概括I2C传输：APP通过I2C Controller与I2C Device传输数据。</p>
+<p>在Linux中要思索下面几个问题。</p>
+<ul>
+<li>怎么表示I2C Controller</li>
+<li>一个芯片里可能有多个I2C Controller，比如第0个、第1个、……</li>
+<li>对于使用者，只要确定是第几个I2C Controller即可</li>
+<li>使用i2c_adapter表示一个I2C BUS，或称为I2C Controller，里面有2个重要的成员：<!-- -->
+<ol>
+<li>nr：第几个I2C BUS(I2C Controller)</li>
+<li>i2c_algorithm，里面有该I2C BUS的传输函数，用来收发I2C数据</li>
+</ol>
+</li>
+</ul>
+<p><a id="_Hlk109122996"></a>i2c_adapter原型：</p>
+<p><img loading="lazy" src="/en/assets/images/manual-346-375095a5775b97d3cbb8736f4bcee0d1.png" width="692" height="592" class="img_ev3q"></p>
+<p>图 10.27 i2c_adapter原型</p>
+<p>i2c_algorithm原型：</p>
+<p><img loading="lazy" src="/en/assets/images/manual-347-f36dcb1c34b01af99e5b9a869ef55bf7.png" width="677" height="503" class="img_ev3q"></p>
+<p>图 10.28 i2c_algorithm原型</p>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ol>
+<li>怎么表示I2C Device</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>一个I2C Device，一定有<strong>设备地址</strong></li>
+<li>它连接在哪个I2C Controller上，即对应的i2c_adapter是什么</li>
+</ul>
+<p>使用i2c_client来表示一个I2C Device</p>
+<p><img loading="lazy" src="/en/assets/images/manual-348-7164a2a543e93b2dc7dfc5f743435531.png" width="699" height="418" class="img_ev3q"></p>
+<p>图 10.29 i2c_client</p>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ol>
+<li>怎么表示要传输的数据</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>在上面的i2c_algorithm结构体中可以看到要传输的数据被称为：i2c_msg</p>
+<p>i2c_msg原型：</p>
+<p><img loading="lazy" src="/en/assets/images/manual-349-9f4f895d859947d1623d67798874e9e7.png" width="572" height="266" class="img_ev3q"></p>
+<p>图 10.30 i2c_msg</p>
+<ul>
+<li>
+<ul>
+<li>i2c_msg中的flags用来表示传输方向：bit 0等于I2C_M_RD表示读，bit 0等于0表示写</li>
+<li>一个i2c_msg要么是读，要么是写</li>
+</ul>
+</li>
+</ul>
+<p>举例：设备地址为0x50的EEPROM，要读取它里面存储地址为0x10的一个字节，应该构造几个i2c_msg？要构造2个i2c_msg</p>
+<ul>
+<li>
+<ol>
+<li>第一个i2c_msg表示写操作，把要访问的存储地址0x10发给设备</li>
+<li>第二个i2c_msg表示读操作</li>
+</ol>
+</li>
+</ul>
+<p>代码如下</p>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">u8 data_addr = 0x10;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">i8 data;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">struct i2c_msg msgs[2];</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">msgs[0].addr   = 0x50;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">msgs[0].flags  = 0;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">msgs[0].len    = 1;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">msgs[0].buf    = &amp;data_addr;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">msgs[1].addr   = 0x50;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">msgs[1].flags  = I2C_M_RD;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">msgs[1].len    = 1;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">msgs[1].buf    = &amp;data;</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="Copy code to clipboard" title="Copy" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="1042-内核里怎么传输数据">10.4.2 内核里怎么传输数据<a href="#1042-内核里怎么传输数据" class="hash-link" aria-label="Direct link to 10.4.2 内核里怎么传输数据" title="Direct link to 10.4.2 内核里怎么传输数据">​</a></h3>
+<p>使用一句话概括I2C传输：</p>
+<ol>
+<li>APP通过I2C Controller与I2C Device传输数据</li>
+<li>APP通过i2c_adapter与i2c_client传输i2c_msg</li>
+<li>内核函数i2c_transfer</li>
+</ol>
+<p>i2c_msg里含有addr，所以这个函数里不需要i2c_client</p>
+<p><img loading="lazy" src="data:image/png;base64,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" width="714" height="29" class="img_ev3q"></p>
+<p>图 10.31 i2c_transfer</p>
+<a id="_Toc197788662"></a>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="105-无需编写驱动程序即可访问i2c设备">10.5 无需编写驱动程序即可访问I2C设备<a href="#105-无需编写驱动程序即可访问i2c设备" class="hash-link" aria-label="Direct link to 10.5 无需编写驱动程序即可访问I2C设备" title="Direct link to 10.5 无需编写驱动程序即可访问I2C设备">​</a></h2>
+<p>APP访问硬件肯定是需要驱动程序的，对于I2C设备，内核提供了驱动程序<strong><em>drivers/i2c/i2c-dev.c</em></strong>，通过它可以直接使用下面的I2C控制器驱动程序来访问I2C设备。</p>
+<p>框架如下：</p>
+<p><img loading="lazy" src="/en/assets/images/manual-351-1cfc8cbd9208180d979bf97c3b68da90.png" width="1249" height="400" class="img_ev3q"></p>
+<p>图 10.32 I2C控制器框架</p>
+<p>i2c-tools是一套好用的工具，也是一套示例代码。</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="1051-体验i2c-tools">10.5.1 体验I2C-Tools<a href="#1051-体验i2c-tools" class="hash-link" aria-label="Direct link to 10.5.1 体验I2C-Tools" title="Direct link to 10.5.1 体验I2C-Tools">​</a></h3>
+<p>使用一句话概括I2C传输：APP通过I2C Controller与I2C Device传输数据。</p>
+<p>所以使用I2C-Tools时也需要指定：</p>
+<ul>
+<li>哪个I2C控制器(或称为I2C BUS、I2C Adapter)</li>
+<li>哪个I2C设备(设备地址)</li>
+<li>数据：读还是写、数据本身<!-- -->
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ol>
+<li>交叉编译</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>配置环境：vim ~/.bashrc</li>
+</ul>
+<div class="language-bash codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-bash codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">export ARCH=arm</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">export CROSS_COMPILE=arm-buildroot-linux-gnueabihf-</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">export PATH=$PATH:/home/book/100ask_imx6ull-sdk/ToolChain/arm-buildroot-linux-gnueabihf_sdk-buildroot/bin</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="Copy code to clipboard" title="Copy" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<ul>
+<li>修改I2C-Tools的Makefile指定交叉编译工具链</li>
+</ul>
+<div class="language-bash codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-bash codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">CC      ?= gcc</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">AR      ?= ar</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">STRIP   ?= strip</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="Copy code to clipboard" title="Copy" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<p>改为(指定交叉编译工具链前缀, 去掉问号)：</p>
+<div class="language-bash codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-bash codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">CC      = $(CROSS_COMPILE)gcc</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">AR      = $(CROSS_COMPILE)ar</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">STRIP   = $(CROSS_COMPILE)strip</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="Copy code to clipboard" title="Copy" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<p>在Makefile中，“?=”在第一次设置变量时才会起效果，如果之前设置过该变量，则不会起效果。</p>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ol>
+<li>执行make</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>执行make时，是动态链接，需要把libi2c.so也放到单板上</li>
+<li>想静态链接的话，执行：make USE_STATIC_LIB=1<!-- -->
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ol>
+<li>用法</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>i2cdetect：I2C检测</li>
+</ul>
+<div class="language-bash codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-bash codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">// 列出当前的I2C Adapter(或称为I2C Bus、I2C Controller)</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">i2cdetect -l</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">// 打印某个I2C Adapter的Functionalities, I2CBUS为0、1、2等整数</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">i2cdetect -F I2CBUS</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">// 看看有哪些I2C设备, I2CBUS为0、1、2等整数</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">i2cdetect -y -a I2CBUS</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">// 效果如下</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain"># i2cdetect -l</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">i2c-1   i2c             STM32F7 I2C(0x40013000)                 I2C adapter</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">i2c-2   i2c             STM32F7 I2C(0x5c002000)                 I2C adapter</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">i2c-0   i2c             STM32F7 I2C(0x40012000)                 I2C adapter</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain"># i2cdetect -F 0</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">Functionalities implemented by /dev/i2c-0:</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">I2C                              yes</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">SMBus Quick Command              yes</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">SMBus Send Byte                  yes</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">SMBus Receive Byte               yes</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">SMBus Write Byte                 yes</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">SMBus Read Byte                  yes</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">SMBus Write Word                 yes</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">SMBus Read Word                  yes</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">SMBus Process Call               yes</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">SMBus Block Write                yes</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">SMBus Block Read                 yes</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">SMBus Block Process Call         yes</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">SMBus PEC                        yes</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">I2C Block Write                  yes</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">I2C Block Read                   yes</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">// --表示没有该地址对应的设备, UU表示有该设备并且它已经有驱动程序,</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">// 数值表示有该设备但是没有对应的设备驱动</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain"># i2cdetect -y -a 0</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">     0  1  2  3  4  5  6  7  8  9  a  b  c  d  e  f</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">00: 00 -- -- -- -- -- -- -- -- -- -- -- -- -- -- --</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">10: -- -- -- -- -- -- -- -- -- -- UU -- -- -- 1e --</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">20: -- -- UU -- -- -- -- -- -- -- -- -- -- -- -- --</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">30: -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">40: -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">50: -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">60: -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">70: -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="Copy code to clipboard" title="Copy" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<ul>
+<li>i2cget：I2C读</li>
+</ul>
+<p>使用说明如下:</p>
+<div class="language-bash codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-bash codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain"># i2cget</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">Usage: i2cget [-f] [-y] [-a] I2CBUS CHIP-ADDRESS [DATA-ADDRESS [MODE]]</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">  I2CBUS is an integer or an I2C bus name</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">  ADDRESS is an integer (0x03 - 0x77, or 0x00 - 0x7f if -a is given)</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">  MODE is one of:</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">    b (read byte data, default)</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">    w (read word data)</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">    c (write byte/read byte)</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">Append p for SMBus PEC</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="Copy code to clipboard" title="Copy" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<p>使用示例：</p>
+<div class="language-bash codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-bash codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">// 读一个字节: I2CBUS为0、1、2等整数, 表示I2C Bus; CHIP-ADDRESS表示设备地址</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">i2cget -f -y I2CBUS CHIP-ADDRESS</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">// 读某个地址上的一个字节:</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">//    I2CBUS为0、1、2等整数, 表示I2C Bus</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">//    CHIP-ADDRESS表示设备地址</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">//    DATA-ADDRESS: 芯片上寄存器地址</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">//    MODE：有2个取值, b-使用`SMBus Read Byte`先发出DATA-ADDRESS, 再读一个字节, 中间无P信号</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">//                   c-先write byte, 在read byte，中间有P信号</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">i2cget -f -y I2CBUS CHIP-ADDRESS DATA-ADDRESS MODE</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">// 读某个地址上的2个字节:</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">//    I2CBUS为0、1、2等整数, 表示I2C Bus</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">//    CHIP-ADDRESS表示设备地址</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">//    DATA-ADDRESS: 芯片上寄存器地址</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">//    MODE：w-表示先发出DATA-ADDRESS，再读2个字节</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">i2cget -f -y I2CBUS CHIP-ADDRESS DATA-ADDRESS MODE</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="Copy code to clipboard" title="Copy" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<ul>
+<li>i2cset：I2C写</li>
+</ul>
+<p>使用说明如下：</p>
+<div class="language-bash codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-bash codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain"># i2cset</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">Usage: i2cset [-f] [-y] [-m MASK] [-r] [-a] I2CBUS CHIP-ADDRESS DATA-ADDRESS [VALUE] ... [MODE]</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">  I2CBUS is an integer or an I2C bus name</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">  ADDRESS is an integer (0x03 - 0x77, or 0x00 - 0x7f if -a is given)</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">  MODE is one of:</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">    c (byte, no value)</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">    b (byte data, default)</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">    w (word data)</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">  i (I2C block data)</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">    s (SMBus block data)</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">Append p for SMBus PEC</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="Copy code to clipboard" title="Copy" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<p>使用示例：</p>
+<div class="language-bash codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-bash codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">// 写一个字节: I2CBUS为0、1、2等整数, 表示I2C Bus; CHIP-ADDRESS表示设备地址</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">  //           DATA-ADDRESS就是要写的数据</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">  i2cset -f -y I2CBUS CHIP-ADDRESS DATA-ADDRESS</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain" style="display:inline-block"></span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">  // 给address写1个字节(address, value):</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">  //           I2CBUS为0、1、2等整数, 表示I2C Bus; CHIP-ADDRESS表示设备地址</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">  //           DATA-ADDRESS: 8位芯片寄存器地址;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">  //           VALUE: 8位数值</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">  //           MODE: 可以省略，也可以写为b</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">  i2cset -f -y I2CBUS CHIP-ADDRESS DATA-ADDRESS VALUE [b]</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain" style="display:inline-block"></span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">  // 给address写2个字节(address, value):</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">  //           I2CBUS为0、1、2等整数, 表示I2C Bus; CHIP-ADDRESS表示设备地址</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">  //           DATA-ADDRESS: 8位芯片寄存器地址;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">  //           VALUE: 16位数值</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">  //           MODE: w</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">  i2cset -f -y I2CBUS CHIP-ADDRESS DATA-ADDRESS VALUE w</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain" style="display:inline-block"></span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">  // SMBus Block Write：给address写N个字节的数据</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">  //   发送的数据有：address, N, value1, value2, ..., valueN</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">  //   跟`I2C Block Write`相比, 需要发送长度N</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">  //           I2CBUS为0、1、2等整数, 表示I2C Bus; CHIP-ADDRESS表示设备地址</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">  //           DATA-ADDRESS: 8位芯片寄存器地址;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">  //           VALUE1~N: N个8位数值</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">  //           MODE: s</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">  i2cset -f -y I2CBUS CHIP-ADDRESS DATA-ADDRESS VALUE1 ... VALUEN s</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain" style="display:inline-block"></span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">  // I2C Block Write：给address写N个字  节的数据</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">  //   发送的数据有：address, value1, value2, ..., valueN</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">  //   跟`SMBus Block Write`相比, 不需要发送长度N</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">  //           I2CBUS为0、1、2等整数, 表示I2C Bus; CHIP-ADDRESS表示设备地址</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">  //           DATA-ADDRESS: 8位芯片寄存器地址;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">  //           VALUE1~N: N个8位数值</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">  //           MODE: i</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">  i2cset -f -y I2CBUS CHIP-ADDRESS DATA-ADDRESS VALUE1 ... VALUEN i</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="Copy code to clipboard" title="Copy" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<ul>
+<li>i2ctransfer：I2C传输(不是基于SMBus)</li>
+</ul>
+<p>使用说明如下：</p>
+<div class="language-bash codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-bash codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain"># i2ctransfer</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">Usage: i2ctransfer [-f] [-y] [-v] [-V] [-a] I2CBUS DESC [DATA] [DESC [DATA]]...</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">  I2CBUS is an integer or an I2C bus name</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">  DESC describes the transfer in the form: {r|w}LENGTH[@address]</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">    1) read/write-flag 2) LENGTH (range 0-65535) 3) I2C address (use last one if omitted)</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">  DATA are LENGTH bytes for a write message. They can be shortened by a suffix:</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">    = (keep value constant until LENGTH)</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">    + (increase value by 1 until LENGTH)</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">    - (decrease value by 1 until LENGTH)</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">    p (use pseudo random generator until LENGTH with value as seed)</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">Example (bus 0, read 8 byte at offset 0x64 from EEPROM at 0x50):</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">  # i2ctransfer 0 w1@0x50 0x64 r8</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">Example (same EEPROM, at offset 0x42 write 0xff 0xfe ... 0xf0):</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">  # i2ctransfer 0 w17@0x50 0x42 0xff-</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="Copy code to clipboard" title="Copy" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<p>使用举例：</p>
+<div class="language-bash codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-bash codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">// Example (bus 0, read 8 byte at offset 0x64 from EEPROM at 0x50):</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain"># i2ctransfer -f -y 0 w1@0x50 0x64 r8</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">// Example (bus 0, write 3 byte at offset 0x64 from EEPROM at 0x50):</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain"># i2ctransfer -f -y 0 w9@0x50 0x64 val1 val2 val3</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">// Example</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">// first: (bus 0, write 3 byte at offset 0x64 from EEPROM at 0x50)</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">// and then: (bus 0, read 3 byte at offset 0x64 from EEPROM at 0x50)</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain"># i2ctransfer -f -y 0 w9@0x50 0x64 val1 val2 val3 r3@0x50</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain"># i2ctransfer -f -y 0 w9@0x50 0x64 val1 val2 val3 r3 //如果设备地址不变,后面的设备地址可省略</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="Copy code to clipboard" title="Copy" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ol>
+<li>使用I2C-Tools操作传感器AP3216C</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>百问网的开发板上有光感芯片AP3216C：</p>
+<p><img loading="lazy" src="/en/assets/images/manual-352-a190eb9f1e9a86a1044178e16b88b491.png" width="1403" height="507" class="img_ev3q"></p>
+<p>AP3216C是红外、光强、距离三合一的传感器，以读出光强、距离值为例，步骤如下：</p>
+<ul>
+<li>复位：往寄存器0写入0x4</li>
+<li>使能：往寄存器0写入0x3</li>
+<li>读光强：读寄存器0xC、0xD得到2字节的光强</li>
+<li>读距离：读寄存器0xE、0xF得到2字节的距离值</li>
+</ul>
+<p>AP3216C的设备地址是0x1E，假设节在I2C BUS0上，操作命令如下：</p>
+<ul>
+<li>使用SMBus协议</li>
+</ul>
+<div class="language-bash codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-bash codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">i2cset -f -y 0 0x1e 0 0x4</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">i2cset -f -y 0 0x1e 0 0x3</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">i2cget -f -y 0 0x1e 0xc w</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">i2cget -f -y 0 0x1e 0xe w</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="Copy code to clipboard" title="Copy" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<ul>
+<li>使用I2C协议</li>
+</ul>
+<div class="language-bash codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-bash codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">i2ctransfer -f -y 0 w2@0x1e 0 0x4</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">i2ctransfer -f -y 0 w2@0x1e 0 0x3</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">i2ctransfer -f -y 0 w1@0x1e 0xc r2</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">i2ctransfer -f -y 0 w1@0x1e 0xe r2</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="Copy code to clipboard" title="Copy" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="1052-i2c-tools访问i2c设备的2种方式">10.5.2 I2C-Tools访问I2C设备的2种方式<a href="#1052-i2c-tools访问i2c设备的2种方式" class="hash-link" aria-label="Direct link to 10.5.2 I2C-Tools访问I2C设备的2种方式" title="Direct link to 10.5.2 I2C-Tools访问I2C设备的2种方式">​</a></h3>
+<p>I2C-Tools可以通过SMBus来访问I2C设备，也可以使用一般的I2C协议来访问I2C设备。</p>
+<p>使用一句话概括I2C传输：APP通过I2C Controller与I2C Device传输数据。</p>
+<p>在APP里，有这几个问题：</p>
+<ol>
+<li>怎么指定I2C控制器？</li>
+</ol>
+<ul>
+<li>i2c-dev.c为每个I2C控制器(I2C Bus、I2C Adapter)都生成一个设备节点：/dev/i2c-0、/dev/i2c-1等等；</li>
+<li>open某个/dev/i2c-X节点，就是去访问该I2C控制器下的设备；</li>
+</ul>
+<ol>
+<li>怎么指定I2C设备？</li>
+</ol>
+<p>通过ioctl指定I2C设备的地址</p>
+<ul>
+<li>ioctl(file, I2C_SLAVE, address)<!-- -->
+<ul>
+<li>如果该设备已经有了对应的设备驱动程序，则返回失败。</li>
+</ul>
+</li>
+<li>ioctl(file, I2C_SLAVE_FORCE, address)<!-- -->
+<ul>
+<li>如果该设备已经有了对应的设备驱动程序但是还是想通过i2c-dev驱动来访问它，则使用这个ioctl来指定I2C设备地址。</li>
+</ul>
+</li>
+</ul>
+<ol>
+<li>怎么传输数据？</li>
+</ol>
+<p>两种方式</p>
+<ul>
+<li>一般的I2C方式：ioctl(file, I2C_RDWR, &amp;rdwr)</li>
+<li>SMBus方式：ioctl(file, I2C_SMBUS, &amp;args)</li>
+</ul>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="1053-源码流程分析">10.5.3 源码流程分析<a href="#1053-源码流程分析" class="hash-link" aria-label="Direct link to 10.5.3 源码流程分析" title="Direct link to 10.5.3 源码流程分析">​</a></h3>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ol>
+<li>使用I2C方式</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>示例代码：i2ctransfer.c</p>
+<p><img loading="lazy" src="/en/assets/images/manual-353-f75f8a87939b93d4af9b54fa6ee2fd06.png" width="836" height="696" class="img_ev3q"></p>
+<p>图 10.33 I2C读写源码流程</p>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ol>
+<li>使用SMBus方式</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>示例代码：i2cget.c、i2cset.c</p>
+<p><img loading="lazy" src="/en/assets/images/manual-354-0363dfe271caf97e82e225aac19f6455.png" width="836" height="1137" class="img_ev3q"></p>
+<p>图 10.34 SMBus读写源码流程</p>
+<a id="_Toc197788663"></a>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="106-编写app直接访问eeprom">10.6 编写APP直接访问EEPROM<a href="#106-编写app直接访问eeprom" class="hash-link" aria-label="Direct link to 10.6 编写APP直接访问EEPROM" title="Direct link to 10.6 编写APP直接访问EEPROM">​</a></h2>
+<p>参考资料：</p>
+<ul>
+<li>Linux驱动程序: drivers/i2c/i2c-dev.c</li>
+<li>2C-Tools-4.2:</li>
+</ul>
+<p><a href="https://mirrors.edge.kernel.org/pub/software/utils/i2c-tools/" target="_blank" rel="noopener noreferrer">https://mirrors.edge.kernel.org/pub/software/utils/i2c-tools/</a></p>
+<ul>
+<li>AT24cxx.pdf</li>
+</ul>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="1061-硬件连接">10.6.1 硬件连接<a href="#1061-硬件连接" class="hash-link" aria-label="Direct link to 10.6.1 硬件连接" title="Direct link to 10.6.1 硬件连接">​</a></h3>
+<p>IMX6ULL的I2C模块连接方法：</p>
+<p><img loading="lazy" src="/en/assets/images/manual-355-0208a8978781e36199396ebff6283032.png" width="1104" height="870" class="img_ev3q"></p>
+<p>图 10.35</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="1062-at24c02访问方法">10.6.2 AT24C02访问方法<a href="#1062-at24c02访问方法" class="hash-link" aria-label="Direct link to 10.6.2 AT24C02访问方法" title="Direct link to 10.6.2 AT24C02访问方法">​</a></h3>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ol>
+<li>设备地址</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>从芯片手册上可以知道，AT24C02的设备地址跟它的A2、A1、A0引脚有关：</p>
+<p><img loading="lazy" src="/en/assets/images/manual-356-2eedf1462c151193e49e76f4af867c37.png" width="723" height="263" class="img_ev3q"></p>
+<p>图 10.36 AT24C02设备地址引脚配置</p>
+<p>打开I2C模块的原理图：</p>
+<p>开发板配套网盘资料\04_开发板原理图\</p>
+<p>04_Extend_modules\通用模块\eeprom.zip\i2c_eeprom_module_v1.0.pdf</p>
+<p><img loading="lazy" src="/en/assets/images/manual-357-6441f428ac170b1a82b25b57b2ded3ad.png" width="428" height="196" class="img_ev3q"></p>
+<p>图 10.37</p>
+<p>从原理图可知，A2A1A0都是0，所以AT24C02的设备地址是：0b1010000，即0x50。</p>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ol>
+<li>写数据</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p><img loading="lazy" src="/en/assets/images/manual-358-779036e6421b12cacf7427efe366f258.png" width="863" height="227" class="img_ev3q"></p>
+<p>图 10.38 AT24C02写数据时序</p>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ol>
+<li>读数据</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>可以读1个字节，也可以连续读出多个字节。连续读多个字节时，芯片内部的地址会自动累加。当地址到达存储空间最后一个地址时，会从0开始。</p>
+<p><img loading="lazy" src="/en/assets/images/manual-359-19fc44261b85e1f49733b926034975f7.png" width="992" height="675" class="img_ev3q"></p>
+<p>图 10.39 AT24C02读数据时序</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="1063-使用i2c-tools的函数编程">10.6.3 使用I2C-Tools的函数编程<a href="#1063-使  用i2c-tools的函数编程" class="hash-link" aria-label="Direct link to 10.6.3 使用I2C-Tools的函数编程" title="Direct link to 10.6.3 使用I2C-Tools的函数编程">​</a></h3>
+<p>I2C_Tools上一小节已经讲解过，读者可自行学习编写程序。</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="1064-编译">10.6.4 编译<a href="#1064-编译" class="hash-link" aria-label="Direct link to 10.6.4 编译" title="Direct link to 10.6.4 编译">​</a></h3>
+<p>编译应用程序需要设置交叉编译工具链：vim ~/.bashrc</p>
+<div class="language-bash codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-bash codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">export ARCH=arm</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">export CROSS_COMPILE=arm-buildroot-linux-gnueabihf-</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">export PATH=$PATH:/home/book/100ask_imx6ull-sdk/ToolChain/arm-buildroot-linux-gnueabihf_sdk-buildroot/bin</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="Copy code to clipboard" title="Copy" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ol>
+<li>使用I2C-Tools的源码</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>01_all_series_quickstart\</p>
+<p>04_嵌入式Linux应用开发基础知识\source\15_I2C\01_at24c02_test</p>
+<p><img loading="lazy" src="data:image/png;base64,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" width="232" height="197" class="img_ev3q"></p>
+<p>图 10.40 测试源码</p>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ol>
+<li>编译</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>为IMX6ULL编译时，有如下错误：</p>
+<p><img loading="lazy" src="/en/assets/images/manual-361-55889fc8384b881cb5524746b2b5db6d.png" width="818" height="263" class="img_ev3q"></p>
+<p>图 10.41 IMX6ULL编译I2C例程错误提示</p>
+<p>这是因为IMX6ULL的工具链自带的include目录中，没有smbus.h，需要我们自己提供这个头文件，解决方法：</p>
+<ul>
+<li>提供头文件：</li>
+</ul>
+<p><img loading="lazy" src="/en/assets/images/manual-362-5ddc7489647a84cbb4054b521711a8d6.png" width="513" height="200" class="img_ev3q"></p>
+<p>图 10.42 复制头文件</p>
+<ul>
+<li>修改Makefile指定头文件目录</li>
+</ul>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">all:</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">$(CROSS_COMPILE)gcc -I ./include -o at24c02_test at24c02_test.c i2cbusses.c smbus.c</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="Copy code to clipboard" title="Copy" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="1065-上机测试">10.6.5 上机测试<a href="#1065-上机测试" class="hash-link" aria-label="Direct link to 10.6.5 上机测试" title="Direct link to 10.6.5 上机测试">​</a></h3>
+<p>先在Ubuntu上使用adb下载程序到开发板，执行如下命令：</p>
+<div class="language-bash codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-bash codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">Adb  push   at24c02_test   /bin</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="Copy code to clipboard" title="Copy" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<p>然后在开发板中执行程序：</p>
+<div class="language-bash codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-bash codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">[root@100ask:~]# at24c02_test 0 w www.100ask.net</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">[root@100ask:~]# at24c02_test 0 r</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">get data: www.100ask.net</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="Copy code to clipboard" title="Copy" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div></div><footer class="theme-doc-footer docusaurus-mt-lg"><div class="theme-doc-footer-edit-meta-row row"><div class="col"><a href="https://github.com/100askTeam/linux-docs/tree/main/docs/Linux-Application-Development-Manual/part-4/chapter-21.md" target="_blank" rel="noopener noreferrer" class="theme-edit-this-page"><svg fill="currentColor" height="20" width="20" viewBox="0 0 40 40" class="iconEdit_Z9Sw" aria-hidden="true"><g><path d="m34.5 11.7l-3 3.1-6.3-6.3 3.1-3q0.5-0.5 1.2-0.5t1.1 0.5l3.9 3.9q0.5 0.4 0.5 1.1t-0.5 1.2z m-29.5 17.1l18.4-18.5 6.3 6.3-18.4 18.4h-6.3v-6.2z"></path></g></svg>Edit this page</a></div><div class="col lastUpdated_vwxv"></div></div></footer></article><nav class="pagination-nav docusaurus-mt-lg" aria-label="Docs pages"><a class="pagination-nav__link pagination-nav__link--prev" href="/en/docs/Linux-Application-Development-Manual/part-4/chapter-20"><div class="pagination-nav__sublabel">Previous</div><div class="pagination-nav__label">第9章 多线程编程</div></a><a class="pagination-nav__link pagination-nav__link--next" href="/en/docs/Linux-Application-Development-Manual/part-4/chapter-22"><div class="pagination-nav__sublabel">Next</div><div class="pagination-nav__label">第11章 Linux串口应用编程</div></a></nav></div></div><div class="col col--3"><div class="tableOfContents_bqdL thin-scrollbar theme-doc-toc-desktop"><ul class="table-of-contents table-of-contents__left-border"><li><a href="#101-i2c视频介绍" class="table-of-contents__link toc-highlight">10.1 I2C视频介绍</a><ul><li><a href="#1011-i2c硬件框架" class="table-of-contents__link toc-highlight">10.1.1 I2C硬件框架</a></li><li><a href="#1012-i2c软件框架" class="table-of-contents__link toc-highlight">10.1.2 I2C软件框架</a></li><li><a href="#1013-我们讲什么" class="table-of-contents__link toc-highlight">10.1.3 我们讲什么</a></li></ul></li><li><a href="#102-i2c协议" class="table-of-contents__link toc-highlight">10.2 I2C协议</a><ul><li><a href="#1021-硬件连接" class="table-of-contents__link toc-highlight">10.2.1 硬件连接</a></li><li><a href="#1022-传输数据类比" class="table-of-contents__link toc-highlight">10.2.2 传输数据类比</a></li><li><a href="#1023-iic传输数据的格式" class="table-of-contents__link toc-highlight">10.2.3 IIC传输数据的格式</a></li></ul></li><li><a href="#103-smbus协议" class="table-of-contents__link toc-highlight">10.3 SMBus协议</a><ul><li><a href="#1031-smbus是i2c协议的一个子集" class="table-of-contents__link toc-highlight">10.3.1 SMBus是I2C协议的一个子集</a></li><li><a href="#1032-smbus协议分析" class="table-of-contents__link toc-highlight">10.3.2 SMBus协议分析</a></li><li><a href="#1033-smbus和i2c的建议" class="table-of-contents__link toc-highlight">10.3.3 SMBus和I2C的建议</a></li></ul></li><li><a href="#104-i2c系统的重要结构体" class="table-of-contents__link toc-highlight">10.4 I2C系统的重要结构体</a><ul><li><a href="#1041-重要结构体" class="table-of-contents__link toc-highlight">10.4.1 重要结构体</a></li><li><a href="#1042-内核里怎么传输数据" class="table-of-contents__link toc-highlight">10.4.2 内核里怎么传输数据</a></li></ul></li><li><a href="#105-无需编写驱动程序即可访问i2c设备" class="table-of-contents__link toc-highlight">10.5 无需编写驱动程序即可访问I2C设备</a><ul><li><a href="#1051-体 验i2c-tools" class="table-of-contents__link toc-highlight">10.5.1 体验I2C-Tools</a></li><li><a href="#1052-i2c-tools访问i2c设备的2种方式" class="table-of-contents__link toc-highlight">10.5.2 I2C-Tools访问I2C设备的2种方式</a></li><li><a href="#1053-源码流程分析" class="table-of-contents__link toc-highlight">10.5.3 源码流程分析</a></li></ul></li><li><a href="#106-编写app直接访问eeprom" class="table-of-contents__link toc-highlight">10.6 编写APP直接访问EEPROM</a><ul><li><a href="#1061-硬件连接" class="table-of-contents__link toc-highlight">10.6.1 硬件连接</a></li><li><a href="#1062-at24c02访问方法" class="table-of-contents__link toc-highlight">10.6.2 AT24C02访问方法</a></li><li><a href="#1063-使用i2c-tools的函数编程" class="table-of-contents__link toc-highlight">10.6.3 使用I2C-Tools的函数编程</a></li><li><a href="#1064-编译" class="table-of-contents__link toc-highlight">10.6.4 编译</a></li><li><a href="#1065-上机测试" class="table-of-contents__link toc-highlight">10.6.5 上机测试</a></li></ul></li></ul></div></div></div></div></main></div></div></div><footer class="footer footer--dark"><div class="container container-fluid"><div class="row footer__links"><div class="col footer__col"><div class="footer__title">Docs</div><ul class="footer__items clean-list"><li class="footer__item"><a href="https://dongshanpi.com" target="_blank" rel="noopener noreferrer" class="footer__link-item">DongshanPI<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a></li><li class="footer__item"><a href="https://canaan-docs.100ask.net/" target="_blank" rel="noopener noreferrer" class="footer__link-item">Canaan-Docs<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a></li><li class="footer__item"><a href="https://renesas-docs.100ask.net/" target="_blank" rel="noopener noreferrer" class="footer__link-item">Renesas-Docs<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a></li><li class="footer__item"><a href="https://rtos.100ask.net/" target="_blank" rel="noopener noreferrer" class="footer__link-item">RTOS<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a></li><li class="footer__item"><a href="https://tina.100ask.net/" target="_blank" rel="noopener noreferrer" class="footer__link-item">TinaSDK-Docs<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a></li><li class="footer__item"><a href="https://allwinner-docs.100ask.net/" target="_blank" rel="noopener noreferrer" class="footer__link-item">Allwinner-Docs<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a></li><li class="footer__item"><a href="https://aw-r128.100ask.net/" target="_blank" rel="noopener noreferrer" class="footer__link-item">R128-Docs<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a></li></ul></div><div class="col footer__col"><div class="footer__title">Community</div><ul class="footer__items clean-list"><li class="footer__item"><a href="https://space.bilibili.com/275908810" target="_blank" rel="noopener noreferrer" class="footer__link-item">BiliBili<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a></li><li class="footer__item"><a href="https://forums.100ask.net" target="_blank" rel="noopener noreferrer" class="footer__link-item">Stack Overflow<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a></li><li class="footer__item"><a href="https://video.100ask.net/" target="_blank" rel="noopener noreferrer" class="footer__link-item">VideoCenter<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a></li><li class="footer__item"><a href="https://twitter.com/dongshanpi" target="_blank" rel="noopener noreferrer" class="footer__link-item">Twitter<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a></li></ul></div><div class="col footer__col"><div class="footer__title">More</div><ul class="footer__items clean-list"><li class="footer__item"><a href="https://weidongshan.coding.net/public/" target="_blank" rel="noopener noreferrer" class="footer__link-item">Coding<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a></li><li class="footer__item"><a href="https://github.com/100askTeam" target="_blank" rel="noopener noreferrer" class="footer__link-item">GitHub<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a></li><li class="footer__item"><a href="https://gitee.com/weidongshan" target="_blank" rel="noopener noreferrer" class="footer__link-item">Gitee<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a></li></ul></div></div><div class="footer__bottom text--center"><div class="footer__copyright">Copyright © 2026 100askTeam, Inc. Built with Docusaurus.</div></div></div></footer></div>
+</body>
+</html>

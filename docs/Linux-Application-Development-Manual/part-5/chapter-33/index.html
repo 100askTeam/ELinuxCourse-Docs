@@ -1,0 +1,887 @@
+<!doctype html>
+<html lang="zh-Hans" dir="ltr" class="docs-wrapper plugin-docs plugin-id-default docs-version-current docs-doc-page docs-doc-id-Linux-Application-Development-Manual/part-5/chapter-33" data-has-hydrated="false">
+<head>
+<meta charset="UTF-8">
+<meta name="generator" content="Docusaurus v3.0.1">
+<title data-rh="true">第11章 驱动进化之路：设备树的引入及简明教程 | 韦东山Linux</title><meta data-rh="true" name="viewport" content="width=device-width,initial-scale=1"><meta data-rh="true" name="twitter:card" content="summary_large_image"><meta data-rh="true" property="og:image" content="https://linux.100ask.net/img/docusaurus-social-card.jpg"><meta data-rh="true" name="twitter:image" content="https://linux.100ask.net/img/docusaurus-social-card.jpg"><meta data-rh="true" property="og:url" content="https://linux.100ask.net/docs/Linux-Application-Development-Manual/part-5/chapter-33"><meta data-rh="true" property="og:locale" content="zh_Hans"><meta data-rh="true" property="og:locale:alternate" content="en"><meta data-rh="true" name="docusaurus_locale" content="zh-Hans"><meta data-rh="true" name="docsearch:language" content="zh-Hans"><meta data-rh="true" name="docusaurus_version" content="current"><meta data-rh="true" name="docusaurus_tag" content="docs-default-current"><meta data-rh="true" name="docsearch:version" content="current"><meta data-rh="true" name="docsearch:docusaurus_tag" content="docs-default-current"><meta data-rh="true" property="og:title" content="第11章 驱动进化之路：设备树的引入及简明教程 | 韦东山Linux"><meta data-rh="true" name="description" content="-   官方文档(可以下载到devicetree-specification-v0.2.pdf):"><meta data-rh="true" property="og:description" content="-   官方文档(可以下载到devicetree-specification-v0.2.pdf):"><link data-rh="true" rel="icon" href="/img/favicon.ico"><link data-rh="true" rel="canonical" href="https://linux.100ask.net/docs/Linux-Application-Development-Manual/part-5/chapter-33"><link data-rh="true" rel="alternate" href="https://linux.100ask.net/docs/Linux-Application-Development-Manual/part-5/chapter-33" hreflang="zh-Hans"><link data-rh="true" rel="alternate" href="https://linux.100ask.net/en/docs/Linux-Application-Development-Manual/part-5/chapter-33" hreflang="en"><link data-rh="true" rel="alternate" href="https://linux.100ask.net/docs/Linux-Application-Development-Manual/part-5/chapter-33" hreflang="x-default"><link rel="stylesheet" href="/assets/css/styles.87c093d6.css">
+<script src="/assets/js/runtime~main.cded5b66.js" defer="defer"></script>
+<script src="/assets/js/main.396485a8.js" defer="defer"></script>
+</head>
+<body class="navigation-with-keyboard">
+<script>!function(){function t(t){document.documentElement.setAttribute("data-theme",t)}var e=function(){try{return new URLSearchParams(window.location.search).get("docusaurus-theme")}catch(t){}}()||function(){try{return localStorage.getItem("theme")}catch(t){}}();t(null!==e?e:"light")}(),function(){try{const c=new URLSearchParams(window.location.search).entries();for(var[t,e]of c)if(t.startsWith("docusaurus-data-")){var a=t.replace("docusaurus-data-","data-");document.documentElement.setAttribute(a,e)}}catch(t){}}()</script><div id="__docusaurus"><div role="region" aria-label="跳到主要内容"><a class="skipToContent_fXgn" href="#__docusaurus_skipToContent_fallback">跳到主要内容</a></div><nav aria-label="主导航" class="navbar navbar--fixed-top"><div class="navbar__inner"><div class="navbar__items"><button aria-label="切换导航栏" aria-expanded="false" class="navbar__toggle clean-btn" type="button"><svg width="30" height="30" viewBox="0 0 30 30" aria-hidden="true"><path stroke="currentColor" stroke-linecap="round" stroke-miterlimit="10" stroke-width="2" d="M4 7h22M4 15h22M4 23h22"></path></svg></button><a class="navbar__brand" href="/"><div class="navbar__logo"><img src="/img/logo.svg" alt="东山PI" class="themedComponent_mlkZ themedComponent--light_NVdE"><img src="/img/logo.svg" alt="东山PI" class="themedComponent_mlkZ themedComponent--dark_xIcU"></div><b class="navbar__title text--truncate">韦东山Linux</b></a><a class="navbar__item navbar__link" href="/docs/Learn-Linux/LearnStudyPath">嵌入式Linux学习指南</a><a aria-current="page" class="navbar__item navbar__link navbar__link--active" href="/docs/Linux-Application-Development-Manual">嵌入式Linux应用开发完全手册</a><a class="navbar__item navbar__link" href="/docs/Linux-CourseList/Introduction">嵌入式Linux课程列表</a><a class="navbar__item navbar__link" href="/docs/Knowledge-Notes/InputSystem">官方笔记知识库</a><a class="navbar__item navbar__link" href="/docs/Study-Notes/intro">学员笔记</a></div><div class="navbar__items navbar__items--right"><a href="https://github.com/100askTeam/linux-docs" target="_blank" rel="noopener noreferrer" class="navbar__item navbar__link">GitHub<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a><div class="toggle_vylO colorModeToggle_DEke"><button class="clean-btn toggleButton_gllP toggleButtonDisabled_aARS" type="button" disabled="" title="切换浅色/暗黑模式（当前为浅色模式）" aria-label="切换浅色/暗黑模式（当前为浅色模式）" aria-live="polite"><svg viewBox="0 0 24 24" width="24" height="24" class="lightToggleIcon_pyhR"><path fill="currentColor" d="M12,9c1.65,0,3,1.35,3,3s-1.35,3-3,3s-3-1.35-3-3S10.35,9,12,9 M12,7c-2.76,0-5,2.24-5,5s2.24,5,5,5s5-2.24,5-5 S14.76,7,12,7L12,7z M2,13l2,0c0.55,0,1-0.45,1-1s-0.45-1-1-1l-2,0c-0.55,0-1,0.45-1,1S1.45,13,2,13z M20,13l2,0c0.55,0,1-0.45,1-1 s-0.45-1-1-1l-2,0c-0.55,0-1,0.45-1,1S19.45,13,20,13z M11,2v2c0,0.55,0.45,1,1,1s1-0.45,1-1V2c0-0.55-0.45-1-1-1S11,1.45,11,2z M11,20v2c0,0.55,0.45,1,1,1s1-0.45,1-1v-2c0-0.55-0.45-1-1-1C11.45,19,11,19.45,11,20z M5.99,4.58c-0.39-0.39-1.03-0.39-1.41,0 c-0.39,0.39-0.39,1.03,0,1.41l1.06,1.06c0.39,0.39,1.03,0.39,1.41,0s0.39-1.03,0-1.41L5.99,4.58z M18.36,16.95 c-0.39-0.39-1.03-0.39-1.41,0c-0.39,0.39-0.39,1.03,0,1.41l1.06,1.06c0.39,0.39,1.03,0.39,1.41,0c0.39-0.39,0.39-1.03,0-1.41 L18.36,16.95z M19.42,5.99c0.39-0.39,0.39-1.03,0-1.41c-0.39-0.39-1.03-0.39-1.41,0l-1.06,1.06c-0.39,0.39-0.39,1.03,0,1.41 s1.03,0.39,1.41,0L19.42,5.99z M7.05,18.36c0.39-0.39,0.39-1.03,0-1.41c-0.39-0.39-1.03-0.39-1.41,0l-1.06,1.06 c-0.39,0.39-0.39,1.03,0,1.41s1.03,0.39,1.41,0L7.05,18.36z"></path></svg><svg viewBox="0 0 24 24" width="24" height="24" class="darkToggleIcon_wfgR"><path fill="currentColor" d="M9.37,5.51C9.19,6.15,9.1,6.82,9.1,7.5c0,4.08,3.32,7.4,7.4,7.4c0.68,0,1.35-0.09,1.99-0.27C17.45,17.19,14.93,19,12,19 c-3.86,0-7-3.14-7-7C5,9.07,6.81,6.55,9.37,5.51z M12,3c-4.97,0-9,4.03-9,9s4.03,9,9,9s9-4.03,9-9c0-0.46-0.04-0.92-0.1-1.36 c-0.98,1.37-2.58,2.26-4.4,2.26c-2.98,0-5.4-2.42-5.4-5.4c0-1.81,0.89-3.42,2.26-4.4C12.92,3.04,12.46,3,12,3L12,3z"></path></svg></button></div><div class="navbarSearchContainer_Bca1"></div></div></div><div role="presentation" class="navbar-sidebar__backdrop"></div></nav><div id="__docusaurus_skipToContent_fallback" class="main-wrapper mainWrapper_z2l0"><div class="docsWrapper_hBAB"><button aria-label="回到顶部" class="clean-btn theme-back-to-top-button backToTopButton_sjWU" type="button"></button><div class="docRoot_UBD9"><aside class="theme-doc-sidebar-container docSidebarContainer_YfHR"><div class="sidebarViewport_aRkj"><div class="sidebar_njMd"><nav aria-label="文档侧边栏" class="menu thin-scrollbar menu_SIkG"><ul class="theme-doc-sidebar-menu menu__list"><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class="menu__link" href="/docs/Linux-Application-Development-Manual">手册首页</a></li><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item menu__list-item--collapsed"><div class="menu__list-item-collapsible"><a class="menu__link menu__link--sublist" aria-expanded="false" href="/docs/category/第一篇-学习路线教程介绍资料下载">第一篇 学习路线、教程介绍、资料下载</a><button aria-label="展开侧边栏分类 &#x27;第一篇 学习路线、教程介绍、资料下载&#x27;" type="button" class="clean-btn menu__caret"></button></div></li><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item menu__list-item--collapsed"><div class="menu__list-item-collapsible"><a class="menu__link menu__link--sublist" aria-expanded="false" href="/docs/category/第二篇-ubuntu-基本操作">第二篇 Ubuntu 基本操作</a><button aria-label="展开侧边栏分类 &#x27;第二篇 Ubuntu 基本操作&#x27;" type="button" class="clean-btn menu__caret"></button></div></li><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item menu__list-item--collapsed"><div class="menu__list-item-collapsible"><a class="menu__link menu__link--sublist" aria-expanded="false" href="/docs/category/第三篇-环境搭建与开发板操作">第三篇 环境搭建与开发板操作</a><button aria-label="展开侧边栏分类 &#x27;第三篇 环境搭建与开发板操作&#x27;" type="button" class="clean-btn menu__caret"></button></div></li><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item menu__list-item--collapsed"><div class="menu__list-item-collapsible"><a class="menu__link menu__link--sublist" aria-expanded="false" href="/docs/category/第四篇-嵌入式-linux-应用开发基础知识">第四篇 嵌入式 Linux 应用开发基础知识</a><button aria-label="展开侧边栏分类 &#x27;第四篇 嵌入式 Linux 应用开发基础知识&#x27;" type="button" class="clean-btn menu__caret"></button></div></li><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item"><div class="menu__list-item-collapsible"><a class="menu__link menu__link--sublist menu__link--active" aria-expanded="true" href="/docs/category/第五篇-嵌入式-linux-驱动开发基础知识">第五篇 嵌入式 Linux 驱动开发基础知识</a><button aria-label="折叠侧边栏分类 &#x27;第五篇 嵌入式 Linux 驱动开发基础知识&#x27;" type="button" class="clean-btn menu__caret"></button></div><ul style="display:block;overflow:visible;height:auto" class="menu__list"><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/docs/Linux-Application-Development-Manual/part-5/chapter-23">第1章 Hello驱动(不涉及硬件操作)</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/docs/Linux-Application-Development-Manual/part-5/chapter-24">第2章 硬件知识_LED原理图</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/docs/Linux-Application-Development-Manual/part-5/chapter-25">第3章 普适的GPIO引脚操作方法</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/docs/Linux-Application-Development-Manual/part-5/chapter-26">第4章 具体单板的GPIO操作方法</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/docs/Linux-Application-Development-Manual/part-5/chapter-27">第5章 最简单的LED驱动程序</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/docs/Linux-Application-Development-Manual/part-5/chapter-28">第6章 LED驱动程序框架</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/docs/Linux-Application-Development-Manual/part-5/chapter-29">第7章 具体单板的LED驱动程序</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/docs/Linux-Application-Development-Manual/part-5/chapter-30">第8章 驱动设计的思想</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/docs/Linux-Application-Development-Manual/part-5/chapter-31">第9章 驱动进化之路：总线设备驱动模型</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/docs/Linux-Application-Development-Manual/part-5/chapter-32">第10章 LED模板驱动程序的改造：总线设备驱动模型</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link menu__link--active" aria-current="page" tabindex="0" href="/docs/Linux-Application-Development-Manual/part-5/chapter-33">第11章 驱动进化之路：设备树的引入及简明教程</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/docs/Linux-Application-Development-Manual/part-5/chapter-34">第12章 LED模板驱动程序的改造：设备树</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/docs/Linux-Application-Development-Manual/part-5/chapter-35">第13章 APP怎么读取按键值</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/docs/Linux-Application-Development-Manual/part-5/chapter-36">第14章 查询方式的按键驱动程序_编写框架</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/docs/Linux-Application-Development-Manual/part-5/chapter-37">第15章 具体单板的按键驱动程序(查询方式)</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/docs/Linux-Application-Development-Manual/part-5/chapter-38">第16章 GPIO和Pinctrl子系统的使用</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/docs/Linux-Application-Development-Manual/part-5/chapter-39">第17章 异常与中断的概念及处理流程</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/docs/Linux-Application-Development-Manual/part-5/chapter-40">第18章 Linux系统对中断的处理</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/docs/Linux-Application-Development-Manual/part-5/chapter-41">第19章 驱动程序基石</a></li></ul></li><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item menu__list-item--collapsed"><div class="menu__list-item-collapsible"><a class="menu__link menu__link--sublist" aria-expanded="false" href="/docs/category/第八篇-其他应用">第八篇 其他应用</a><button aria-label="展开侧边栏分类 &#x27;第八篇 其他应用&#x27;" type="button" class="clean-btn menu__caret"></button></div></li></ul></nav></div></div></aside><main class="docMainContainer_TBSr"><div class="container padding-top--md padding-bottom--lg"><div class="row"><div class="col docItemCol_VOVn"><div class="docItemContainer_Djhp"><article><nav class="theme-doc-breadcrumbs breadcrumbsContainer_Z_bl" aria-label="页面路径"><ul class="breadcrumbs" itemscope="" itemtype="https://schema.org/BreadcrumbList"><li class="breadcrumbs__item"><a aria-label="主页面" class="breadcrumbs__link" href="/"><svg viewBox="0 0 24 24" class="breadcrumbHomeIcon_YNFT"><path d="M10 19v-5h4v5c0 .55.45 1 1 1h3c.55 0 1-.45 1-1v-7h1.7c.46 0 .68-.57.33-.87L12.67 3.6c-.38-.34-.96-.34-1.34 0l-8.36 7.53c-.34.3-.13.87.33.87H5v7c0 .55.45 1 1 1h3c.55 0 1-.45 1-1z" fill="currentColor"></path></svg></a></li><li itemscope="" itemprop="itemListElement" itemtype="https://schema.org/ListItem" class="breadcrumbs__item"><a class="breadcrumbs__link" itemprop="item" href="/docs/category/第五篇-嵌入式-linux-驱动开发基础知识"><span itemprop="name">第五篇 嵌入式 Linux 驱动开发基础知识</span></a><meta itemprop="position" content="1"></li><li itemscope="" itemprop="itemListElement" itemtype="https://schema.org/ListItem" class="breadcrumbs__item breadcrumbs__item--active"><span class="breadcrumbs__link" itemprop="name">第11章 驱动进化之路：设备树的引入及简明教程</span><meta itemprop="position" content="2"></li></ul></nav><div class="tocCollapsible_ETCw theme-doc-toc-mobile tocMobile_ITEo"><button type="button" class="clean-btn tocCollapsibleButton_TO0P">本页总览</button></div><div class="theme-doc-markdown markdown"><header><h1>第11章 驱动进化之路：设备树的引入及简明教程</h1></header><a id="_Toc197788711"></a>
+<ul>
+<li>官方文档(可以下载到devicetree-specification-v0.2.pdf):</li>
+</ul>
+<p><a href="https://www.devicetree.org/specifications/" target="_blank" rel="noopener noreferrer">https://www.devicetree.org/specifications/</a></p>
+<ul>
+<li>内核文档:</li>
+</ul>
+<p>Documentation/devicetree/booting-without-of.txt</p>
+<p>我录制的设备树视频，它是基于s3c2440的，用的是linux 4.19；需要深入研究的可以看该视频(收费)。</p>
+<p>注意，如果只是想入门，看本文档及视频即可。</p>
+<a id="_Toc197788712"></a>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="111-设备树的引入与作用">11.1 设备树的引入与作用<a href="#111-设备树的引入与作用" class="hash-link" aria-label="11.1 设备树的引入与作用的直接链接" title="11.1 设备树的引入与作用的直接链接">​</a></h2>
+<p>以LED驱动为例，如果你要更换LED所用的GPIO引脚，需要修改驱动程序源码、重新编译驱动、重新加载驱动。</p>
+<p>在内核中，使用同一个芯片的板子，它们所用的外设资源不一样，比如A板用GPIO A，B板用GPIO B。而GPIO的驱动程序既支持GPIO A也支持GPIO B，你需要指定使用哪一个引脚，怎么指定？在c代码中指定。</p>
+<p>随着ARM芯片的流行，内核中针对这些ARM板保存有大量的、没有技术含量的文件。</p>
+<p>Linus大发雷霆：&quot;this whole ARM thing is a f*cking pain in the ass&quot;。</p>
+<p>于是，Linux内核开始引入设备树。</p>
+<p>设备树并不是重新发明出来的，在Linux内核中其他平台如PowerPC，早就使用设备树来描述硬件了。</p>
+<p>Linus发火之后，内核开始全面使用设备树来改造，神人就神人。</p>
+<p>有一种错误的观点，说“新驱动都是用设备树来写了”。设备树不可能用来写驱动。</p>
+<p>请想想，要操作硬件就需要去操作复杂的寄存器，如果设备树可以操作寄存器，那么它就是“驱动”，它就一样很复杂。</p>
+<p>设备树只是用来给内核里的驱动程序，指定硬件的信息。比如LED驱动，在内核的驱动程序里去操作寄存器，但是操作哪一个引脚？这由设备树指定。</p>
+<p>你可以事先体验一下设备树，板子启动后执行下面的命令：</p>
+<div class="language-bash codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-bash codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain"># ls /sys/firmware/</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">devicetree  fdt</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="复制代码到剪贴板" title="复制" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<p>/sys/firmware/devicetree目录下是以目录结构程现的dtb文件, 根节点对应base目录, 每一个节点对应一个目录, 每一个属性对应一个文件。</p>
+<p>这些属性的值如果是字符串，可以使用cat命令把它打印出来；对于数值，可以用hexdump把它打印出来。</p>
+<p>一个单板启动时，u-boot先运行，它的作用是启动内核。U-boot会把内核和设备树文件都读入内存，然后启动内核。在启动内核时会把设备树在内存中的地址告诉内核。</p>
+<a id="_Toc197788713"></a>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="112-设备树的语法">11.2 设备树的语法<a href="#112-设备树的语法" class="hash-link" aria-label="11.2 设备树的语法的直接链接" title="11.2 设备树的语法的直接链接">​</a></h2>
+<p>为什么叫“树”？</p>
+<p><img loading="lazy" src="/assets/images/manual-426-8b11f6d40d8cf8bf16852c6764af918f.png" width="836" height="555" class="img_ev3q"></p>
+<p>图 11.1 总线“树”</p>
+<p>怎么描述这棵树？</p>
+<p>我们需要编写设备树文件(dts: device tree source)，它需要编译为dtb(device tree blob)文件，内核使用的是dtb文件。</p>
+<p>dts文件是根本，它的语法很简单。</p>
+<p>下面是一个设备树示例：</p>
+<p><img loading="lazy" src="/assets/images/manual-427-b0616d38e50f903603c0019fcd120189.png" width="894" height="633" class="img_ev3q"></p>
+<p>图 11.2 设备树示例</p>
+<p>它对应的dts文件如下：</p>
+<p><img loading="lazy" src="/assets/images/manual-428-9ff1a3e934f78cabd10e72404db33af2.png" width="460" height="909" class="img_ev3q"></p>
+<p>图 11.3 设备树dts文件</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="1121-devicetree格式">11.2.1 Devicetree格式<a href="#1121-devicetree格式" class="hash-link" aria-label="11.2.1 Devicetree格式的直接链接" title="11.2.1 Devicetree格式的直接链接">​</a></h3>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ol>
+<li>DTS文件的格式</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>DTS文件布局(layout):</p>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">/dts-v1/;                // 表示版本</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">[memory reservations]    // 格式为: /memreserve/ &lt;address&gt; &lt;length&gt;;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">/ {</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">    [property definitions]</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">    [child nodes]</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">};</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="复制代码到剪贴板" title="复制" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ol>
+<li>node的格式</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>设备树中的基本单元，被称为“node”，其格式为：</p>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">[label:] node-name[@unit-address] {</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">    [properties definitions]</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">    [child nodes]</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">};</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="复制代码到剪贴板" title="复制" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<p>label是标号，可以省略。label的作用是为了方便地引用node，比如：</p>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">/dts-v1/;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">/ {</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">	uart0: uart@fe001000 {</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">        compatible=&quot;ns16550&quot;;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">        reg=&lt;0xfe001000 0x100&gt;;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">	};</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">};</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="复制代码到剪贴板" title="复制" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<p>可以使用下面2种方法来修改uart@fe001000这个node：</p>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">// 在根节点之外使用label引用node：</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">&amp;uart0 {</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">    status = “disabled”;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">};</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">或在根节点之外使用全路径：</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">&amp;{/uart@fe001000}  {</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">    status = “disabled”;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">};</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="复制代码到剪贴板" title="复制" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ol>
+<li>properties的格式</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>简单地说，properties就是“name=value”，value有多种取值方式。</p>
+<ul>
+<li>Property格式1:</li>
+</ul>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">[label:] property-name = value;</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="复制代码到剪贴板" title="复制" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<ul>
+<li>Property格式2(没有值):</li>
+</ul>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">[label:] property-name;</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="复制代码到剪贴板" title="复制" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<ul>
+<li>Property取值只有3种:</li>
+</ul>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">arrays of cells(1个或多个32位数据, 64位数据使用2个32位数据表示),</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">string(字符串),</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">bytestring(1个或多个字节)</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="复制代码到剪贴板" title="复制" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<p><strong>示例:</strong></p>
+<ul>
+<li>
+<ol>
+<li>Arrays of cells : cell就是一个32位的数据，用尖括号包围起来</li>
+</ol>
+</li>
+</ul>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">interrupts = &lt;17 0xc&gt;;</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="复制代码到剪贴板" title="复制" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<ul>
+<li>
+<ul>
+<li>64bit数据使用2个cell来表示，用尖括号包围起来:</li>
+</ul>
+</li>
+</ul>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">clock-frequency = &lt;0x00000001 0x00000000&gt;;</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="复制代码到剪贴板" title="复制" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<ul>
+<li>
+<ol>
+<li>A null-terminated string (有结束符的字符串)，用双引号包围起来:</li>
+</ol>
+</li>
+</ul>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">compatible = &quot;simple-bus&quot;;</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="复制代码到剪贴板" title="复制" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<ul>
+<li>
+<ol>
+<li>A bytestring(字节序列) ，用中括号包围起来:</li>
+</ol>
+</li>
+</ul>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">local-mac-address = [00 00 12 34 56 78];  // 每个byte使用2个16进制数来表示</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">local-mac-address = [000012345678];       // 每个byte使用2个16进制数来表示</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="复制代码到剪贴板" title="复制" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<ul>
+<li>可以是各种值的组合, 用逗号隔开:</li>
+</ul>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">compatible = &quot;ns16550&quot;, &quot;ns8250&quot;;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">example = &lt;0xf00f0000 19&gt;, &quot;a strange property format&quot;;</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="复制代码到剪贴板" title="复制" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="1122-dts文件包含dtsi文件">11.2.2 dts文件包含dtsi文件<a href="#1122-dts文件包含dtsi文件" class="hash-link" aria-label="11.2.2 dts文件包含dtsi文件的直接链接" title="11.2.2 dts文件包含dtsi文件的直接链接">​</a></h3>
+<p>设备树文件不需要我们从零写出来，内核支持了某款芯片比如imx6ull，在内核的arch/arm/boot/dts目录下就有了能用的设备树模板，一般命名为xxxx.dtsi。“i”表示“include”，被别的文件引用的。</p>
+<p>我们使用某款芯片制作出了自己的单板，所用资源跟xxxx.dtsi是大部分相同，小部分不同，所以需要引脚xxxx.dtsi并修改。</p>
+<p>dtsi文件跟dts文件的语法是完全一样的。</p>
+<p>dts中可以包含.h头文件，也可以包含dtsi文件，在.h头文件中可以定义一些宏。</p>
+<p>示例：</p>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">/dts-v1/;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">#include &lt;dt-bindings/input/input.h&gt;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">#include &quot;imx6ull.dtsi&quot;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">/ {</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">……</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">};</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="复制代码到剪贴板" title="复制" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="1123-常用的属性">11.2.3 常用的属性<a href="#1123-常用的属性" class="hash-link" aria-label="11.2.3 常用的属性的直接链接" title="11.2.3 常用的属性的直接链接">​</a></h3>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ol>
+<li>#address-cells、#size-cells</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>cell指一个32位的数值，</li>
+<li>address-cells：address要用多少个32位数来表示；</li>
+<li>size-cells：size要用多少个32位数来表示。</li>
+</ul>
+<p>比如一段内存，怎么描述它的起始地址和大小？</p>
+<p>下例中，address-cells为1，所以reg中用1个数来表示地址，即用0x80000000来表示地址；size-cells为1，所以reg中用1个数来表示大小，即用0x20000000表示大小：</p>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">/ {</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">#address-cells = &lt;1&gt;;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">#size-cells = &lt;1&gt;;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">memory {</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">reg = &lt;0x80000000 0x20000000&gt;;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">    };</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">};</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="复制代码到剪贴板" title="复制" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ol>
+<li>compatible</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>“compatible”表示“兼容”，对于某个LED，内核中可能有A、B、C三个驱动都支持它，那可以这样写：</p>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">led {</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">compatible = “A”, “B”, “C”;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">};</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="复制代码到剪贴板" title="复制" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<p>内核启动时，就会为这个LED按这样的优先顺序为它找到驱动程序：A、B、C。</p>
+<p>根节点下也有compatible属性，用来选择哪一个“machine desc”：一个内核可以支持machine A，也支持machine B，内核启动后会根据根节点的compatible属性找到对应的machine desc结构体，执行其中的初始化函数。</p>
+<p>compatible的值，建议取这样的形式：&quot;manufacturer,model&quot;，即“厂家名，模块名”。</p>
+<p><strong>注意</strong>：machine desc的意思就是“机器描述”，学到内核启动流程时才涉及。</p>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ol>
+<li>model</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>model属性与compatible属性有些类似，但是有差别。</p>
+<p>compatible属性是一个字符串列表，表示可以你的硬件兼容A、B、C等驱动；</p>
+<p>model用来准确地定义这个硬件是什么。</p>
+<p>比如根节点中可以这样写：</p>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">{</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">	compatible = &quot;samsung,smdk2440&quot;, &quot;samsung,mini2440&quot;;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">	model = &quot;jz2440_v3&quot;;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">};</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="复制代码到剪贴板" title="复制" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<p>它表示这个单板，可以兼容内核中的“smdk2440”，也兼容“mini2440”。</p>
+<p>从compatible属性中可以知道它兼容哪些板，但是它到底是什么板？用model属性来明确。</p>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ol>
+<li>status</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>dtsi文件中定义了很多设备，但是在你的板子上某些设备是没有的。这时你可以给这个设备节点添加一个status属性，设置为“disabled”：</p>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">&amp;uart1 {</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">      status = &quot;disabled&quot;;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">};</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="复制代码到剪贴板" title="复制" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<p><img loading="lazy" src="/assets/images/manual-429-1d5ac7e8d6d79e3ed591a3c22ab7f306.png" width="1195" height="356" class="img_ev3q"></p>
+<p>图 11.4 设备属性</p>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ol>
+<li>reg</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>reg的本意是register，用来表示寄存器地址。</p>
+<p>但是在设备树里，它可以用来描述一段空间。反正对于ARM系统，寄存器和内存是统一编址的，即访问寄存器时用某块地址，访问内存时用某块地址，在访问方法上没有区别。</p>
+<p>reg属性的值，是一系列的“address size”，用多少个32位的数来表示address和size，由其父节点的#address-cells、#size-cells决定。</p>
+<p>示例：</p>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">/dts-v1/;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">/ {</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">#address-cells = &lt;1&gt;;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">#size-cells = &lt;1&gt;;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">memory {</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">reg = &lt;0x80000000 0x20000000&gt;;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">};</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">};</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="复制代码到剪贴板" title="复制" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ol>
+<li>name(过时了，建议不用)</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>它的值是字符串，用来表示节点的名字。在跟platform_driver匹配时，优先级最低。</p>
+<p>compatible属性在匹配过程中，优先级最高。</p>
+<p>11.2.3.7 1device_type(过时了，建议不用)</p>
+<p>它的值是字符串，用来表示节点的类型。在跟platform_driver匹配时，优先级为中。</p>
+<p>compatible属性在匹配过程中，优先级最高。</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="1124-常用的节点node">11.2.4 常用的节点(node)<a href="#1124-常用的节点node" class="hash-link" aria-label="11.2.4 常用的节点(node)的直接链接" title="11.2.4 常用的节点(node)的直接链接">​</a></h3>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ol>
+<li>根节点</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>dts文件中必须有一个根节点：</p>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">/dts-v1/;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">/ {</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">model = &quot;SMDK24440&quot;;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">compatible = &quot;samsung,smdk2440&quot;;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">#address-cells = &lt;1&gt;;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">#size-cells = &lt;1&gt;;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">};</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="复制代码到剪贴板" title="复制" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<p>根节点中必须有这些属性：</p>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">#address-cells // 在它的子节点的reg属性中, 使用多少个u32整数来描述地址(address)</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">#size-cells   // 在它的子节点的reg属性中, 使用多少个u32整数来描述大小(size)</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">compatible   // 定义一系列的字符串, 用来指定内核中哪个machine_desc可以支持本设备</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">             // 即这个板子兼容哪些平台</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">             // uImage : smdk2410 smdk2440 mini2440     ==&gt; machine_desc</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain" style="display:inline-block"></span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">model       // 咱这个板子是什么</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">            // 比如有2款板子配置基本一致, 它们的compatible是一样的</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">            // 那么就通过model来分辨这2款板子</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="复制代码到剪贴板" title="复制" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ol>
+<li>CPU节点</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>一般不需要我们设置，在dtsi文件中都定义好了：</p>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">cpus {</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">		#address-cells = &lt;1&gt;;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">		#size-cells = &lt;0&gt;;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">		cpu0: cpu@0 {</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">		    .......</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">        }</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">};</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="复制代码到剪贴板" title="复制" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ol>
+<li>memory节点</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>芯片厂家不可能事先确定你的板子使用多大的内存，所以memory节点需要板厂设置，比如：</p>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">memory {</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">reg = &lt;0x80000000 0x20000000&gt;;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">};</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="复制代码到剪贴板" title="复制" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ol>
+<li>chosen节点</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>我们可以通过设备树文件给内核传入一些参数，这要在chosen节点中设置bootargs属性：</p>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">chosen {</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">bootargs = &quot;noinitrd root=/dev/mtdblock4 rw init=/linuxrc console=ttySAC0,115200&quot;;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">};</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="复制代码到剪贴板" title="复制" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<a id="_Toc197788714"></a>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="113-编译更换设备树">11.3 编译、更换设备树<a href="#113-编译更换设备树" class="hash-link" aria-label="11.3 编译、更换设备树的直接链接" title="11.3 编译、更换设备树的直接链接">​</a></h2>
+<p>我们一般不会从零写dts文件，而是修改。程序员水平有高有低，改得对不对？需要编译一下。并且内核直接使用dts文件的话，就太低效了，它也需要使用二进制格式的dtb文件。</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="1131-在内核中直接make">11.3.1 在内核中直接make<a href="#1131-在内核中直接make" class="hash-link" aria-label="11.3.1 在内核中直接make的直接链接" title="11.3.1 在内核中直接make的直接链接">​</a></h3>
+<p>设置ARCH、CROSS_COMPILE、PATH这三个环境变量后，进入ubuntu上板子内核源码的目录 ，执行如下命令即可编译dtb文件：</p>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">make  dtbs  V=1</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="复制代码到剪贴板" title="复制" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="1132-手工编译">11.3.2 手工编译<a href="#1132-手工编译" class="hash-link" aria-label="11.3.2 手工编译的直接链接" title="11.3.2 手工编译的直接链接">​</a></h3>
+<p>除非你对设备树比较了解，否则不建议手工使用dtc工具直接编译。</p>
+<p>内核目录下scripts/dtc/dtc是设备树的编译工具，直接使用它的话，包含其他文件时不能使用“#include”，而必须使用“/incldue”。</p>
+<p>编译、反编译的示例命令如下，“-I”指定输入格式，“-O”指定输出格式，“-o”指定输出文件：</p>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">./scripts/dtc/dtc -I dts -O dtb -o tmp.dtb arch/arm/boot/dts/xxx.dts  // 编译dts为dtb</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">./scripts/dtc/dtc -I dtb -O dts -o tmp.dts arch/arm/boot/dts/xxx.dtb  // 反编译dtb为dts</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="复制代码到剪贴板" title="复制" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="1133-给开发板更换设备树文件">11.3.3 给开发板更换设备树文件<a href="#1133-给开发板更换设备树文件" class="hash-link" aria-label="11.3.3 给开发板更换设备树文件的直接链接" title="11.3.3 给开发板更换设备树文件的直接链接">​</a></h3>
+<p>怎么给各个单板编译出设备树文件，它们的设备树文件是哪一个？</p>
+<p>基本方法都是：设置ARCH、CROSS_COMPILE、PATH这三个环境变量后，在内核源码目录中执行：</p>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">make  dtbs</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="复制代码到剪贴板" title="复制" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="1134-板子启动后查看设备树">11.3.4 板子启动后查看设备树<a href="#1134-板子启动后查看设备树" class="hash-link" aria-label="11.3.4 板子启动后查看设备树的直接链接" title="11.3.4 板子启动后查看设备树的直接链接">​</a></h3>
+<p>板子启动后执行下面的命令：</p>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain"># ls /sys/firmware/</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">devicetree  fdt</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="复制代码到剪贴板" title="复制" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<p>/sys/firmware/devicetree目录下是以目录结构程现的dtb文件, 根节点对应base目录, 每一个节点对应一个目录, 每一个属性对应一个文件。</p>
+<p>这些属性的值如果是字符串，可以使用cat命令把它打印出来；对于数值，可以用hexdump把它打印出来。</p>
+<p>还可以看到/sys/firmware/fdt文件，它就是dtb格式的设备树文件，可以把它复制出来放到ubuntu上，执行下面的命令反编译出来(-I dtb：输入格式是dtb，-O dts：输出格式是dts)：</p>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">cd  板子所用的内核源码目录</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">./scripts/dtc/dtc  -I  dtb  -O  dts   /从板子上/复制出来的/fdt  -o   tmp.dts</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="复制代码到剪贴板" title="复制" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<a id="_Toc197788715"></a>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="114-内核对设备树的处理">11.4 内核对设备树的处理<a href="#114-内核对设备树的处理" class="hash-link" aria-label="11.4 内核对设备树的处理的直接链接" title="11.4 内核对设备树的处理的直接链接">​</a></h2>
+<p>从源代码文件dts文件开始，设备树的处理过程为：</p>
+<p><img loading="lazy" src="data:image/png;base64,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" width="1302" height="82" class="img_ev3q"></p>
+<p>图 11.5 设备树的处理过程</p>
+<ol>
+<li>dts在PC机上被编译为dtb文件；</li>
+<li>u-boot把dtb文件传给内核；</li>
+<li>内核解析dtb文件，把每一个节点都转换为device_node结构体；</li>
+<li>对于某些device_node结构体，会被转换为platform_device结构体。</li>
+</ol>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="1141-dtb中每一个节点都被转换为device_node结构体">11.4.1 dtb中每一个节点都被转换为device_node结构体<a href="#1141-dtb中每一个节点都被转换为device_node结构体" class="hash-link" aria-label="11.4.1 dtb中每一个节点都被转换为device_node结构体的直接链接" title="11.4.1 dtb中每一个节点都被转换为device_node结构体的直接链接">​</a></h3>
+<p><img loading="lazy" src="/assets/images/manual-431-7dfec539cb695eb5c4231f11761b7c7e.png" width="1204" height="483" class="img_ev3q"></p>
+<p>图 11.6 dtb节点</p>
+<p>根节点被保存在全局变量of_root中，从of_root开始可以访问到任意节点。</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="1142-哪些设备树节点会被转换为platform_device">11.4.2 哪些设备树节点会被转换为platform_device<a href="#1142-哪些设备树节点会被转换为platform_device" class="hash-link" aria-label="11.4.2 哪些设备树节点会被转换为platform_device的直接链接" title="11.4.2 哪些设备树节点会被转换为platform_device的直接链接">​</a></h3>
+<ol>
+<li>根节点下含有compatile属性的子节点</li>
+<li>含有特定compatile属性的节点的子节点</li>
+</ol>
+<p>如果一个节点的compatile属性，它的值是这4者之一：&quot;simple-bus&quot;,&quot;simple-mfd&quot;,&quot;isa&quot;,&quot;arm,amba-bus&quot;, 那么它的子结点(需含compatile属性)也可以转换为platform_device。</p>
+<ol>
+<li>总线I2C、SPI节点下的子节点：不转换为platform_device</li>
+</ol>
+<p>某个总线下到子节点，应该交给对应的总线驱  动程序来处理, 它们不应该被转换为platform_device。</p>
+<p>比如以下的节点中：</p>
+<ul>
+<li>/mytest会被转换为platform_device, 因为它兼容&quot;simple-bus&quot;;</li>
+</ul>
+<p>它的子节点/mytest/mytest@0 也会被转换为platform_device</p>
+<ul>
+<li>/i2c节点一般表示i2c控制器, 它会被转换为platform_device, 在内核中有对应的platform_driver;</li>
+<li>/i2c/at24c02节点不会被转换为platform_device, 它被如何处理完全由父节点的platform_driver决定, 一般是被创建为一个i2c_client。</li>
+<li>类似的也有/spi节点, 它一般也是用来表示SPI控制器, 它会被转换为platform_device, 在内核中有对应的platform_driver;</li>
+<li>/spi/flash@0节点不会被转换为platform_device, 它被如何处理完全由父节点的platform_driver决定, 一般是被创建为一个spi_device。</li>
+</ul>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">{</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">	  mytest {</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">		  compatile = &quot;mytest&quot;, &quot;simple-bus&quot;;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">		  mytest@0 {</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">				compatile = &quot;mytest_0&quot;;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">		  };</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">	  };</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain" style="display:inline-block"></span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">	  i2c {</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">		  compatile = &quot;samsung,i2c&quot;;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">		  at24c02 {</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">				compatile = &quot;at24c02&quot;;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">		  };</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">	  };</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">	  spi {</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">		  compatile = &quot;samsung,spi&quot;;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">		  flash@0 {</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">				compatible = &quot;winbond,w25q32dw&quot;;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">				spi-max-frequency = &lt;25000000&gt;;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">				reg = &lt;0&gt;;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">			  };</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">	  };</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">  };</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="复制代码到剪贴板" title="复制" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="1143-怎么转换为platform_device">11.4.3 怎么转换为platform_device<a href="#1143-怎么转换为platform_device" class="hash-link" aria-label="11.4.3 怎么转换为platform_device的直接链接" title="11.4.3 怎么转换为platform_device的直接链接">​</a></h3>
+<p>内核处理设备树的函数调用过程，这里不去分析；我们只需要得到如下结论：</p>
+<ul>
+<li>platform_device中含有resource数组, 它来自device_node的reg, interrupts属性;</li>
+<li>platform_device.dev.of_node指向device_node, 可以通过它获得其他属性</li>
+</ul>
+<a id="_Toc197788716"></a>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="115-platform_device如何与platform_driver配对">11.5 platform_device如何与platform_driver配对<a href="#115-platform_device如何与platform_driver配对" class="hash-link" aria-label="11.5 platform_device如何与platform_driver配对的直接链接" title="11.5 platform_device如何与platform_driver配对的直接链接">​</a></h2>
+<p>从设备树转换得来的platform_device会被注册进内核里，以后当我们每注册一个platform_driver时，它们就会两两确定能否配对，如果能配对成功就调用platform_driver的probe函数。</p>
+<p>套路是一样的。我们需要将前面讲过的“匹配规则”再完善一下，先贴源码：</p>
+<p><img loading="lazy" src="/assets/images/manual-432-1f36abb060d12be65b260e43cab8f207.png" width="895" height="621" class="img_ev3q"></p>
+<p>图 11.7 platform_match源码</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="1151-最先比较是否强制选择某个driver">11.5.1 最先比较：是否强制选择某个driver<a href="#1151-最先比较是否强制选择某个driver" class="hash-link" aria-label="11.5.1 最先比较：是否强制选择某个driver的直接链接" title="11.5.1 最先比较：是否强制选择某个driver的直接链接">​</a></h3>
+<ul>
+<li>比较:</li>
+</ul>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">platform_device.driver_override和platform_driver.driver.name</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="复制代码到剪贴板" title="复制" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<p>可以设置platform_device的driver_override，强制选择某个platform_driver。</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="1152-然后比较设备树信息">11.5.2 然后比较：设备树信息<a href="#1152-然后比较设备树信息" class="hash-link" aria-label="11.5.2 然后比较：设备树信息的直接链接" title="11.5.2 然后比较：设备树信息的直接链接">​</a></h3>
+<ul>
+<li>比较：</li>
+</ul>
+<p>platform_device.dev.of_node和platform_driver.driver.of_match_table。</p>
+<p>由设备树节点转换得来的platform_device中，含有一个结构体：of_node。它的类型如下：</p>
+<p><img loading="lazy" src="/assets/images/manual-433-70f43c835dee0d5a433b2659650b1a15.png" width="633" height="211" class="img_ev3q"></p>
+<p>如果一个platform_driver支持设备树，它的platform_driver.driver.of_match_table是一个数组，类型如下：</p>
+<p><img loading="lazy" src="/assets/images/manual-434-f3adc789d8053bdb804fff6c35b297b2.png" width="281" height="122" class="img_ev3q"></p>
+<p>使用设备树信息来判断dev和drv是否配对时:</p>
+<ol>
+<li>首先，如果of_match_table中含有compatible值，就跟dev的compatile属性比较，若一致则成功，否则返回失败；</li>
+<li>其次，如果of_match_table中含有type值，就跟dev的device_type属性比较，若一致则成功，否则返回失败；</li>
+<li>最后，如果of_match_table中含有name值，就跟dev的name属性比较，若一致则成功，否则返回失败。</li>
+</ol>
+<p>而设备树中建议不再使用devcie_type和name属性，所以基本上只使用设备节点的compatible属性来寻找匹配的platform_driver。</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="1153-接下来比较platform_device_id">11.5.3 接下来比较：platform_device_id<a href="#1153-接下来比较platform_device_id" class="hash-link" aria-label="11.5.3 接下来比较：platform_device_id的直接链接" title="11.5.3 接下来比较：platform_device_id的直接链接">​</a></h3>
+<p>比较platform_device. name和platform_driver.id_table[i].name，id_table中可能有多项。</p>
+<p>platform_driver.id_table是“platform_device_id”指针，表示该drv支持若干个device，它里面列出了各个device的{.name, .driver_data}，其中的“name”表示该drv支持的设备的名字，driver_data是些提供给该device的私有数据。</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="1154-最后比较">11.5.4 最后比较<a href="#1154-最后比较" class="hash-link" aria-label="11.5.4 最后比较的直接链接" title="11.5.4 最后比较的直接链接">​</a></h3>
+<ul>
+<li>platform_device.name和platform_driver.driver.name</li>
+</ul>
+<p>platform_driver.id_table可能为空，</p>
+<p>这时 可以根据platform_driver.driver.name来寻找同名的platform_device。</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="1155-一个图概括所有的配对过程">11.5.5 一个图概括所有的配对过程<a href="#1155-一个图概括所有的配对过程" class="hash-link" aria-label="11.5.5 一个图概括所有的配对过程的直接链接" title="11.5.5 一个图概括所有的配对过程的直接链接">​</a></h3>
+<p>概括出了这个图：</p>
+<p><img loading="lazy" src="/assets/images/manual-435-1f36abb060d12be65b260e43cab8f207.png" width="895" height="621" class="img_ev3q"></p>
+<p><img loading="lazy" src="/assets/images/manual-436-284efb28536211b41b5eb49ffffc4785.png" width="1844" height="789" class="img_ev3q"></p>
+<p>图 11.8 配对过程</p>
+<a id="_Toc197788717"></a>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="116-没有转换为platform_device的节点如何使用">11.6 没有转换为platform_device的节点，如何使用<a href="#116-没有转换为platform_device的节点如何使用" class="hash-link" aria-label="11.6 没有转换为platform_device的节点，如何使用的直接链接" title="11.6 没有转换为platform_device的节点，如何使用的直接链接">​</a></h2>
+<p>任意驱动程序里，都可以直接访问设备树。</p>
+<a id="_Ref108793111"></a>
+<a id="_Toc197788718"></a>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="117-内核里操作设备树的常用函数">11.7 内核里操作设备树的常用函数<a href="#117-内核里操作设备树的常用函数" class="hash-link" aria-label="11.7 内核里操作设备树的常用函数的直接链接" title="11.7 内核里操作设备树的常用函数的直接链接">​</a></h2>
+<p>内核源码中include/linux/目录下有很多of开头的头文件，of表示“open firmware”即开放固件。</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="1171-内核中设备树相关的头文件介绍">11.7.1 内核中设备树相关的头文件介绍<a href="#1171-内核中设备树相关的头文件介绍" class="hash-link" aria-label="11.7.1 内核中设备树相关的头文件介绍的直接链接" title="11.7.1 内核中设备树相关的头文件介绍的直接链接">​</a></h3>
+<p>设备树的处理过程是：dtb -&gt; device_node -&gt; platform_device。</p>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ol>
+<li>处理DTB</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">of_fdt.h           // dtb文件的相关操作函数, 我们一般用不到,</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">// 因为dtb文件在内核中已经被转换为device_node树(它更易于使用)</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="复制代码到剪贴板" title="复制" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ol>
+<li>处理device_node</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">of.h               // 提供设备树的一般处理函数,</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">// 比如 of_property_read_u32(读取某个属性的u32值),</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">// of_get_child_count(获取某个device_node的子节点数)</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">of_address.h       // 地址相关的函数,</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">// 比如 of_get_address(获得reg属性中的addr, size值)</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">// of_match_device (从matches数组中取出与当前设备最匹配的一项)</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">of_dma.h           // 设备树中DMA相关属性的函数</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">of_gpio.h          // GPIO相关的函数</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">of_graph.h         // GPU相关驱动中用到的函数, 从设备树中获得GPU信息</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">of_iommu.h         // 很少用到</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">of_irq.h           // 中断相关的函数</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">of_mdio.h          // MDIO (Ethernet PHY) API</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">of_net.h           // OF helpers for network devices.</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">of_pci.h           // PCI相关函数</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">of_pdt.h           // 很少用到</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">of_reserved_mem.h  // reserved_mem的相关函数</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="复制代码到剪贴板" title="复制" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ol>
+<li>处理 platform_device</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">of_platform.h      // 把device_node转换为platform_device时用到的函数,</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">                   // 比如of_device_alloc(根据device_node分配设置platform_device),</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">                   // of_find_device_by_node (根据device_node查找到platform_device),</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">                   //   of_platform_bus_probe (处理device_node及它的子节点)</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">of_device.h        // 设备相关的函数, 比如 of_match_device</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="复制代码到剪贴板" title="复制" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="1172-platform_device相关的函数">11.7.2 platform_device相关的函数<a href="#1172-platform_device相关的函数" class="hash-link" aria-label="11.7.2 platform_device相关的函数的直接链接" title="11.7.2 platform_device相关的函数的直接链接">​</a></h3>
+<p>of_platform.h中声明了很多函数，但是作为驱动开发者，我们只使用其中的1、2个。其他的都是给内核自己使用的，内核使用它们来处理设备树，转换得到platform_device。</p>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ol>
+<li>of_find_device_by_node</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>函数原型为：</p>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">extern struct platform_device *of_find_device_by_node(struct device_node *np);</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="复制代码到剪贴板" title="复制" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<p>设备树中的每一个节点，在内核里都有一个device_node；你可以使用device_node去找到对应的platform_device。</p>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ol>
+<li>platform_get_resource</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>这个函数跟设备树没什么关系，但是设备树中的节点被转换为platform_device后，设备树中的reg属性、interrupts属性也会被转换为“resource”。</p>
+<p>这时，你可以使用这个函数取出这些资源。</p>
+<p>函数原型为：</p>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">/**</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain"> * platform_get_resource - get a resource for a device</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain"> * @dev: platform device</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain"> * @type: resource type   // 取哪类资源？IORESOURCE_MEM、IORESOURCE_REG</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">*                      // IORESOURCE_IRQ等</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain"> * @num: resource index  // 这类资源中的哪一个？</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain"> */</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">struct resource *platform_get_resource(struct platform_device *dev,</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">				       unsigned int type, unsigned int num);</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="复制代码到剪贴板" title="复制" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<p>对于设备树节点中的reg属性，它对应IORESOURCE_MEM类型的资源；</p>
+<p>对于设备树节点中的interrupts属性，它对应IORESOURCE_IRQ类型的资源。</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="1173-有些节点不会生成platform_device怎么访问它们">11.7.3 有些节点不会生成platform_device，怎么访问它们<a href="#1173-有些节点不会生成platform_device怎么访问它们" class="hash-link" aria-label="11.7.3 有些节点不会生成platform_device，怎么访问它们的直接链接" title="11.7.3 有些节点不会生成platform_device，怎么访问它们的直接链接">​</a></h3>
+<p>内核会把dtb文件解析出一系列的device_node结构体，我们可以直接访问这些device_node。</p>
+<p>内核源码incldue/linux/of.h中声明了device_node和属性property的操作函数，device_node和property的结构体定义如下：</p>
+<p><img loading="lazy" src="/assets/images/manual-437-7dfec539cb695eb5c4231f11761b7c7e.png" width="1204" height="483" class="img_ev3q"></p>
+<p>图 11.9 device_node和property</p>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ol>
+<li>找到节点</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<ol>
+<li>of_find_node_by_path</li>
+</ol>
+<p>根据路径找到节点，比如“/”就对应根节点，“/memory”对应memory节点。</p>
+<p>函数原型：</p>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">static inline struct device_node *of_find_node_by_path(const char *path);</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="复制代码到剪贴板" title="复制" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<ol>
+<li>of_find_node_by_name</li>
+</ol>
+<p>根据名字找到节点，节点如果定义了name属性，那我们可以根据名字找到它。</p>
+<p>函数原型：</p>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">extern struct device_node *of_find_node_by_name(struct device_node *from,const char *name);</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="复制代码到剪贴板" title="复制" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<p>参数from表示从哪一个节点开始寻找，传入NULL表示从根节点开始寻找。</p>
+<p>但是在设备树的官方规范中不建议使用“name”属性，所以这函数也不建议使用。</p>
+<ol>
+<li>of_find_node_by_type</li>
+</ol>
+<p>根据类型找到节点，节点如果定义了device_type属性，那我们可以根据类型找到它。</p>
+<p>函数原型：</p>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">extern struct device_node *of_find_node_by_type(struct device_node *from, const char *type);</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="复制代码到剪贴板" title="复制" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<p>参数from表示从哪一个节点开始寻找，传入NULL表示从根节点开始寻找。</p>
+<p>但是在设备树的官方规范中不建议使用“device_type”属性，所以这函数也不建议使用。</p>
+<ol>
+<li>of_find_compatible_node</li>
+</ol>
+<p>根据compatible找到节点，节点如果定义了compatible属性，那我们可以根据compatible属性找到它。</p>
+<p>函数原型：</p>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">extern struct device_node *of_find_compatible_node(struct device_node *from, const char *type,</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">const char *compat);</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="复制代码到剪贴板" title="复制" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<ul>
+<li>参数from表示从哪一个节点开始寻找，传入NULL表示从根节点开始寻找。</li>
+<li>参数compat是一个字符串，用来指定compatible属性的值；</li>
+<li>参数type是一个字符串，用来指定device_type属性的值，可以传入NULL。</li>
+</ul>
+<ol>
+<li>of_find_node_by_phandle</li>
+</ol>
+<p>根据phandle找到节点。dts文件被编译为dtb文件时，每一个节点都有一个数字ID，这些数字ID彼此不同。可以使用数字ID来找到device_node。这些数字ID就是phandle。</p>
+<p>函数原型：</p>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">extern struct device_node *of_find_node_by_phandle(phandle handle);</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="复制代码到剪贴板" title="复制" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<ul>
+<li>参数from表示从哪一个节点开始寻找，传入NULL表示从根节点开始寻找。</li>
+</ul>
+<ol>
+<li>of_get_parent</li>
+</ol>
+<p>找到device_node的父节点。</p>
+<p>函数原型：</p>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">extern struct device_node *of_get_parent(const struct device_node *node);</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="复制代码到剪贴板" title="复制" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<ul>
+<li>参数from表示从哪一个节点开始寻找，传入NULL表示从根节点开始寻找。</li>
+</ul>
+<ol>
+<li>of_get_next_parent</li>
+</ol>
+<p>这个函数名比较奇怪，怎么可能有“next parent”？</p>
+<p>它实际上也是找到device_node的父节点，跟of_get_parent的返回结果是一样的。</p>
+<p>差别在于它多调用下列函数，把node节点的引用计数减少了1。这意味着调用of_get_next_parent之后，你不再需要调用of_node_put释放node节点。</p>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">of_node_put(node);</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="复制代码到剪贴板" title="复制" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<p>函数原型：</p>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">extern struct device_node *of_get_next_parent(struct device_node *node);</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="复制代码到剪贴板" title="复制" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<ul>
+<li>参数from表示从哪一个节点开始寻找，传入NULL表示从根节点开始寻找。</li>
+</ul>
+<ol>
+<li>of_get_next_child</li>
+</ol>
+<p>取出下一个子节点。</p>
+<p>函数原型：</p>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">extern struct device_node *of_get_next_child(const struct device_node *node,</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">struct device_node *prev);</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="复制代码到剪贴板" title="复制" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<ul>
+<li>参数node表示父节点；</li>
+<li>prev表示上一个子节点，设为NULL时表示想找到第1个子节点。</li>
+</ul>
+<p>不断调用of_get_next_child时，不断更新pre参数，就可以得到所有的子节点。</p>
+<ol>
+<li>of_get_next_available_child</li>
+</ol>
+<p>取出下一个“可用”的子节点，有些节点的status是“disabled”，那就会跳过这些节点。</p>
+<p>函数原型：</p>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">struct device_node *of_get_next_available_child( const struct device_node *node,</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">struct device_node *prev);</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="复制代码到剪贴板" title="复制" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<ul>
+<li>参数node表示父节点；</li>
+<li>prev表示上一个子节点，设为NULL时表示想找到第1个子节点。</li>
+</ul>
+<ol>
+<li>of_get_child_by_name</li>
+</ol>
+<p>根据名字取出子节点。</p>
+<p>函数原型：</p>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">extern struct device_node *of_get_child_by_name(const struct device_node *node,</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">const char *name);</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="复制代码到剪贴板" title="复制" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<ul>
+<li>参数node表示父节点；</li>
+<li>name表示子节点的名字。<!-- -->
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ol>
+<li>找到属性——of_find_property</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>内核源码incldue/linux/of.h中声明了device_node的操作函数，当然也包括属性的操作函数：of_find_property</p>
+<p>找到节点中的属性。</p>
+<p>函数原型：</p>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">extern struct property *of_find_property(const struct device_node *np,</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">const char *name,</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">int *lenp);</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="复制代码到剪贴板" title="复制" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<ul>
+<li>参数np表示节点，我们要在这个节点中找到名为name的属性。</li>
+<li>lenp用来保存这个属性的长度，即它的值的长度。</li>
+</ul>
+<p>在设备树中，节点大概是这样：</p>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">xxx_node {</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">    xxx_pp_name = “hello”;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">};</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="复制代码到剪贴板" title="复制" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<p>上述节点中，“xxx_pp_name”就是属性的名字，值的长度是6。</p>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ol>
+<li>获取属性的值</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<ol>
+<li>of_get_property</li>
+</ol>
+<p>根据名字找到节点的属性，并且返回它的值。</p>
+<p>函数原型：</p>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">/*</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain"> * Find a property with a given name for a given node</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain"> * and return the value.</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain"> */</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">const void *of_get_property(const struct device_node *np,</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">const char *name,</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">int *lenp)</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="复制代码到剪贴板" title="复制" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<ul>
+<li>参数np表示节点，我们要在这个节点中找到名为name的属性，然后返回它的值。</li>
+<li>lenp用来保存这个属性的长度，即它的值的长度。</li>
+</ul>
+<ol>
+<li>of_property_count_elems_of_size</li>
+</ol>
+<p>根据名字找到节点的属性，确定它的值有多少个元素(elem)。</p>
+<p>函数原型：</p>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">* of_property_count_elems_of_size - Count the number of elements in a property</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain"> *</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain"> * @np:		device node from which the property value is to be read.</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain"> * @propname:	name of the property to be searched.</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain"> * @elem_size:	size of the individual element</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain"> *</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain"> * Search for a property in a device node and count the number of elements of</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain"> * size elem_size in it. Returns number of elements on sucess, -EINVAL if the</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain"> * property does not exist or its length does not match a multiple of elem_size</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain"> * and -ENODATA if the property does not have a value.</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain"> */</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">int of_property_count_elems_of_size(const struct device_node *np,</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">const char *propname,</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">int elem_size)</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="复制代码到剪贴板" title="复制" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<ol>
+<li>参数np表示节点，我们要在这个节点中找到名为propname的属性，然后返  回下列结果：</li>
+</ol>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">return prop-&gt;length / elem_size;</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="复制代码到剪贴板" title="复制" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<p>在设备树中，节点大概是这样：</p>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">xxx_node {</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">    xxx_pp_name = &lt;0x50000000 1024&gt;  &lt;0x60000000  2048&gt;;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">};</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="复制代码到剪贴板" title="复制" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<ul>
+<li>调用of_property_count_elems_of_size(np, “xxx_pp_name”, 8)时，返回值是2；</li>
+<li>调用of_property_count_elems_of_size(np, “xxx_pp_name”, 4)时，返回值是4。</li>
+</ul>
+<ol>
+<li>读整数u32/u64</li>
+</ol>
+<p>函数原型为：</p>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">static inline int of_property_read_u32(const struct device_node *np,</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">				       const char *propname,</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">				       u32 *out_value);</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">extern int of_property_read_u64(const struct device_node *np,</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">const char *propname,</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">u64 *out_value);</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="复制代码到剪贴板" title="复制" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<p>在设备树中，节点大概是这样：</p>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">xxx_node {</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">    name1 = &lt;0x50000000&gt;;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">    name2 = &lt;0x50000000  0x60000000&gt;;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">};</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="复制代码到剪贴板" title="复制" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<ul>
+<li>调用of_property_read_u32 (np, “name1”, &amp;val)时，val将得到值0x50000000；</li>
+<li>调用of_property_read_u64 (np, “name2”, &amp;val)时，val将得到值0x6000000050000000。</li>
+</ul>
+<ol>
+<li>读某个整数u32/u64</li>
+</ol>
+<p>函数原型为：</p>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">extern int of_property_read_u32_index(const struct device_node *np,</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">const char *propname,</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">u32 index, u32 *out_value);</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="复制代码到剪贴板" title="复制" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<p>在设备树中，节点大概是这样：</p>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">xxx_node {</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">    name2 = &lt;0x50000000  0x60000000&gt;;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">};</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="复制代码到剪贴板" title="复制" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<ul>
+<li>调用of_property_read_u32 (np, “name2”, 1, &amp;val)时，val将得到值0x60000000。</li>
+</ul>
+<ol>
+<li>读数组</li>
+</ol>
+<p>函数原型为：</p>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">int of_property_read_variable_u8_array(const struct device_node *np,</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">const char *propname,</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">u8 *out_values,</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">size_t sz_min, size_t sz_max);</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">int of_property_read_variable_u16_array(const struct device_node *np,</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">const char *propname,</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">u16 *out_values,</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">size_t sz_min, size_t sz_max);</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">int of_property_read_variable_u32_array(const struct device_node *np,</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">const char *propname,</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">u32 *out_values,</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">size_t sz_min, size_t sz_max);</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">int of_property_read_variable_u64_array(const struct device_node *np,</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">const char *propname,</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">u64 *out_values,</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">size_t sz_min, size_t sz_max);</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="复制代码到剪贴板" title="复制" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<p>在设备树中，节点大概是这样：</p>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">xxx_node {</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">    name2 = &lt;0x50000012  0x60000034&gt;;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">};</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="复制代码到剪贴板" title="复制" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<p>上述例子中属性name2的值，长度为8。</p>
+<ul>
+<li>调用of_property_read_variable_u8_array (np, “name2”, out_values, 1, 10)时，out_values中将会保存这8个字节： 0x12,0x00,0x00,0x50,0x34,0x00,0x00,0x60。</li>
+<li>调用of_property_read_variable_u16_array (np, “name2”, out_values, 1, 10)时，out_values中将会保存这4个16位数值： 0x0012, 0x5000,0x0034,0x6000。</li>
+</ul>
+<p>总之，这些函数要么能取到全部的数值，要么一个数值都取不到；</p>
+<ul>
+<li>如果值的长度在sz_min和sz_max之间，就返回全部的数值；</li>
+<li>否则一个数值都不返回。</li>
+</ul>
+<ol>
+<li>读字符串</li>
+</ol>
+<p>函数原型为：</p>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">int of_property_read_string(const struct device_node *np,</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">const char *propname,</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">const char **out_string);</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="复制代码到剪贴板" title="复制" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<ul>
+<li>返回节点np的属性(名为propname)的值;</li>
+<li>(*out_string)指向这个值，把它当作字符串。</li>
+</ul>
+<a id="_Toc197788719"></a>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="118-怎么修改设备树文件">11.8 怎么修改设备树文件<a href="#118-怎么修改设备树文件" class="hash-link" aria-label="11.8 怎么修改设备树文件的直接链接" title="11.8 怎么修改设备树文件的直接链接">​</a></h2>
+<p>一个写得好的驱动程序, 它会尽量确定所用资源。只把不能确定的资源留给设备树, 让设备树来指定。根据原理图确定&quot;驱动程序无法确定的硬件资源&quot;, 再在设备树文件中填写对应内容。</p>
+<p>那么, 所填写内容的格式是什么?</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="1181-使用芯片厂家提供的工具">11.8.1 使用芯片厂家提供的工具<a href="#1181-使用芯片厂家提供的工具" class="hash-link" aria-label="11.8.1 使用芯片厂家提供的工具的直接链接" title="11.8.1 使用芯片厂家提供的工具的直接链接">​</a></h3>
+<p>有些芯片，厂家提供了对应的设备树生成工具，可以选择某个引脚用于某些功能，就可以自动生成设备树节点。</p>
+<p>你再把这些节点复制到内核的 设备树文件里即可。</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="1182-看绑定文档">11.8.2 看绑定文档<a href="#1182-看绑定文档" class="hash-link" aria-label="11.8.2 看绑定文档的直接链接" title="11.8.2 看绑定文档的直接链接">​</a></h3>
+<p>内核文档 Documentation/devicetree/bindings/</p>
+<p>做得好的厂家也会提供设备树的说明文档</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="1183-参考同类型单板的设备树文件">11.8.3 参考同类型单板的设备树文件<a href="#1183-参考同类型单板的设备树文件" class="hash-link" aria-label="11.8.3 参考同类型单板的设备树文件的直接链接" title="11.8.3 参考同类型单板的设备树文件的直接链接">​</a></h3>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="1184-网上搜索">11.8.4 网上搜索<a href="#1184-网上搜索" class="hash-link" aria-label="11.8.4 网上搜索的直接链接" title="11.8.4 网上搜索的直接链接">​</a></h3>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="1185-实在没办法时-只能去研究驱动源码">11.8.5 实在没办法时, 只能去研究驱动源码<a href="#1185-实在没办法时-只能去研究驱动源码" class="hash-link" aria-label="11.8.5 实在没办法时, 只能去研究驱动源码的直接链接" title="11.8.5 实在没办法时, 只能去研究驱动源码的直接链接">​</a></h3></div><footer class="theme-doc-footer docusaurus-mt-lg"><div class="theme-doc-footer-edit-meta-row row"><div class="col"><a href="https://github.com/100askTeam/linux-docs/tree/main/docs/Linux-Application-Development-Manual/part-5/chapter-33.md" target="_blank" rel="noopener noreferrer" class="theme-edit-this-page"><svg fill="currentColor" height="20" width="20" viewBox="0 0 40 40" class="iconEdit_Z9Sw" aria-hidden="true"><g><path d="m34.5 11.7l-3 3.1-6.3-6.3 3.1-3q0.5-0.5 1.2-0.5t1.1 0.5l3.9 3.9q0.5 0.4 0.5 1.1t-0.5 1.2z m-29.5 17.1l18.4-18.5 6.3 6.3-18.4 18.4h-6.3v-6.2z"></path></g></svg>编辑此页</a></div><div class="col lastUpdated_vwxv"></div></div></footer></article><nav class="pagination-nav docusaurus-mt-lg" aria-label="文件选项卡"><a class="pagination-nav__link pagination-nav__link--prev" href="/docs/Linux-Application-Development-Manual/part-5/chapter-32"><div class="pagination-nav__sublabel">上一页</div><div class="pagination-nav__label">第10章 LED模板驱动程序的改造：总线设备驱动模型</div></a><a class="pagination-nav__link pagination-nav__link--next" href="/docs/Linux-Application-Development-Manual/part-5/chapter-34"><div class="pagination-nav__sublabel">下一页</div><div class="pagination-nav__label">第12章 LED模板驱动程序的改造：设备树</div></a></nav></div></div><div class="col col--3"><div class="tableOfContents_bqdL thin-scrollbar theme-doc-toc-desktop"><ul class="table-of-contents table-of-contents__left-border"><li><a href="#111-设备树的引入与作用" class="table-of-contents__link toc-highlight">11.1 设备树的引入与作用</a></li><li><a href="#112-设备树的语法" class="table-of-contents__link toc-highlight">11.2 设备树的语法</a><ul><li><a href="#1121-devicetree格式" class="table-of-contents__link toc-highlight">11.2.1 Devicetree格式</a></li><li><a href="#1122-dts文件包含dtsi文件" class="table-of-contents__link toc-highlight">11.2.2 dts文件包含dtsi文件</a></li><li><a href="#1123-常用的属性" class="table-of-contents__link toc-highlight">11.2.3 常用的属性</a></li><li><a href="#1124-常用的节点node" class="table-of-contents__link toc-highlight">11.2.4 常用的节点(node)</a></li></ul></li><li><a href="#113-编译更换设备树" class="table-of-contents__link toc-highlight">11.3 编译、更换设备树</a><ul><li><a href="#1131-在内核中直接make" class="table-of-contents__link toc-highlight">11.3.1 在内核中直接make</a></li><li><a href="#1132-手工编译" class="table-of-contents__link toc-highlight">11.3.2 手工编译</a></li><li><a href="#1133-给开发板更换设备树文件" class="table-of-contents__link toc-highlight">11.3.3 给开发板更换设备树文件</a></li><li><a href="#1134-板子启动后查看设备树" class="table-of-contents__link toc-highlight">11.3.4 板子启动后查看设备树</a></li></ul></li><li><a href="#114-内核对设备树的处理" class="table-of-contents__link toc-highlight">11.4 内核对设备树的处理</a><ul><li><a href="#1141-dtb中每一个节点都被转换为device_node结构体" class="table-of-contents__link toc-highlight">11.4.1 dtb中每一个节点都被转换为device_node结构体</a></li><li><a href="#1142-哪些设备树节点会被转换为platform_device" class="table-of-contents__link toc-highlight">11.4.2 哪些设备树节点会被转换为platform_device</a></li><li><a href="#1143-怎么转换为platform_device" class="table-of-contents__link toc-highlight">11.4.3 怎么转换为platform_device</a></li></ul></li><li><a href="#115-platform_device如何与platform_driver配对" class="table-of-contents__link toc-highlight">11.5 platform_device如何与platform_driver配对</a><ul><li><a href="#1151-最先比较是否强制选择某个driver" class="table-of-contents__link toc-highlight">11.5.1 最先比较：是否强制选择某个driver</a></li><li><a href="#1152-然后比较设备树信息" class="table-of-contents__link toc-highlight">11.5.2 然后比较：设备树信息</a></li><li><a href="#1153-接下来比较platform_device_id" class="table-of-contents__link toc-highlight">11.5.3 接下来比较：platform_device_id</a></li><li><a href="#1154-最后比较" class="table-of-contents__link toc-highlight">11.5.4 最后比较</a></li><li><a href="#1155-一个图概括所有的配对过程" class="table-of-contents__link toc-highlight">11.5.5 一个图概括所有的配对过程</a></li></ul></li><li><a href="#116-没有转换为platform_device的节点如何使用" class="table-of-contents__link toc-highlight">11.6 没有转换为platform_device的节点，如何使用</a></li><li><a href="#117-内核里操作设备树的常用函数" class="table-of-contents__link toc-highlight">11.7 内核里操作设备树的常用函数</a><ul><li><a href="#1171-内核中设备树相关的头文件介绍" class="table-of-contents__link toc-highlight">11.7.1 内核中设备树相关的头文件介绍</a></li><li><a href="#1172-platform_device相关的函数" class="table-of-contents__link toc-highlight">11.7.2 platform_device相关的函数</a></li><li><a href="#1173-有些节点不会生成platform_device怎么访问它们" class="table-of-contents__link toc-highlight">11.7.3 有些节点不会生成platform_device，怎么访问它们</a></li></ul></li><li><a href="#118-怎么修改设备树文件" class="table-of-contents__link toc-highlight">11.8 怎么修改设备树文件</a><ul><li><a href="#1181-使用芯片厂家提供的工具" class="table-of-contents__link toc-highlight">11.8.1 使用芯片厂家提供的工具</a></li><li><a href="#1182-看绑定文档" class="table-of-contents__link toc-highlight">11.8.2 看绑定文档</a></li><li><a href="#1183-参考同类型单板的设备树文件" class="table-of-contents__link toc-highlight">11.8.3 参考同类型单板的设备树文件</a></li><li><a href="#1184-网上搜索" class="table-of-contents__link toc-highlight">11.8.4 网上搜索</a></li><li><a href="#1185-实在没办法时-只能去研究驱动源码" class="table-of-contents__link toc-highlight">11.8.5 实在没办法时, 只能去研究驱动源码</a></li></ul></li></ul></div></div></div></div></main></div></div></div><footer class="footer footer--dark"><div class="container container-fluid"><div class="row footer__links"><div class="col footer__col"><div class="footer__title">Docs</div><ul class="footer__items clean-list"><li class="footer__item"><a href="https://dongshanpi.com" target="_blank" rel="noopener noreferrer" class="footer__link-item">DongshanPI<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a></li><li class="footer__item"><a href="https://canaan-docs.100ask.net/" target="_blank" rel="noopener noreferrer" class="footer__link-item">Canaan-Docs<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a></li><li class="footer__item"><a href="https://renesas-docs.100ask.net/" target="_blank" rel="noopener noreferrer" class="footer__link-item">Renesas-Docs<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a></li><li class="footer__item"><a href="https://rtos.100ask.net/" target="_blank" rel="noopener noreferrer" class="footer__link-item">RTOS<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a></li><li class="footer__item"><a href="https://tina.100ask.net/" target="_blank" rel="noopener noreferrer" class="footer__link-item">TinaSDK-Docs<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a></li><li class="footer__item"><a href="https://allwinner-docs.100ask.net/" target="_blank" rel="noopener noreferrer" class="footer__link-item">Allwinner-Docs<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a></li><li class="footer__item"><a href="https://aw-r128.100ask.net/" target="_blank" rel="noopener noreferrer" class="footer__link-item">R128-Docs<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a></li></ul></div><div class="col footer__col"><div class="footer__title">Community</div><ul class="footer__items clean-list"><li class="footer__item"><a href="https://space.bilibili.com/275908810" target="_blank" rel="noopener noreferrer" class="footer__link-item">BiliBili<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a></li><li class="footer__item"><a href="https://forums.100ask.net" target="_blank" rel="noopener noreferrer" class="footer__link-item">Stack Overflow<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a></li><li class="footer__item"><a href="https://video.100ask.net/" target="_blank" rel="noopener noreferrer" class="footer__link-item">VideoCenter<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a></li><li class="footer__item"><a href="https://twitter.com/dongshanpi" target="_blank" rel="noopener noreferrer" class="footer__link-item">Twitter<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a></li></ul></div><div class="col footer__col"><div class="footer__title">More</div><ul class="footer__items clean-list"><li class="footer__item"><a href="https://weidongshan.coding.net/public/" target="_blank" rel="noopener noreferrer" class="footer__link-item">Coding<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a></li><li class="footer__item"><a href="https://github.com/100askTeam" target="_blank" rel="noopener noreferrer" class="footer__link-item">GitHub<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a></li><li class="footer__item"><a href="https://gitee.com/weidongshan" target="_blank" rel="noopener noreferrer" class="footer__link-item">Gitee<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a></li></ul></div></div><div class="footer__bottom text--center"><div class="footer__copyright">Copyright © 2026 100askTeam, Inc. Built with Docusaurus.</div></div></div></footer></div>
+</body>
+</html>

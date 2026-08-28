@@ -1,0 +1,294 @@
+<!doctype html>
+<html lang="en" dir="ltr" class="docs-wrapper plugin-docs plugin-id-default docs-version-current docs-doc-page docs-doc-id-Linux-Application-Development-Manual/part-3/chapter-10" data-has-hydrated="false">
+<head>
+<meta charset="UTF-8">
+<meta name="generator" content="Docusaurus v3.0.1">
+<title data-rh="true">第6章 构建bootloader、内核、文件系统 | 韦东山Linux</title><meta data-rh="true" name="viewport" content="width=device-width,initial-scale=1"><meta data-rh="true" name="twitter:card" content="summary_large_image"><meta data-rh="true" property="og:image" content="https://linux.100ask.net/en/img/docusaurus-social-card.jpg"><meta data-rh="true" name="twitter:image" content="https://linux.100ask.net/en/img/docusaurus-social-card.jpg"><meta data-rh="true" property="og:url" content="https://linux.100ask.net/en/docs/Linux-Application-Development-Manual/part-3/chapter-10"><meta data-rh="true" property="og:locale" content="en"><meta data-rh="true" property="og:locale:alternate" content="zh_Hans"><meta data-rh="true" name="docusaurus_locale" content="en"><meta data-rh="true" name="docsearch:language" content="en"><meta data-rh="true" name="docusaurus_version" content="current"><meta data-rh="true" name="docusaurus_tag" content="docs-default-current"><meta data-rh="true" name="docsearch:version" content="current"><meta data-rh="true" name="docsearch:docusaurus_tag" content="docs-default-current"><meta data-rh="true" property="og:title" content="第6章 构建bootloader、内核、文件系统 | 韦东山Linux"><meta data-rh="true" name="description" content="6.1 准备"><meta data-rh="true" property="og:description" content="6.1 准备"><link data-rh="true" rel="icon" href="/en/img/favicon.ico"><link data-rh="true" rel="canonical" href="https://linux.100ask.net/en/docs/Linux-Application-Development-Manual/part-3/chapter-10"><link data-rh="true" rel="alternate" href="https://linux.100ask.net/docs/Linux-Application-Development-Manual/part-3/chapter-10" hreflang="zh-Hans"><link data-rh="true" rel="alternate" href="https://linux.100ask.net/en/docs/Linux-Application-Development-Manual/part-3/chapter-10" hreflang="en"><link data-rh="true" rel="alternate" href="https://linux.100ask.net/docs/Linux-Application-Development-Manual/part-3/chapter-10" hreflang="x-default"><link rel="stylesheet" href="/en/assets/css/styles.f22fa3d1.css">
+<script src="/en/assets/js/runtime~main.5483192b.js" defer="defer"></script>
+<script src="/en/assets/js/main.42c7fc72.js" defer="defer"></script>
+</head>
+<body class="navigation-with-keyboard">
+<script>!function(){function t(t){document.documentElement.setAttribute("data-theme",t)}var e=function(){try{return new URLSearchParams(window.location.search).get("docusaurus-theme")}catch(t){}}()||function(){try{return localStorage.getItem("theme")}catch(t){}}();t(null!==e?e:"light")}(),function(){try{const c=new URLSearchParams(window.location.search).entries();for(var[t,e]of c)if(t.startsWith("docusaurus-data-")){var a=t.replace("docusaurus-data-","data-");document.documentElement.setAttribute(a,e)}}catch(t){}}()</script><div id="__docusaurus"><div role="region" aria-label="Skip to main content"><a class="skipToContent_fXgn" href="#__docusaurus_skipToContent_fallback">Skip to main content</a></div><nav aria-label="Main" class="navbar navbar--fixed-top"><div class="navbar__inner"><div class="navbar__items"><button aria-label="Toggle navigation bar" aria-expanded="false" class="navbar__toggle clean-btn" type="button"><svg width="30" height="30" viewBox="0 0 30 30" aria-hidden="true"><path stroke="currentColor" stroke-linecap="round" stroke-miterlimit="10" stroke-width="2" d="M4 7h22M4 15h22M4 23h22"></path></svg></button><a class="navbar__brand" href="/en/"><div class="navbar__logo"><img src="/en/img/logo.svg" alt="东山PI" class="themedComponent_mlkZ themedComponent--light_NVdE"><img src="/en/img/logo.svg" alt="东山PI" class="themedComponent_mlkZ themedComponent--dark_xIcU"></div><b class="navbar__title text--truncate">韦东山Linux</b></a><a class="navbar__item navbar__link" href="/en/docs/Learn-Linux/LearnStudyPath">嵌入式Linux学习指南</a><a aria-current="page" class="navbar__item navbar__link navbar__link--active" href="/en/docs/Linux-Application-Development-Manual">嵌入式Linux应用开发完全手册</a><a class="navbar__item navbar__link" href="/en/docs/Linux-CourseList/Introduction">嵌入式Linux课程列表</a><a class="navbar__item navbar__link" href="/en/docs/Knowledge-Notes/InputSystem">官方笔记知识库</a><a class="navbar__item navbar__link" href="/en/docs/Study-Notes/intro">学员笔记</a></div><div class="navbar__items navbar__items--right"><a href="https://github.com/100askTeam/linux-docs" target="_blank" rel="noopener noreferrer" class="navbar__item navbar__link">GitHub<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a><div class="toggle_vylO colorModeToggle_DEke"><button class="clean-btn toggleButton_gllP toggleButtonDisabled_aARS" type="button" disabled="" title="Switch between dark and light mode (currently light mode)" aria-label="Switch between dark and light mode (currently light mode)" aria-live="polite"><svg viewBox="0 0 24 24" width="24" height="24" class="lightToggleIcon_pyhR"><path fill="currentColor" d="M12,9c1.65,0,3,1.35,3,3s-1.35,3-3,3s-3-1.35-3-3S10.35,9,12,9 M12,7c-2.76,0-5,2.24-5,5s2.24,5,5,5s5-2.24,5-5 S14.76,7,12,7L12,7z M2,13l2,0c0.55,0,1-0.45,1-1s-0.45-1-1-1l-2,0c-0.55,0-1,0.45-1,1S1.45,13,2,13z M20,13l2,0c0.55,0,1-0.45,1-1 s-0.45-1-1-1l-2,0c-0.55,0-1,0.45-1,1S19.45,13,20,13z M11,2v2c0,0.55,0.45,1,1,1s1-0.45,1-1V2c0-0.55-0.45-1-1-1S11,1.45,11,2z M11,20v2c0,0.55,0.45,1,1,1s1-0.45,1-1v-2c0-0.55-0.45-1-1-1C11.45,19,11,19.45,11,20z M5.99,4.58c-0.39-0.39-1.03-0.39-1.41,0 c-0.39,0.39-0.39,1.03,0,1.41l1.06,1.06c0.39,0.39,1.03,0.39,1.41,0s0.39-1.03,0-1.41L5.99,4.58z M18.36,16.95 c-0.39-0.39-1.03-0.39-1.41,0c-0.39,0.39-0.39,1.03,0,1.41l1.06,1.06c0.39,0.39,1.03,0.39,1.41,0c0.39-0.39,0.39-1.03,0-1.41 L18.36,16.95z M19.42,5.99c0.39-0.39,0.39-1.03,0-1.41c-0.39-0.39-1.03-0.39-1.41,0l-1.06,1.06c-0.39,0.39-0.39,1.03,0,1.41 s1.03,0.39,1.41,0L19.42,5.99z M7.05,18.36c0.39-0.39,0.39-1.03,0-1.41c-0.39-0.39-1.03-0.39-1.41,0l-1.06,1.06 c-0.39,0.39-0.39,1.03,0,1.41s1.03,0.39,1.41,0L7.05,18.36z"></path></svg><svg viewBox="0 0 24 24" width="24" height="24" class="darkToggleIcon_wfgR"><path fill="currentColor" d="M9.37,5.51C9.19,6.15,9.1,6.82,9.1,7.5c0,4.08,3.32,7.4,7.4,7.4c0.68,0,1.35-0.09,1.99-0.27C17.45,17.19,14.93,19,12,19 c-3.86,0-7-3.14-7-7C5,9.07,6.81,6.55,9.37,5.51z M12,3c-4.97,0-9,4.03-9,9s4.03,9,9,9s9-4.03,9-9c0-0.46-0.04-0.92-0.1-1.36 c-0.98,1.37-2.58,2.26-4.4,2.26c-2.98,0-5.4-2.42-5.4-5.4c0-1.81,0.89-3.42,2.26-4.4C12.92,3.04,12.46,3,12,3L12,3z"></path></svg></button></div><div class="navbarSearchContainer_Bca1"></div></div></div><div role="presentation" class="navbar-sidebar__backdrop"></div></nav><div id="__docusaurus_skipToContent_fallback" class="main-wrapper mainWrapper_z2l0"><div class="docsWrapper_hBAB"><button aria-label="Scroll back to top" class="clean-btn theme-back-to-top-button backToTopButton_sjWU" type="button"></button><div class="docRoot_UBD9"><aside class="theme-doc-sidebar-container docSidebarContainer_YfHR"><div class="sidebarViewport_aRkj"><div class="sidebar_njMd"><nav aria-label="Docs sidebar" class="menu thin-scrollbar menu_SIkG"><ul class="theme-doc-sidebar-menu menu__list"><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class="menu__link" href="/en/docs/Linux-Application-Development-Manual">手册首页</a></li><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item menu__list-item--collapsed"><div class="menu__list-item-collapsible"><a class="menu__link menu__link--sublist" aria-expanded="false" href="/en/docs/category/第一篇-学习路线教程介绍资料下载">第一篇 学习路线、教程介绍、资料下载</a><button aria-label="Expand sidebar category &#x27;第一篇 学习路线、教程介绍、资料下载&#x27;" type="button" class="clean-btn menu__caret"></button></div></li><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item menu__list-item--collapsed"><div class="menu__list-item-collapsible"><a class="menu__link menu__link--sublist" aria-expanded="false" href="/en/docs/category/第二篇-ubuntu-基本操作">第二篇 Ubuntu 基本操作</a><button aria-label="Expand sidebar category &#x27;第二篇 Ubuntu 基本操作&#x27;" type="button" class="clean-btn menu__caret"></button></div></li><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item"><div class="menu__list-item-collapsible"><a class="menu__link menu__link--sublist menu__link--active" aria-expanded="true" href="/en/docs/category/第三篇-环境搭建与开发板操作">第三篇 环境搭建与开发板操作</a><button aria-label="Collapse sidebar category &#x27;第三篇 环境搭建与开发板操作&#x27;" type="button" class="clean-btn menu__caret"></button></div><ul style="display:block;overflow:visible;height:auto" class="menu__list"><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/en/docs/Linux-Application-Development-Manual/part-3/chapter-05">第1章 搭建开发环境</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/en/docs/Linux-Application-Development-Manual/part-3/chapter-06">第2章 安装软件</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/en/docs/Linux-Application-Development-Manual/part-3/chapter-07">第3章 IMX6ULL Pro开发板基本操作</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/en/docs/Linux-Application-Development-Manual/part-3/chapter-08">第4章 开发板的第1个APP实验</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/en/docs/Linux-Application-Development-Manual/part-3/chapter-09">第5章 开发板的第1个驱动实验</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link menu__link--active" aria-current="page" tabindex="0" href="/en/docs/Linux-Application-Development-Manual/part-3/chapter-10">第6章 构建bootloader、内核、文件系统</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/en/docs/Linux-Application-Development-Manual/part-3/chapter-11">第7章 烧写整个系统或更新部分系统</a></li></ul></li><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item menu__list-item--collapsed"><div class="menu__list-item-collapsible"><a class="menu__link menu__link--sublist" aria-expanded="false" href="/en/docs/category/第四篇-嵌入式-linux-应用开发基础知识">第四篇 嵌入式 Linux 应用开发基础知识</a><button aria-label="Expand sidebar category &#x27;第四篇 嵌入式 Linux 应用开发基础知识&#x27;" type="button" class="clean-btn menu__caret"></button></div></li><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item menu__list-item--collapsed"><div class="menu__list-item-collapsible"><a class="menu__link menu__link--sublist" aria-expanded="false" href="/en/docs/category/第五篇-嵌入式-linux-驱动开发基础知识">第五篇 嵌入式 Linux 驱动开发基础知识</a><button aria-label="Expand sidebar category &#x27;第五篇 嵌入式 Linux 驱动开发基础知识&#x27;" type="button" class="clean-btn menu__caret"></button></div></li><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item menu__list-item--collapsed"><div class="menu__list-item-collapsible"><a class="menu__link menu__link--sublist" aria-expanded="false" href="/en/docs/category/第八篇-其他应用">第八篇 其他应用</a><button aria-label="Expand sidebar category &#x27;第八篇 其他应用&#x27;" type="button" class="clean-btn menu__caret"></button></div></li></ul></nav></div></div></aside><main class="docMainContainer_TBSr"><div class="container padding-top--md padding-bottom--lg"><div class="row"><div class="col docItemCol_VOVn"><div class="docItemContainer_Djhp"><article><nav class="theme-doc-breadcrumbs breadcrumbsContainer_Z_bl" aria-label="Breadcrumbs"><ul class="breadcrumbs" itemscope="" itemtype="https://schema.org/BreadcrumbList"><li class="breadcrumbs__item"><a aria-label="Home page" class="breadcrumbs__link" href="/en/"><svg viewBox="0 0 24 24" class="breadcrumbHomeIcon_YNFT"><path d="M10 19v-5h4v5c0 .55.45 1 1 1h3c.55 0 1-.45 1-1v-7h1.7c.46 0 .68-.57.33-.87L12.67 3.6c-.38-.34-.96-.34-1.34 0l-8.36 7.53c-.34.3-.13.87.33.87H5v7c0 .55.45 1 1 1h3c.55 0 1-.45 1-1z" fill="currentColor"></path></svg></a></li><li itemscope="" itemprop="itemListElement" itemtype="https://schema.org/ListItem" class="breadcrumbs__item"><a class="breadcrumbs__link" itemprop="item" href="/en/docs/category/第三篇-环境搭建与开发板操作"><span itemprop="name">第三篇 环境搭建与开发板操作</span></a><meta itemprop="position" content="1"></li><li itemscope="" itemprop="itemListElement" itemtype="https://schema.org/ListItem" class="breadcrumbs__item breadcrumbs__item--active"><span class="breadcrumbs__link" itemprop="name">第6章 构建bootloader、内核、文件系统</span><meta itemprop="position" content="2"></li></ul></nav><div class="tocCollapsible_ETCw theme-doc-toc-mobile tocMobile_ITEo"><button type="button" class="clean-btn tocCollapsibleButton_TO0P">On this page</button></div><div class="theme-doc-markdown markdown"><header><h1>第6章 构建bootloader、内核、文件系统</h1></header><a id="_Toc33604005"></a>
+<a id="_Toc197788589"></a>
+<a id="_Toc197788590"></a>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="61-准备">6.1 准备<a href="#61-准备" class="hash-link" aria-label="Direct link to 6.1 准备" title="Direct link to 6.1 准备">​</a></h2>
+<p>Linux平台上有许多开源的嵌入式linux系统构建框架(框  架的意思就是工具)，这些框架极大的方便了开发者进行嵌入式系统的定制化构建，目前比较常见的有OpenWrt, Buildroot, Yocto,等等。其中Buildroot功能强大，使用简单，而且采用了类似于linux kernel的配置和编译框架，所以受到广大嵌入式开发人员的欢迎。</p>
+<p>本章重点介绍使用Buildroot_2019.02LTS版构建文件系统和u-boot, kernel镜像的方法，并从这三个部分入手，描述如何使用Buildroot构建一个适合100ask_imx6ull系列开发板的嵌入式Linux系统。</p>
+<p>在构建文件系统时，还简要介绍了如何通过Buildroot将QT5图形系统集成到文件系统中，方便用户后续开发QT5的应用程序。</p>
+<p>确保Ubuntu能ping通外网(比如：ping news.qq.com)，如果无法访问外网请按以下章节配置Ubuntu：</p>
+<ul>
+<li>《<strong>错误!未找到引用源。错误!未找到引用源。</strong>》</li>
+</ul>
+<p>然后参考以下章节下载源码、配置工具链：</p>
+<a id="_Toc197788591"></a>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="62-解压编译bootloader">6.2 解压编译bootloader<a href="#62-解压编译bootloader" class="hash-link" aria-label="Direct link to 6.2 解压编译bootloader" title="Direct link to 6.2 解压编译bootloader">​</a></h2>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="621-bootloader介绍">6.2.1 Bootloader介绍<a href="#621-bootloader介绍" class="hash-link" aria-label="Direct link to 6.2.1 Bootloader介绍" title="Direct link to 6.2.1 Bootloader介绍">​</a></h3>
+<p>Bootloader是在操作系统运行之前运行的一段代码，用于引导操作系统。通常每个操作系统都有一组专属的引导加载程序。引导加载程序通常可以通过多种方式引导操作系统内核，还有各种命令用于调试或修改内核运行环境。</p>
+<p>U-Boot是一个开源的主引导加载程序，用于引导设备的操作系统内核，并含有多种命令以便调试系统。它适用于多种计算机体  系结构，包括68k，ARM，Blackfin，MicroBlaze，MIPS，Nios，SuperH，PPC，RISC-V和x86。</p>
+<p>U-boot官网：</p>
+<p><a href="https://www.denx.de/wiki/U-Boot" target="_blank" rel="noopener noreferrer">https://www.denx.de/wiki/U-Boot</a></p>
+<p>源码下载页面：</p>
+<p><a href="http://ftp.denx.de/pub/u-boot/" target="_blank" rel="noopener noreferrer">http://ftp.denx.de/pub/u-boot/</a></p>
+<p><a id="_Hlk14104514"></a>NXP官方uboot源码Git地址：</p>
+<p><a href="https://source.codeaurora.org/external/imx/uboot-imx" target="_blank" rel="noopener noreferrer">https://source.codeaurora.org/external/imx/uboot-imx</a></p>
+<p>本开发使用的U-boot位于Git仓库，地址为：</p>
+<p><a href="https://e.coding.net/weidongshan/imx-uboot2017.03.git" target="_blank" rel="noopener noreferrer">https://e.coding.net/weidongshan/imx-uboot2017.03.git</a></p>
+<p><strong>注意</strong>：我们使用的版本针对板子进行过修改，u-boot官网下载的源码不能直接使用。</p>
+<a id="_Toc12607186"></a>
+<a id="_Toc533069698"></a>
+<a id="_Toc11842173"></a>
+<a id="_Toc533067223"></a>
+<a id="_Toc533067027"></a>
+<a id="_Toc3909026"></a>
+<a id="_Toc532977073"></a>
+<a id="_Toc11842674"></a>
+<a id="_Toc532979561"></a>
+<a id="_Toc532980170"></a>
+<a id="_Toc533069615"></a>
+<a id="_Toc533148301"></a>
+<a id="_Toc11842410"></a>
+<a id="_Toc4428032"></a>
+<a id="_Toc12607098"></a>
+<a id="_Toc12607189"></a>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="622-编译u-boot镜像">6.2.2 编译u-boot镜像<a href="#622-编译u-boot镜像" class="hash-link" aria-label="Direct link to 6.2.2 编译u-boot镜像" title="Direct link to 6.2.2 编译u-boot镜像">​</a></h3>
+<p>不同的开发板对应不同的配置文件，配置文件位于u-boot源码的“configs/”目录。对于IMX6ULL Pro版，u-boot的编译过程如下(编译uboot前必须先配置好工具链等开发环境)：</p>
+<div class="language-bash codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-bash codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">cd /home/book/100ask_imx6ull-sdk</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">book@100ask: ~/100ask_imx6ull-sdk$cd  Uboot-2017.03</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">book@100ask: ~/100ask_imx6ull-sdk/Uboot-2017.03$ make distclean</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">book@100ask: ~/100ask_imx6ull-sdk/Uboot-2017.03$ make mx6ull_14x14_evk_defconfig</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">book@100ask: ~/100ask_imx6ull-sdk/Uboot-2017.03$ make</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="Copy code to clipboard" title="Copy" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<p>图 6.1 编译镜像文件为具体的执行步骤：</p>
+<p><img loading="lazy" src="/en/assets/images/manual-166-9d4df78753fb93b9dee85629bb3f36fb.png" width="1101" height="270" class="img_ev3q"></p>
+<p><a id="_Ref108619057"></a>图 6.1 编译镜像文件</p>
+<p>编译完成后生成的文件如图 6.2所示。</p>
+<p><img loading="lazy" src="/en/assets/images/manual-167-77c1acc5ac038483a7fd08c6adc5b536.png" width="1101" height="159" class="img_ev3q"></p>
+<p><a id="_Ref108619098"></a>图 6.2 镜像文 件编译成功</p>
+<p>编译完成之后生成u-boot-dtb.imx，可以烧在TF卡、EMMC上。以下命令是将u-boot-dtb.imx文件烧写到EMMC上：</p>
+<div class="language-bash codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-bash codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">[root@100ask:~]# echo 0 &gt; /sys/block/mmcblk1boot0/force_ro</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">[root@100ask:~]# dd if=u-boot-dtb.imx of=/dev/mmcblk1boot0 bs=512 seek=2</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">[root@100ask:~]# echo 1 &gt; /sys/block/mmcblk1boot0/force_ro</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="Copy code to clipboard" title="Copy" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<a id="_编译Linux_Kernel"></a>
+<a id="_Ref109377884"></a>
+<a id="_Ref109377887"></a>
+<a id="_Toc197788592"></a>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="63-编译linux-kernel和模块">6.3 编译Linux Kernel和模块<a href="#63-编译linux-kernel和模块" class="hash-link" aria-label="Direct link to 6.3 编译Linux Kernel和模块" title="Direct link to 6.3 编译Linux Kernel和模块">​</a></h2>
+<p>Linux内核（英语：Linux kernel）是一种开源的类Unix操作系统 宏内核。整个Linux操作系统家族基于该内核部署在传统计算机平台（如个人计算机和服务器，以Linux发行版的形式）和各种嵌入式平台，如路由器、无线接入点、专用小交换机、机顶盒、FTA接收器、智能电视、数字视频录像机、网络附加存储（NAS）等。工作于平板电脑、智能手机及智能手表的Android操作系统，它的底层操作系统也是Linux。尽管在桌面计算机的占用率较低，但基于Linux的操作系统统治了几乎从移动设备到主机的其他全部领域。实际Linux的发行版Ubuntu，其易用性也逐渐接近Windows。</p>
+<p>Linux kernel官网：</p>
+<p><a href="https://www.kernel.org/" target="_blank" rel="noopener noreferrer">https://www.kernel.org/</a></p>
+<p>linux Kernel维基百科：</p>
+<p><a href="https://www.wiki.kernel.org/" target="_blank" rel="noopener noreferrer">https://www.wiki.kernel.org/</a></p>
+<p>在线阅读linux kernel源码：</p>
+<p><a href="https://elixir.bootlin.com/" target="_blank" rel="noopener noreferrer">https://elixir.bootlin.com/</a></p>
+<p>Git仓库地址：</p>
+<p><a href="https://e.coding.net/weidongshan/imx-linux4.9.88.git" target="_blank" rel="noopener noreferrer">https://e.coding.net/weidongshan/imx-linux4.9.88.git</a></p>
+<p>NXP官方kernel源码Git仓库地址：</p>
+<p><a href="https://source.codeaurora.org/external/imx/linux-imx" target="_blank" rel="noopener noreferrer">https://source.codeaurora.org/external/imx/linux-imx</a></p>
+<p>上述Git仓库是专为100ask_imx6ull系列开发板制定的Linux内核，它有如表 6‑1特性：</p>
+<p><a id="_Ref108619338"></a>表 6‑1 百问定制内核特征</p>
+<table><thead><tr><th>名称</th><th>是否支持</th><th>作用</th><th>是否开源</th></tr></thead><tbody><tr><td>USB HOST</td><td>支持</td><td>USB Host驱动，支持OHCI和EHCI两种传输模式</td><td>Yes</td></tr><tr><td>USB OTG</td><td>支持</td><td>Usb otg驱动，支持device模式和host模式</td><td>Yes</td></tr><tr><td>Network</td><td>支持</td><td>RJ-45以太网驱动</td><td>Yes</td></tr><tr><td>MMC/SD</td><td>支持</td><td>MMC/SD卡驱动</td><td>Yes</td></tr><tr><td>EMMC</td><td>支持</td><td>EMMC驱动</td><td>Yes</td></tr><tr><td>I2C</td><td>支持</td><td>I2C驱动</td><td>Yes</td></tr><tr><td>SPI</td><td>支持</td><td>SPI驱动</td><td>Yes</td></tr><tr><td>LCD</td><td>支持</td><td>显示驱动</td><td>Yes</td></tr><tr><td>RTC</td><td>支持</td><td>内置RTC时钟驱动</td><td>Yes</td></tr><tr><td>ADC</td><td>支持</td><td>ADC驱动</td><td>Yes</td></tr><tr><td>TouchScreen</td><td>支持</td><td>电容触摸</td><td>Yes</td></tr><tr><td>UART</td><td>支持</td><td>串口驱动</td><td>Yes</td></tr><tr><td>PMU</td><td>支持</td><td>电源管理驱动</td><td>Yes</td></tr><tr><td>LED</td><td>支持</td><td>LED驱动，包括GPIO LED和PWM</td><td>Yes</td></tr><tr><td>Button</td><td>支持</td><td>GPIO Button 驱动</td><td>Yes</td></tr><tr><td>Camera</td><td>支持</td><td>摄像头驱动</td><td>Yes</td></tr></tbody></table>
+<p><a id="_编译内核镜像"></a><a id="_9.5.2_编译内核镜像"></a><a id="_Toc12607192"></a>使用内核以及内核模块前需要将其编译，然后安装到ubuntu或开发板，详细步骤已经下面3个章节写明了：</p>
+<a id="_Toc197788593"></a>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="64-buildroot的用法">6.4 Buildroot的用法<a href="#64-buildroot的用法" class="hash-link" aria-label="Direct link to 6.4 Buildroot的用法" title="Direct link to 6.4 Buildroot的用法">​</a></h2>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="641-buildroot简介">6.4.1 Buildroot简介<a href="#641-buildroot简介" class="hash-link" aria-label="Direct link to 6.4.1 Buildroot简介" title="Direct link to 6.4.1 Buildroot简介">​</a></h3>
+<p>制作根文件系统有很多种方法：</p>
+<ol>
+<li>使用Busybox手工制作</li>
+</ol>
+<p>Busybox本身包含了很了Linux命令，但是要编译其他程序的话需要手工下载、编译，如果它需要某些依赖库，  你还需要手工下载、编译这些依赖库。</p>
+<p>如果想做一个极简的文件系统，可以使用Busybox手工制作。</p>
+<ol>
+<li>使用Buildroot自动制作</li>
+</ol>
+<p>它是一个自动化程序很高的系统，可以在里面配置、编译内核，配置编译u-boot、配置编译根文件系统。在编译某些APP时，它会自动去下载源码、下载它的依赖库，自动编译这些程序。</p>
+<p>Buildroot的语法跟一般的Makefile语法类似，很容易掌握。</p>
+<ol>
+<li>使用Yocto</li>
+</ol>
+<p>NXP、ST等公司的官方开发包是使用Yocto，但是Yocto语法复杂，并且Yocto动辄10GB，下载安装都很困难，普通笔记本编译可能需要2-3天甚至更久，非常不适合初学者(我们不推荐使用yocto构建文件系统)。</p>
+<p>基于上述特点，我们选择Buildroot。</p>
+<p>Buildroot是一组Makefile和补丁，可简化并自动化地为嵌入式系统构建完整的、可启动的Linux环境(包括bootloader、Linux内核、包含各种APP的文件系统)。Buildroot运行于Linux平台，可以使用交叉编译工具为多个目标板构建嵌入式Linux平台。Buildroot可以自动构建所需的交叉编译工具链，创建根文件系统，编译Linux内核映像，并生成引导加载程序用于目标嵌入式系统，或者它可以执行这些步骤的任何独立组合。例如，可以单独使用已安装的交叉编译工具链，而Buildroot仅创建根文件系统。</p>
+<p>Buildroot参考网址：</p>
+<p>•Buildroot用户手册：</p>
+<p><a href="https://buildroot.org/downloads/manual/manual.html" target="_blank" rel="noopener noreferrer">https://buildroot.org/downloads/manual/manual.html</a></p>
+<p>• Buildroot源码下载地址：</p>
+<p><a href="https://buildroot.org/downloads/" target="_blank" rel="noopener noreferrer">https://buildroot.org/downloads/</a></p>
+<p>• 百问网提供的Buildroot现支持如下包：</p>
+<p>表 6‑2 百问网buildroot支持包</p>
+<table><thead><tr><th>busybox</th><th>taglib</th><th>libopenh264</th><th>qt5_gl_available</th></tr></thead><tbody><tr><td>skeleton_init_systemd</td><td>tremor</td><td>libopusenc</td><td>qt5_jscore_available</td></tr><tr><td>alsa_utils</td><td>libarchive</td><td>libtheora</td><td>qt5</td></tr><tr><td>bluez_alsa</td><td>zlib</td><td>libvpx</td><td>qt5_version_latest</td></tr><tr><td>faad2</td><td>libzlib</td><td>libyuv</td><td>qt5base</td></tr><tr><td>ffmpeg</td><td>has_zlib</td><td>live555</td><td>qt5base_network</td></tr><tr><td>flac</td><td>libassuan</td><td>mediastreamer</td><td>qt5base_concurrent</td></tr><tr><td>fluidsynth</td><td>libgcrypt</td><td>x264</td><td>qt5base_sql</td></tr><tr><td>gstreamer1</td><td>libgpg_error</td><td>x264_cli</td><td>qt5base_sqlite_none</td></tr><tr><td>jack2</td><td>Libgpgme</td><td>libcurl</td><td>qt5base_test</td></tr><tr><td>lame</td><td>Libksba</td><td>libnice</td><td>qt5base_xml</td></tr><tr><td>mjpegtools</td><td>Openssl</td><td>libnl</td><td>qt5base_gui</td></tr><tr><td>musepack</td><td>libopenssl</td><td>libpcap</td><td>qt5base_widgets</td></tr><tr><td>pulseaudio</td><td>sqlite</td><td>libshout</td><td>qt5base_opengl</td></tr><tr><td>twolame</td><td>libconfig</td><td>libsoup</td><td>qt5base_opengl_es2</td></tr><tr><td>wavpack</td><td>libconfuse</td><td>libsrtp</td><td>qt5base_opengl_lib</td></tr><tr><td>bzip2</td><td>libfuse</td><td>libtirpc</td><td>qt5base_linuxfb</td></tr><tr><td>lz4</td><td>liblockfile</td><td>neon</td><td>qt5base_eglfs</td></tr><tr><td>xz</td><td>bayer2rgb_neon</td><td>ortp</td><td>qt5base_default_qpa=&quot;&quot;</td></tr><tr><td>gdb</td><td>bullet</td><td>rtmpdump</td><td>qt5base_printsupport</td></tr><tr><td>gdb_server</td><td>cairo</td><td>bctoolbox</td><td>qt5base_fontconfig</td></tr><tr><td>gdb_debugger</td><td>cairo_pdf</td><td>elfutils</td><td>qt5base_harfbuzz</td></tr><tr><td>gdb_tui</td><td>cairo_png</td><td>glibmm</td><td>qt5base_gif</td></tr><tr><td>spidev_test</td><td>cairo_svg</td><td>libb64</td><td>qt5base_jpeg</td></tr><tr><td>strace</td><td>fontconfg</td><td>libbsd</td><td>qt5base_png</td></tr><tr><td>libtool</td><td>freetype</td><td>libcap</td><td>qt5base_dbus</td></tr><tr><td>cifs_utils</td><td>gdk_pixbuf</td><td>libcroco</td><td>qt5base_icu</td></tr><tr><td>dosfstools</td><td>giflib</td><td>libevdev</td><td>qt5base_openssl</td></tr><tr><td>e2fsprogs</td><td>harfbuzz</td><td>libffi</td><td>qt5base_tslib</td></tr><tr><td>mmc_utils</td><td>jasper</td><td>libglib2</td><td>qt5canvas3d</td></tr><tr><td>nfs_utils</td><td>jpeg</td><td>libical</td><td>qt5charts</td></tr><tr><td>glmark2_flavor_any</td><td>kmsxx</td><td>libnpth</td><td>qt5connectivity</td></tr><tr><td>libva_utils</td><td>libdrm</td><td>libsigc</td><td>qt5declarative</td></tr><tr><td>fb_test_app</td><td>libmediaart</td><td>liburcu</td><td>qt5declarative_quick</td></tr><tr><td>fbdump</td><td>libpng</td><td>llvm</td><td>qt5enginio</td></tr><tr><td>fbset</td><td>libraw</td><td>mpdecimal</td><td>qt5graphicaleffects</td></tr><tr><td></td><td>librsvg</td><td>protobuf</td><td>qt5imageformats</td></tr><tr><td>psplash</td><td>libsvg</td><td>tzdata</td><td>qt5location</td></tr><tr><td>xkeyboard_config</td><td>libsvg_cairo</td><td>icu</td><td>qt5multimedia</td></tr><tr><td>dbus</td><td>libva</td><td>libfribidi</td><td>qt5quickcontrols</td></tr><tr><td>evtest</td><td>opencv3</td><td>ncurses</td><td>qt5quickcontrols2</td></tr><tr><td></td><td>has_libegl</td><td>pcre</td><td>qt5script</td></tr><tr><td>gptfdisk</td><td>has_libgles</td><td>pcre2</td><td>qt5scxml</td></tr><tr><td>i2c_tools</td><td>openjpeg</td><td>popt</td><td>qt5sensors</td></tr><tr><td>iostat</td><td>pango</td><td>readline</td><td>qt5serialbus</td></tr><tr><td>linux_serial_test</td><td>pipewire</td><td>slang</td><td>qt5serialport</td></tr><tr><td>memtool</td><td>pixman</td><td>bluez_tools</td><td>qt5svg</td></tr><tr><td>parted</td><td>tiff</td><td>bluez5_utils</td><td>qt5virtualkeyboard</td></tr><tr><td>spi_tools</td><td>wayland</td><td>bmon</td><td>qt5webchannel</td></tr><tr><td>sysstat</td><td>webp</td><td>iperf3</td><td>qt5websockets</td></tr><tr><td>uboot_tools</td><td>dtc</td><td>iproute2</td><td>qt5xmlpatterns</td></tr><tr><td>has_udev</td><td>libaio</td><td>iw</td><td>attr</td></tr><tr><td>usbmount</td><td>libgudev</td><td>lrzsz</td><td>keyutils</td></tr><tr><td>usbutils</td><td>libinput</td><td>mii_diag</td><td>kmod</td></tr><tr><td>luajit</td><td>libpciaccess</td><td>mjpg_streamer</td><td>kmod_tools</td></tr><tr><td>python3</td><td>libusb</td><td>mosquitto</td><td>start_stop_daemon</td></tr><tr><td>alsa_lib</td><td>libxkbcommon</td><td>net_tools</td><td>swupdate</td></tr><tr><td>fdk_aac</td><td>mtdev</td><td>openobex</td><td>systemd</td></tr><tr><td>libcodec2</td><td>tslib</td><td>openssh</td><td>util_linux</td></tr><tr><td>libcuefile</td><td>expat</td><td>pppd</td><td>myir_hmi_gui</td></tr><tr><td>libreplaygain</td><td>json_glib</td><td>rpcbind</td><td>rs485read</td></tr><tr><td>libsamplerate</td><td>jsoncpp</td><td>tcpdump</td><td></td></tr><tr><td>libsndfile</td><td>libxml2</td><td>wget</td><td></td></tr><tr><td>libvorbis</td><td>bitstream</td><td>wireless_tools</td><td></td></tr><tr><td>mp4v2</td><td>libass</td><td>opkg</td><td></td></tr><tr><td>opus</td><td>libcamera</td><td>bash</td><td></td></tr><tr><td>portaudio</td><td>libmms</td><td>gnupg2</td><td></td></tr><tr><td>sbc</td><td>libmpeg2</td><td>gnupg2_gpgv</td><td></td></tr><tr><td>speex</td><td>libogg</td><td>lockfile_progs</td><td></td></tr></tbody></table>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="642-系统特征讲解">6.4.2 系统特征讲解<a href="#642-系统特征讲解" class="hash-link" aria-label="Direct link to 6.4.2 系统特征讲解" title="Direct link to 6.4.2 系统特征讲解">​</a></h3>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ol>
+<li>我们都做了哪些改进？</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>我们基于buildroot官方 2020.02长期支持版本进行适配imx6ull开发板，在此基础上针对ST yocto发行系统做了大量的裁剪，在保证最小系统的基础上增加对qt5.12 库的支持，同时也支持opencv3编程 mqtt库 swupdate ota升级等等比较常用的应用，我们也会提供如何在buildroot新增自己的软件包教程，同时源码保存在gitee上，链接地址为</p>
+<p><a href="https://gitee.com/weidongshan/Buildroot.git" target="_blank" rel="noopener noreferrer">https://gitee.com/weidongshan/Buildroot.git</a></p>
+<p>大家可以在上面提交issue 或者pull request。</p>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ol>
+<li>什么是init系统服务？</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>init（为英语：initialization的简写）是 Unix 和 类Unix 系统中用来产生其它所有进程的程序。它以守护进程的方式存在，其进程号为1。Linux系统在引导时加载Linux内核后，便由Linux内核加载init程序，由init程序完成余下的引导过程，比如加载运行级别，加载服务，引导Shell/图形化界面等等。</p>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ol>
+<li>什么是systemv守护进程？</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>System V（缩写为SysV）在大多数Linux发行版中使用最广泛,在systemv中，在内核加载后运行的第1个程序被称为init程序。Init做一些事情，其中之一就是加载一系列脚本来启动各种系统服务，例如网络，ssh守护程序等。</p>
+<p>System V中的运行级别描述了某些状态，例如：</p>
+<ul>
+<li>运行级别0：暂停</li>
+<li>运行级别1：单用户模式</li>
+<li>运行级别6：重新启动</li>
+</ul>
+<p>systemv的问题在于它需要仔细调整。假设您有一个要在启动时运行的网络文件系统（NFS）客户端。在网络正常工作之前运行NFS没有任何意义。因此，您必须等待网络已经正常工作，才能启动systemv。Systemv init这样做的方法是为服务启动设置严格的顺序。每个服务都分配有一个优先级编号，init会按优先级顺序启动服务。如果需要确保网络连接后启动服务，则必须手动为服务分配更高的优先级。这必须由某人（通 常是软件包维护者）针对计算机上运行的每项服务来完成。</p>
+<p>所有System V初始化脚本都存储在/etc/rc.d/init.d/或/etc/init.d目录中。这些脚本用于控制系统的启动和关闭。通常，您会在这个目录找到启动ssh服务器或网络的脚本，可以手工执行它们。比如使用“/etc/init.d/S50sshd start”开启ssh服务，使用“/etc/init.d/S50sshd stop”关闭ssh服务。</p>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ol>
+<li>什么是systemd守护进程？</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>systemd这一名字源于Unix中的一个惯例：在Unix中常以“d”作为系统守护进程（英语：daemon，亦称后台进程）的后缀标识。除此以外，systemd亦是指代英文术语D体系，而这一术语即是用于描述一个人具有快速地适应环境并解决困难的能力。</p>
+<p>systemd是Linux电脑操作系统之下的一套中央化系统及设置管理程序（init），包括有守护进程、程序库以及应用软件，由Lennart Poettering带头开发。其开发目标是提供更优秀的框架以表示系统服务间的依赖关系，并依此实现系统初始化时服务的并行启动，同时达到降低Shell的系统开销的效果，最终代替现在常用的System V与BSD风格的init程序。目前绝大多数的Linux发行版都已采用systemd代替原来的System V。</p>
+<p><img loading="lazy" src="/en/assets/images/manual-168-79905c2b65ba7fee6634e4c65215ec89.png" width="650" height="366" class="img_ev3q"></p>
+<p>图 6.3 systemd</p>
+<p>将service（服务）、target（运行模式，类似于运行级别）、mount、timer、snapshot、path、socket、swap等称为Unit。比如，一个auditd服务（就是auditd.service）就是一个Unit，一个multi-user.target运行模式也是一个Unit，其中不同的服务通过 systemctl 来进行统一管理，例如重启一个sshd服务，需要执行 systemctl restart sshd 命令，同样的如果添加一个启动程序需要  自己定义一个 service服务才可以。</p>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ol>
+<li>你可以用我们提供的buildroot做些什么？</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>快速实现自己的想法，增加自己的应用，学习了解busybox以及各种包是如何编译生成，用于调试内核或者应用程序等等。</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="643-扩展学习">6.4.3 扩展学习<a href="#643-扩展学习" class="hash-link" aria-label="Direct link to 6.4.3 扩展学习" title="Direct link to 6.4.3 扩展学习">​</a></h3>
+<p>在buildroot下进入menuconfig包选择配置配置界面</p>
+<div class="language-bash codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-bash codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">book@100ask: ~/100ask_imx6ull-sdk/Buildroot_2020.02.x$ make menuconfig</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="Copy code to clipboard" title="Copy" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<p>buildroot下单独编译内核</p>
+<div class="language-bash codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-bash codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">book@100ask: ~/100ask_imx6ull-sdk/Buildroot_2020.02.x$ make linux-rebuild</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="Copy code to clipboard" title="Copy" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<p>buildroot下进入内核make menuconfig配置选项界面</p>
+<div class="language-bash codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-bash codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">book@100ask: ~/100ask_imx6ull-sdk/Buildroot_2020.02.x$ make linux-menuconfig</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="Copy code to clipboard" title="Copy" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<p>buildroot下单独编译u-boot</p>
+<div class="language-bash codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-bash codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">book@100ask: ~/100ask_imx6ull-sdk/Buildroot_2020.02.x$ make uboot-rebuild</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="Copy code to clipboard" title="Copy" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<p>buildroot下单独编译某个软件包</p>
+<div class="language-bash codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-bash codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">book@100ask: ~/100ask_imx6ull-sdk/Buildroot_2020.02.x$ make &lt;pkg&gt;-rebuild</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="Copy code to clipboard" title="Copy" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<p>buildroot下进入busybox配置界面</p>
+<div class="language-bash codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-bash codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">book@100ask: ~/100ask_imx6ull-sdk/Buildroot_2020.02.x$ make busybox-menuconfig</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="Copy code to clipboard" title="Copy" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<p>buildroot下生成系统sdk,最后生成的目录在output/images/目录下</p>
+<div class="language-bash codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-bash codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">book@100ask: ~/100ask_imx6ull-sdk/Buildroot_2020.02.x$ make sdk</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="Copy code to clipboard" title="Copy" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<a id="_Toc532980180"></a>
+<a id="_Toc4428042"></a>
+<a id="_Toc11842684"></a>
+<a id="_Toc532979571"></a>
+<a id="_Toc533069708"></a>
+<a id="_Toc12607196"></a>
+<a id="_Toc11842183"></a>
+<a id="_Toc533148311"></a>
+<a id="_Toc532977083"></a>
+<a id="_Toc11842420"></a>
+<a id="_Toc533067233"></a>
+<a id="_Toc3909036"></a>
+<a id="_Toc533067037"></a>
+<a id="_Toc533069625"></a>
+<a id="_Toc12607108"></a>
+<a id="_Toc197788594"></a>
+<a id="_Toc12607197"></a>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="65-构建imx6ull-pro版的根文件系统">6.5 构建IMX6ULL Pro版的根文件系统<a href="#65-构建imx6ull-pro版的根文件系统" class="hash-link" aria-label="Direct link to 6.5 构建IMX6ULL Pro版的根文件系统" title="Direct link to 6.5 构建IMX6ULL Pro版的根文件系统">​</a></h2>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="651-配置文件说明">6.5.1 配置文件说明<a href="#651-配置文件说明" class="hash-link" aria-label="Direct link to 6.5.1 配置文件说明" title="Direct link to 6.5.1 配置文件说明">​</a></h3>
+<p>表 6‑3 配置文件说明</p>
+<table><thead><tr><th>配置文件</th><th>含义</th></tr></thead><tbody><tr><td>100ask_imx6ull_pro_ddr512m_systemV_core_defconfig</td><td>使用systemV守护进程的系统(包含基本工具集包)</td></tr><tr><td>100ask_imx6ull_pro_ddr512m_systemV_qt5_defconfig</td><td>使用systemV守护进程的系统，包含Qt GUI文件系统版本(出厂系统默认)</td></tr></tbody></table>
+<a id="_Toc12607198"></a>
+<p>注意：使用“100ask_imx6ull_pro_ddr512m_systemV_core_defconfig”时，执行“make 100ask_imx6ull_pro_ddr512m_systemV_core_defconfig”后，需要再执行“make menuconfig”如下图选择librsync：</p>
+<p><img loading="lazy" src="/en/assets/images/manual-169-e0710b0396617c017981fc5570ca801d.png" width="852" height="269" class="img_ev3q"></p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="652-编译系统">6.5.2 编译系统<a href="#652-编译系统" class="hash-link" aria-label="Direct link to 6.5.2 编译系统" title="Direct link to 6.5.2 编译系统">​</a></h3>
+<p>下面以100ask_imx6ull_pro_ddr512m_systemV_qt5_defconfig配置文件为例，在ubuntu终端上说明 Buildroot 的配置过程：</p>
+<div class="language-bash codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-bash codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">cd /home/book/100ask_imx6ull-sdk</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">book@100ask:~/100ask_imx6ull-sdk$ ../repo/repo sync -j 4</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">book@100ask:~/100ask_imx6ull-sdk$ cd Buildroot_2020.02.x</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">book@100ask:~/100ask_imx6ull-sdk/Buildroot_2020.02.x$ make clean</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">book@100ask:~/100ask_imx6ull-sdk/Buildroot_2020.02.x$ make 100ask_imx6ull_pro_ddr512m_systemV_qt5_defconfig</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">book@100ask:~/100ask_imx6ull-sdk/Buildroot_2020.02.x$ make all -j4</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="Copy code to clipboard" title="Copy" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<p><img loading="lazy" src="/en/assets/images/manual-170-e67a9f4fc9d73f1f0d80dfbdf88a778f.png" width="1594" height="737" class="img_ev3q"></p>
+<p>图 6.4 编译系统</p>
+<p>**注意：**机器性能不同，编译时间不同。性能差的电脑，有可能需要等待5 ~ 6个小时。</p>
+<p>编译完成后如图 6.5示。</p>
+<p><img loading="lazy" src="/en/assets/images/manual-171-b1ff1c0f60e1f06c669572cc3688b28a.png" width="1323" height="283" class="img_ev3q"></p>
+<p><a id="_Ref108620266"></a>图 6.5 系统编译完成</p>
+<a id="_Ref533154447"></a>
+<a id="_Ref533154406"></a>
+<a id="_Ref533154397"></a>
+<a id="_Toc12607199"></a>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="653-镜像文件">6.5.3 镜像文件<a href="#653-镜像文件" class="hash-link" aria-label="Direct link to 6.5.3 镜像文件" title="Direct link to 6.5.3 镜像文件">​</a></h3>
+<p>编译成功后文件输出路径为 output/images</p>
+<p>buildroot2020.02.x</p>
+<p>├── output</p>
+<p>├── images</p>
+<p>├── 100ask_imx6ull-14x14.dtb &lt;--设备树文件</p>
+<p>├── rootfs.ext2 &lt;--ext2格式根文件系统</p>
+<p>├── rootfs.ext4 -&gt; rootfs.ext2 &lt;--ext2格式根文件系统</p>
+<p>├── rootfs.tar</p>
+<p>├── rootfs.tar.bz2 &lt;--打包并压缩的根文件系统，用于NFSROOT启动</p>
+<p>├── 100ask-imx6ull-pro-512d-systemv-v1.img &lt;--完整的系统镜像(可以用来烧写emmc和sd卡)</p>
+<p>├── u-boot-dtb.imx &lt;--u-boot镜像</p>
+<p>└── zImage &lt;--内核镜像</p>
+<p>可以参考章节<a href="/en/docs/Linux-Application-Development-Manual/part-3/chapter-11#_Toc31978937">《烧写整个系统或更新部分系统》</a>把上面编译出来的100ask-imx6ull-pro-512d-systemv-v1.img重命名为emmc.img(或sdcard.img)，把emmc.img(或sdcard.img)放到“100ask_imx6ull烧写工具”的files目录里，就可以使用工具烧写到EMMC(或SD/TF卡)。</p></div><footer class="theme-doc-footer docusaurus-mt-lg"><div class="theme-doc-footer-edit-meta-row row"><div class="col"><a href="https://github.com/100askTeam/linux-docs/tree/main/docs/Linux-Application-Development-Manual/part-3/chapter-10.md" target="_blank" rel="noopener noreferrer" class="theme-edit-this-page"><svg fill="currentColor" height="20" width="20" viewBox="0 0 40 40" class="iconEdit_Z9Sw" aria-hidden="true"><g><path d="m34.5 11.7l-3 3.1-6.3-6.3 3.1-3q0.5-0.5 1.2-0.5t1.1 0.5l3.9 3.9q0.5 0.4 0.5 1.1t-0.5 1.2z m-29.5 17.1l18.4-18.5 6.3 6.3-18.4 18.4h-6.3v-6.2z"></path></g></svg>Edit this page</a></div><div class="col lastUpdated_vwxv"></div></div></footer></article><nav class="pagination-nav docusaurus-mt-lg" aria-label="Docs pages"><a class="pagination-nav__link pagination-nav__link--prev" href="/en/docs/Linux-Application-Development-Manual/part-3/chapter-09"><div class="pagination-nav__sublabel">Previous</div><div class="pagination-nav__label">第5章 开发板的第1个驱动实验</div></a><a class="pagination-nav__link pagination-nav__link--next" href="/en/docs/Linux-Application-Development-Manual/part-3/chapter-11"><div class="pagination-nav__sublabel">Next</div><div class="pagination-nav__label">第7章 烧写整个系统或更新部分系统</div></a></nav></div></div><div class="col col--3"><div class="tableOfContents_bqdL thin-scrollbar theme-doc-toc-desktop"><ul class="table-of-contents table-of-contents__left-border"><li><a href="#61-准备" class="table-of-contents__link toc-highlight">6.1 准备</a></li><li><a href="#62-解压编译bootloader" class="table-of-contents__link toc-highlight">6.2 解压编译bootloader</a><ul><li><a href="#621-bootloader介绍" class="table-of-contents__link toc-highlight">6.2.1 Bootloader介绍</a></li><li><a href="#622-编译u-boot镜像" class="table-of-contents__link toc-highlight">6.2.2 编译u-boot镜像</a></li></ul></li><li><a href="#63-编译linux-kernel和模块" class="table-of-contents__link toc-highlight">6.3 编译Linux Kernel和模块</a></li><li><a href="#64-buildroot的用法" class="table-of-contents__link toc-highlight">6.4 Buildroot的用法</a><ul><li><a href="#641-buildroot简介" class="table-of-contents__link toc-highlight">6.4.1 Buildroot简介</a></li><li><a href="#642-系统特征讲解" class="table-of-contents__link toc-highlight">6.4.2 系统特征讲解</a></li><li><a href="#643-扩展学习" class="table-of-contents__link toc-highlight">6.4.3 扩展学习</a></li></ul></li><li><a href="#65-构建imx6ull-pro版的根文件系统" class="table-of-contents__link toc-highlight">6.5 构建IMX6ULL Pro版的根文件系统</a><ul><li><a href="#651-配置文件说明" class="table-of-contents__link toc-highlight">6.5.1 配置文件说明</a></li><li><a href="#652-编译系统" class="table-of-contents__link toc-highlight">6.5.2 编译系统</a></li><li><a href="#653-镜像文件" class="table-of-contents__link toc-highlight">6.5.3 镜像文件</a></li></ul></li></ul></div></div></div></div></main></div></div></div><footer class="footer footer--dark"><div class="container container-fluid"><div class="row footer__links"><div class="col footer__col"><div class="footer__title">Docs</div><ul class="footer__items clean-list"><li class="footer__item"><a href="https://dongshanpi.com" target="_blank" rel="noopener noreferrer" class="footer__link-item">DongshanPI<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a></li><li class="footer__item"><a href="https://canaan-docs.100ask.net/" target="_blank" rel="noopener noreferrer" class="footer__link-item">Canaan-Docs<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a></li><li class="footer__item"><a href="https://renesas-docs.100ask.net/" target="_blank" rel="noopener noreferrer" class="footer__link-item">Renesas-Docs<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a></li><li class="footer__item"><a href="https://rtos.100ask.net/" target="_blank" rel="noopener noreferrer" class="footer__link-item">RTOS<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a></li><li class="footer__item"><a href="https://tina.100ask.net/" target="_blank" rel="noopener noreferrer" class="footer__link-item">TinaSDK-Docs<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a></li><li class="footer__item"><a href="https://allwinner-docs.100ask.net/" target="_blank" rel="noopener noreferrer" class="footer__link-item">Allwinner-Docs<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a></li><li class="footer__item"><a href="https://aw-r128.100ask.net/" target="_blank" rel="noopener noreferrer" class="footer__link-item">R128-Docs<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a></li></ul></div><div class="col footer__col"><div class="footer__title">Community</div><ul class="footer__items clean-list"><li class="footer__item"><a href="https://space.bilibili.com/275908810" target="_blank" rel="noopener noreferrer" class="footer__link-item">BiliBili<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a></li><li class="footer__item"><a href="https://forums.100ask.net" target="_blank" rel="noopener noreferrer" class="footer__link-item">Stack Overflow<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a></li><li class="footer__item"><a href="https://video.100ask.net/" target="_blank" rel="noopener noreferrer" class="footer__link-item">VideoCenter<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a></li><li class="footer__item"><a href="https://twitter.com/dongshanpi" target="_blank" rel="noopener noreferrer" class="footer__link-item">Twitter<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a></li></ul></div><div class="col footer__col"><div class="footer__title">More</div><ul class="footer__items clean-list"><li class="footer__item"><a href="https://weidongshan.coding.net/public/" target="_blank" rel="noopener noreferrer" class="footer__link-item">Coding<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a></li><li class="footer__item"><a href="https://github.com/100askTeam" target="_blank" rel="noopener noreferrer" class="footer__link-item">GitHub<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a></li><li class="footer__item"><a href="https://gitee.com/weidongshan" target="_blank" rel="noopener noreferrer" class="footer__link-item">Gitee<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a></li></ul></div></div><div class="footer__bottom text--center"><div class="footer__copyright">Copyright © 2026 100askTeam, Inc. Built with Docusaurus.</div></div></div></footer></div>
+</body>
+</html>

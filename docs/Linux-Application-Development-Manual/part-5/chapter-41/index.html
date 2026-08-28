@@ -1,0 +1,1575 @@
+<!doctype html>
+<html lang="zh-Hans" dir="ltr" class="docs-wrapper plugin-docs plugin-id-default docs-version-current docs-doc-page docs-doc-id-Linux-Application-Development-Manual/part-5/chapter-41" data-has-hydrated="false">
+<head>
+<meta charset="UTF-8">
+<meta name="generator" content="Docusaurus v3.0.1">
+<title data-rh="true">第19章 驱动程序基石 | 韦东山Linux</title><meta data-rh="true" name="viewport" content="width=device-width,initial-scale=1"><meta data-rh="true" name="twitter:card" content="summary_large_image"><meta data-rh="true" property="og:image" content="https://linux.100ask.net/img/docusaurus-social-card.jpg"><meta data-rh="true" name="twitter:image" content="https://linux.100ask.net/img/docusaurus-social-card.jpg"><meta data-rh="true" property="og:url" content="https://linux.100ask.net/docs/Linux-Application-Development-Manual/part-5/chapter-41"><meta data-rh="true" property="og:locale" content="zh_Hans"><meta data-rh="true" property="og:locale:alternate" content="en"><meta data-rh="true" name="docusaurus_locale" content="zh-Hans"><meta data-rh="true" name="docsearch:language" content="zh-Hans"><meta data-rh="true" name="docusaurus_version" content="current"><meta data-rh="true" name="docusaurus_tag" content="docs-default-current"><meta data-rh="true" name="docsearch:version" content="current"><meta data-rh="true" name="docsearch:docusaurus_tag" content="docs-default-current"><meta data-rh="true" property="og:title" content="第19章 驱动程序基石 | 韦东山Linux"><meta data-rh="true" name="description" content="19.1 休眠与唤醒"><meta data-rh="true" property="og:description" content="19.1 休眠与唤醒"><link data-rh="true" rel="icon" href="/img/favicon.ico"><link data-rh="true" rel="canonical" href="https://linux.100ask.net/docs/Linux-Application-Development-Manual/part-5/chapter-41"><link data-rh="true" rel="alternate" href="https://linux.100ask.net/docs/Linux-Application-Development-Manual/part-5/chapter-41" hreflang="zh-Hans"><link data-rh="true" rel="alternate" href="https://linux.100ask.net/en/docs/Linux-Application-Development-Manual/part-5/chapter-41" hreflang="en"><link data-rh="true" rel="alternate" href="https://linux.100ask.net/docs/Linux-Application-Development-Manual/part-5/chapter-41" hreflang="x-default"><link rel="stylesheet" href="/assets/css/styles.87c093d6.css">
+<script src="/assets/js/runtime~main.cded5b66.js" defer="defer"></script>
+<script src="/assets/js/main.396485a8.js" defer="defer"></script>
+</head>
+<body class="navigation-with-keyboard">
+<script>!function(){function t(t){document.documentElement.setAttribute("data-theme",t)}var e=function(){try{return new URLSearchParams(window.location.search).get("docusaurus-theme")}catch(t){}}()||function(){try{return localStorage.getItem("theme")}catch(t){}}();t(null!==e?e:"light")}(),function(){try{const c=new URLSearchParams(window.location.search).entries();for(var[t,e]of c)if(t.startsWith("docusaurus-data-")){var a=t.replace("docusaurus-data-","data-");document.documentElement.setAttribute(a,e)}}catch(t){}}()</script><div id="__docusaurus"><div role="region" aria-label="跳到主要内容"><a class="skipToContent_fXgn" href="#__docusaurus_skipToContent_fallback">跳到主要内容</a></div><nav aria-label="主导航" class="navbar navbar--fixed-top"><div class="navbar__inner"><div class="navbar__items"><button aria-label="切换导航栏" aria-expanded="false" class="navbar__toggle clean-btn" type="button"><svg width="30" height="30" viewBox="0 0 30 30" aria-hidden="true"><path stroke="currentColor" stroke-linecap="round" stroke-miterlimit="10" stroke-width="2" d="M4 7h22M4 15h22M4 23h22"></path></svg></button><a class="navbar__brand" href="/"><div class="navbar__logo"><img src="/img/logo.svg" alt="东山PI" class="themedComponent_mlkZ themedComponent--light_NVdE"><img src="/img/logo.svg" alt="东山PI" class="themedComponent_mlkZ themedComponent--dark_xIcU"></div><b class="navbar__title text--truncate">韦东山Linux</b></a><a class="navbar__item navbar__link" href="/docs/Learn-Linux/LearnStudyPath">嵌入式Linux学习指南</a><a aria-current="page" class="navbar__item navbar__link navbar__link--active" href="/docs/Linux-Application-Development-Manual">嵌入式Linux应用开发完全手册</a><a class="navbar__item navbar__link" href="/docs/Linux-CourseList/Introduction">嵌入式Linux课程列表</a><a class="navbar__item navbar__link" href="/docs/Knowledge-Notes/InputSystem">官方笔记知识库</a><a class="navbar__item navbar__link" href="/docs/Study-Notes/intro">学员笔记</a></div><div class="navbar__items navbar__items--right"><a href="https://github.com/100askTeam/linux-docs" target="_blank" rel="noopener noreferrer" class="navbar__item navbar__link">GitHub<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a><div class="toggle_vylO colorModeToggle_DEke"><button class="clean-btn toggleButton_gllP toggleButtonDisabled_aARS" type="button" disabled="" title="切换浅色/暗黑模式（当前为浅色模式）" aria-label="切换浅色/暗黑模式（当前为浅色模式）" aria-live="polite"><svg viewBox="0 0 24 24" width="24" height="24" class="lightToggleIcon_pyhR"><path fill="currentColor" d="M12,9c1.65,0,3,1.35,3,3s-1.35,3-3,3s-3-1.35-3-3S10.35,9,12,9 M12,7c-2.76,0-5,2.24-5,5s2.24,5,5,5s5-2.24,5-5 S14.76,7,12,7L12,7z M2,13l2,0c0.55,0,1-0.45,1-1s-0.45-1-1-1l-2,0c-0.55,0-1,0.45-1,1S1.45,13,2,13z M20,13l2,0c0.55,0,1-0.45,1-1 s-0.45-1-1-1l-2,0c-0.55,0-1,0.45-1,1S19.45,13,20,13z M11,2v2c0,0.55,0.45,1,1,1s1-0.45,1-1V2c0-0.55-0.45-1-1-1S11,1.45,11,2z M11,20v2c0,0.55,0.45,1,1,1s1-0.45,1-1v-2c0-0.55-0.45-1-1-1C11.45,19,11,19.45,11,20z M5.99,4.58c-0.39-0.39-1.03-0.39-1.41,0 c-0.39,0.39-0.39,1.03,0,1.41l1.06,1.06c0.39,0.39,1.03,0.39,1.41,0s0.39-1.03,0-1.41L5.99,4.58z M18.36,16.95 c-0.39-0.39-1.03-0.39-1.41,0c-0.39,0.39-0.39,1.03,0,1.41l1.06,1.06c0.39,0.39,1.03,0.39,1.41,0c0.39-0.39,0.39-1.03,0-1.41 L18.36,16.95z M19.42,5.99c0.39-0.39,0.39-1.03,0-1.41c-0.39-0.39-1.03-0.39-1.41,0l-1.06,1.06c-0.39,0.39-0.39,1.03,0,1.41 s1.03,0.39,1.41,0L19.42,5.99z M7.05,18.36c0.39-0.39,0.39-1.03,0-1.41c-0.39-0.39-1.03-0.39-1.41,0l-1.06,1.06 c-0.39,0.39-0.39,1.03,0,1.41s1.03,0.39,1.41,0L7.05,18.36z"></path></svg><svg viewBox="0 0 24 24" width="24" height="24" class="darkToggleIcon_wfgR"><path fill="currentColor" d="M9.37,5.51C9.19,6.15,9.1,6.82,9.1,7.5c0,4.08,3.32,7.4,7.4,7.4c0.68,0,1.35-0.09,1.99-0.27C17.45,17.19,14.93,19,12,19 c-3.86,0-7-3.14-7-7C5,9.07,6.81,6.55,9.37,5.51z M12,3c-4.97,0-9,4.03-9,9s4.03,9,9,9s9-4.03,9-9c0-0.46-0.04-0.92-0.1-1.36 c-0.98,1.37-2.58,2.26-4.4,2.26c-2.98,0-5.4-2.42-5.4-5.4c0-1.81,0.89-3.42,2.26-4.4C12.92,3.04,12.46,3,12,3L12,3z"></path></svg></button></div><div class="navbarSearchContainer_Bca1"></div></div></div><div role="presentation" class="navbar-sidebar__backdrop"></div></nav><div id="__docusaurus_skipToContent_fallback" class="main-wrapper mainWrapper_z2l0"><div class="docsWrapper_hBAB"><button aria-label="回到顶部" class="clean-btn theme-back-to-top-button backToTopButton_sjWU" type="button"></button><div class="docRoot_UBD9"><aside class="theme-doc-sidebar-container docSidebarContainer_YfHR"><div class="sidebarViewport_aRkj"><div class="sidebar_njMd"><nav aria-label="文档侧边栏" class="menu thin-scrollbar menu_SIkG"><ul class="theme-doc-sidebar-menu menu__list"><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class="menu__link" href="/docs/Linux-Application-Development-Manual">手册首页</a></li><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item menu__list-item--collapsed"><div class="menu__list-item-collapsible"><a class="menu__link menu__link--sublist" aria-expanded="false" href="/docs/category/第一篇-学习路线教程介绍资料下载">第一篇 学习路线、教程介绍、资料下载</a><button aria-label="展开侧边栏分类 &#x27;第一篇 学习路线、教程介绍、资料下载&#x27;" type="button" class="clean-btn menu__caret"></button></div></li><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item menu__list-item--collapsed"><div class="menu__list-item-collapsible"><a class="menu__link menu__link--sublist" aria-expanded="false" href="/docs/category/第二篇-ubuntu-基本操作">第二篇 Ubuntu 基本操作</a><button aria-label="展开侧边栏分类 &#x27;第二篇 Ubuntu 基本操作&#x27;" type="button" class="clean-btn menu__caret"></button></div></li><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item menu__list-item--collapsed"><div class="menu__list-item-collapsible"><a class="menu__link menu__link--sublist" aria-expanded="false" href="/docs/category/第三篇-环境搭建与开发板操作">第三篇 环境搭建与开发板操作</a><button aria-label="展开侧边栏分类 &#x27;第三篇 环境搭建与开发板操作&#x27;" type="button" class="clean-btn menu__caret"></button></div></li><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item menu__list-item--collapsed"><div class="menu__list-item-collapsible"><a class="menu__link menu__link--sublist" aria-expanded="false" href="/docs/category/第四篇-嵌入式-linux-应用开发基础知识">第四篇 嵌入式 Linux 应用开发基础知识</a><button aria-label="展开侧边栏分类 &#x27;第四篇 嵌入式 Linux 应用开发基础知识&#x27;" type="button" class="clean-btn menu__caret"></button></div></li><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item"><div class="menu__list-item-collapsible"><a class="menu__link menu__link--sublist menu__link--active" aria-expanded="true" href="/docs/category/第五篇-嵌入式-linux-驱动开发基础知识">第五篇 嵌入式 Linux 驱动开发基础知识</a><button aria-label="折叠侧边栏分类 &#x27;第五篇 嵌入式 Linux 驱动开发基础知识&#x27;" type="button" class="clean-btn menu__caret"></button></div><ul style="display:block;overflow:visible;height:auto" class="menu__list"><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/docs/Linux-Application-Development-Manual/part-5/chapter-23">第1章 Hello驱动(不涉及硬件操作)</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/docs/Linux-Application-Development-Manual/part-5/chapter-24">第2章 硬件知识_LED原理图</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/docs/Linux-Application-Development-Manual/part-5/chapter-25">第3章 普适的GPIO引脚操作方法</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/docs/Linux-Application-Development-Manual/part-5/chapter-26">第4章 具体单板的GPIO操作方法</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/docs/Linux-Application-Development-Manual/part-5/chapter-27">第5章 最简单的LED驱动程序</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/docs/Linux-Application-Development-Manual/part-5/chapter-28">第6章 LED驱动程序框架</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/docs/Linux-Application-Development-Manual/part-5/chapter-29">第7章 具体单板的LED驱动程序</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/docs/Linux-Application-Development-Manual/part-5/chapter-30">第8章 驱动设计的思想</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/docs/Linux-Application-Development-Manual/part-5/chapter-31">第9章 驱动进化之路：总线设备驱动模型</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/docs/Linux-Application-Development-Manual/part-5/chapter-32">第10章 LED模板驱动程序的改造：总线设备驱动模型</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/docs/Linux-Application-Development-Manual/part-5/chapter-33">第11章 驱动进化之路：设备树的引入及简明教程</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/docs/Linux-Application-Development-Manual/part-5/chapter-34">第12章 LED模板驱动程序的改造：设备树</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/docs/Linux-Application-Development-Manual/part-5/chapter-35">第13章 APP怎么读取按键值</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/docs/Linux-Application-Development-Manual/part-5/chapter-36">第14章 查询方式的按键驱动程序_编写框架</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/docs/Linux-Application-Development-Manual/part-5/chapter-37">第15章 具体单板的按键驱动程序(查询方式)</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/docs/Linux-Application-Development-Manual/part-5/chapter-38">第16章 GPIO和Pinctrl子系统的使用</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/docs/Linux-Application-Development-Manual/part-5/chapter-39">第17章 异常与中断的概念及处理流程</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/docs/Linux-Application-Development-Manual/part-5/chapter-40">第18章 Linux系统对中断的处理</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link menu__link--active" aria-current="page" tabindex="0" href="/docs/Linux-Application-Development-Manual/part-5/chapter-41">第19章 驱动程序基石</a></li></ul></li><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item menu__list-item--collapsed"><div class="menu__list-item-collapsible"><a class="menu__link menu__link--sublist" aria-expanded="false" href="/docs/category/第八篇-其他应用">第八篇 其他应用</a><button aria-label="展开侧边栏分类 &#x27;第八篇 其他应用&#x27;" type="button" class="clean-btn menu__caret"></button></div></li></ul></nav></div></div></aside><main class="docMainContainer_TBSr"><div class="container padding-top--md padding-bottom--lg"><div class="row"><div class="col docItemCol_VOVn"><div class="docItemContainer_Djhp"><article><nav class="theme-doc-breadcrumbs breadcrumbsContainer_Z_bl" aria-label="页面路径"><ul class="breadcrumbs" itemscope="" itemtype="https://schema.org/BreadcrumbList"><li class="breadcrumbs__item"><a aria-label="主页面" class="breadcrumbs__link" href="/"><svg viewBox="0 0 24 24" class="breadcrumbHomeIcon_YNFT"><path d="M10 19v-5h4v5c0 .55.45 1 1 1h3c.55 0 1-.45 1-1v-7h1.7c.46 0 .68-.57.33-.87L12.67 3.6c-.38-.34-.96-.34-1.34 0l-8.36 7.53c-.34.3-.13.87.33.87H5v7c0 .55.45 1 1 1h3c.55 0 1-.45 1-1z" fill="currentColor"></path></svg></a></li><li itemscope="" itemprop="itemListElement" itemtype="https://schema.org/ListItem" class="breadcrumbs__item"><a class="breadcrumbs__link" itemprop="item" href="/docs/category/第五篇-嵌入式-linux-驱动开发基础知识"><span itemprop="name">第五篇 嵌入式 Linux 驱动开发基础知识</span></a><meta itemprop="position" content="1"></li><li itemscope="" itemprop="itemListElement" itemtype="https://schema.org/ListItem" class="breadcrumbs__item breadcrumbs__item--active"><span class="breadcrumbs__link" itemprop="name">第19章 驱动程序基石</span><meta itemprop="position" content="2"></li></ul></nav><div class="tocCollapsible_ETCw theme-doc-toc-mobile tocMobile_ITEo"><button type="button" class="clean-btn tocCollapsibleButton_TO0P">本页总览</button></div><div class="theme-doc-markdown markdown"><header><h1>第19章 驱动程序基石</h1></header><a id="_第十九章_驱动程序基石"></a>
+<a id="_Ref109378779"></a>
+<a id="_Ref109378777"></a>
+<a id="_Toc197788756"></a>
+<a id="_Toc197788757"></a>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="191-休眠与唤醒">19.1 休眠与唤醒<a href="#191-休眠与唤醒" class="hash-link" aria-label="19.1 休眠与唤醒的直接链接" title="19.1 休眠与唤醒的直接链接">​</a></h2>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="1911-适用场景">19.1.1 适用场景<a href="#1911-适用场景" class="hash-link" aria-label="19.1.1 适用场景的直接链接" title="19.1.1 适用场景的直接链接">​</a></h3>
+<p>在前面引入中断时，我们曾经举过一个例子：</p>
+<p><img loading="lazy" src="/assets/images/manual-517-895c7b84e5589ca6601a839ba7c2a9a4.png" width="589" height="468" class="img_ev3q"></p>
+<p>妈妈怎么知道卧室里小孩醒了？</p>
+<ul>
+<li>休眠-唤醒：进去房间陪小孩一起睡觉，小孩醒了会吵醒她</li>
+</ul>
+<p>不累，但是妈妈干不了活了</p>
+<p>当应用程序必须等待某个事件发生，比如必须等待按键被按下时，可以使用“休眠-唤醒”机制：</p>
+<ol>
+<li>APP调用read等函数试图读取数据，比如读取按键；</li>
+<li>APP进入内核态，也就是调用驱动中的对应函数，发现有数据则复制到用户空间并马上返回；</li>
+<li>如果APP在内核态，也就是在驱动程序中发现没有数据，则APP休眠；</li>
+<li>当有数据时，比如当按下按键 时，驱动程序的中断服务程序被调用，它会记录数据、唤醒APP；</li>
+<li>APP继续运行它的内核态代码，也就是驱动程序中的函数，复制数据到用户空间并马上返回。</li>
+</ol>
+<p>驱动中有数据时，图 19.1中红线就是APP1的执行过程，涉及用户态、内核态：</p>
+<p><img loading="lazy" src="/assets/images/manual-518-b726ee060308d3755efd4d49178442f0.png" width="1766" height="200" class="img_ev3q"></p>
+<p><a id="_Ref109231559"></a>图 19.1 app1执行过程</p>
+<p>驱动中没有数据时，APP1在内核态执行到drv_read时会休眠。所谓休眠就是把自己的状态改为非RUNNING，这样内核的调度器就不会让它运行。当按下按键，驱动程序中的中断服务程序被调用，它会记录数据，并唤醒APP1。所以唤醒就是把程序的状态改为RUNNING，这样内核的调度器有合适的时间就会让它运行。当APP1再次运行时，就会继续执行drv_read中剩下的代码，把数据复制回用户空间，返回用户空间。APP1的执行过程如下图的红色实线所示，它被分成了2段：</p>
+<p><img loading="lazy" src="/assets/images/manual-519-b45eeb961727f0f89436a1a58d94fc89.png" width="1189" height="464" class="img_ev3q"></p>
+<p>图 19.2 APP1的执行过程</p>
+<p>值得注意的是，上面2个图中红线部分都属于APP1的“上下文”，或者这样说：红线所涉及的代码，都是APP1调用的。但是按键的中断服务程序，不属于APP1的“上下文”，这是突如其来的，当中断发生时，APP1正在休眠呢。</p>
+<p>在APP1的“上下文”，也就是在APP1的执行过程中，它是可以休眠的。</p>
+<p>在中断的处理过程中，也就是gpio_key_irq的执行过程中，它不能休眠：“中断”怎么能休眠？“中断”休眠了，谁来调度其他APP啊？</p>
+<p>所以，请记住：<strong>在中断处理函数中，不能休眠</strong>，也就不能调用会导致休眠的函数。</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="1912-内核函数">19.1.2 内核函数<a href="#1912-内核函数" class="hash-link" aria-label="19.1.2 内核函数的直接链接" title="19.1.2 内核函数的直接链接">​</a></h3>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ol>
+<li>休眠函数</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>参考内核源码：include\linux\wait.h。</p>
+<p>表 19‑1 wait内核函数</p>
+<table><thead><tr><th>函数</th><th>说明</th></tr></thead><tbody><tr><td>wait_event_interruptible(wq, condition)</td><td>休眠，直到condition为真；<br>休眠期间是可被打断的，可以被信号打断</td></tr><tr><td>wait_event(wq, condition)</td><td>休眠，直到condition为真；<br>退出的唯一条件是condition为真，信号也不好使</td></tr><tr><td>wait_event_interruptible_timeout(wq, condition, timeout)</td><td>休眠，直到condition为真或超时；<br>休眠期间是可被打断的，可以被信号打断</td></tr><tr><td>wait_event_timeout(wq, condition, timeout)</td><td>休眠，直到condition为真；<br>退出的唯一条件是condition为真，信号也不好使</td></tr></tbody></table>
+<p>比较重要的参数就是：</p>
+<ol>
+<li>wq：waitqueue，等待队列<!-- -->
+<ol>
+<li>休眠时除了把程序状态改为非RUNNING之外，还要把进程/进程放入wq中，以后中断服务程序要从wq中把它取出来唤醒。</li>
+<li>没有wq的话，茫茫人海中，中断服务程序去哪里找到你？</li>
+</ol>
+</li>
+<li>condition</li>
+</ol>
+<p>这可以是一个变量，也可以是任何表达式。表示“一直等待，直到condition为真”。</p>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ol>
+<li>唤醒函数</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>参考内核源码：include\linux\wait.h。</p>
+<table><thead><tr><th>函数</th><th>说明</th></tr></thead><tbody><tr><td>wake_up_interruptible(x)</td><td>唤醒x队列中状态为“TASK_INTERRUPTIBLE”的线程，只唤醒其中的一个线程</td></tr><tr><td>wake_up_interruptible_nr(x, nr)</td><td>唤醒x队列中状态为“TASK_INTERRUPTIBLE”的线程，只唤醒其中的nr个线程</td></tr><tr><td>wake_up_interruptible_all(x)</td><td>唤醒x队列中状态为“TASK_INTERRUPTIBLE”的线程，唤醒其中的所有线程</td></tr><tr><td>wake_up(x)</td><td>唤醒x队列中状态为“TASK_INTERRUPTIBLE”或“TASK_UNINTERRUPTIBLE”的线程，只唤醒其中的一个线程</td></tr><tr><td>wake_up_nr(x, nr)</td><td>唤醒x队列中状态为“TASK_INTERRUPTIBLE”或“TASK_UNINTERRUPTIBLE”的线程，只唤醒其中nr个线程</td></tr><tr><td>wake_up_all(x)</td><td>唤醒x队列中状态为“TASK_INTERRUPTIBLE”或“TASK_UNINTERRUPTIBLE”的线程，唤醒其中的所有线程</td></tr></tbody></table>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="1913-驱动框架">19.1.3 驱动框架<a href="#1913-驱动框架" class="hash-link" aria-label="19.1.3 驱动框架的直接链接" title="19.1.3 驱动框架的直接链接">​</a></h3>
+<p>驱动框架如下：</p>
+<p><img loading="lazy" src="/assets/images/manual-520-d016df53b05c05eb49e221de076deb20.png" width="1336" height="564" class="img_ev3q"></p>
+<p>图 19.3 驱动框架</p>
+<p>要休眠的线程，放在wq队列里，中断处理函数从wq队列里把它取出来唤醒。</p>
+<p>所以，我们要做这几件事：</p>
+<ol>
+<li>初始化wq队列</li>
+<li>在驱动的read函数中，调用wait_event_interruptible：</li>
+</ol>
+<p>它本身会判断event是否为FALSE，如果为FASLE表示无数据，则休眠。</p>
+<p>当从wait_event_interruptible返回后，把数据复制回用户空间。</p>
+<ol>
+<li>在中断服务程序里：</li>
+</ol>
+<p>设置event为TRUE，并调用wake_up_interruptible唤醒线程。</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="1914-编程">19.1.4 编程<a href="#1914-编程" class="hash-link" aria-label="19.1.4 编程的直接链接" title="19.1.4 编程的直接链接">​</a></h3>
+<p>使用GIT命令载后，源码位于这个目录下：</p>
+<p>01_all_series_quickstart\</p>
+<p>05_嵌入式Linux驱动开发基础知识\</p>
+<p>source\06_gpio_irq\02_read_key_irq\ 和 03_read_key_irq_circle_buffer</p>
+<p>03_read_key_irq_circle_buffer使用了环型缓冲区，可以避免按键丢失。</p>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ol>
+<li>驱动程序关键代码</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>02_read_key_irq\gpio_key_drv.c中，要先定义“wait queue”：</li>
+</ul>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">41 static DECLARE_WAIT_QUEUE_HEAD(gpio_key_wait);</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="复制代码到剪贴板" title="复制" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<ul>
+<li>在驱动的读函数里调用wait_event_interruptible：</li>
+</ul>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">44 static ssize_t gpio_key_drv_read (struct file *file, char __user *buf, size_t size, loff_t *offset)</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">45 {</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">46      //printk(&quot;%s %s line %d\n&quot;, __FILE__, __FUNCTION__, __LINE__);</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">47      int err;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">48</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">49      wait_event_interruptible(gpio_key_wait, g_key);</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">50      err = copy_to_user(buf, &amp;g_key, 4);</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">51      g_key = 0;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">52</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">53      return 4;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">54 }</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="复制代码到剪贴板" title="复制" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<p>第49行并不一定会进入休眠，它会先判断g_key是否为TRUE。</p>
+<p>执行到第50行时，表示要么有了数据(g_key为TRUE)，要么有信号等待处理(本节课程不涉及信号)。</p>
+<p>假设g_key等于0， 那么APP会执行到上述代码第49行时进入休眠状态。它被谁唤醒？被控制的中断服务程序：</p>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">64 static irqreturn_t gpio_key_isr(int irq, void *dev_id)</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">65 {</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">66      struct gpio_key *gpio_key = dev_id;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">67      int val;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">68      val = gpiod_get_value(gpio_key-&gt;gpiod);</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">69</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">70</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">71      printk(&quot;key %d %d\n&quot;, gpio_key-&gt;gpio, val);</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">72      g_key = (gpio_key-&gt;gpio &lt;&lt; 8) | val;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">73      wake_up_interruptible(&amp;gpio_key_wait);</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">74</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">75      return IRQ_HANDLED;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">76 }</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="复制代码到剪贴板" title="复制" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<p>上述代码中，第72行确定按键值g_key，g_key也就变为TRUE了。</p>
+<p>然后在第73行唤醒gpio_key_wait中的第1个线程。</p>
+<p>注意这2个函数，一个没有使用“&amp;”，另一个使用了“&amp;”：</p>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">wait_event_interruptible(gpio_key_wait, g_key);</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">wake_up_interruptible(&amp;gpio_key_wait);</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="复制代码到剪贴板" title="复制" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ol>
+<li>应  用程序</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>应用程序并不复杂，调用open、read即可，代码在button_test.c中：</p>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">25      /* 2. 打开文件 */</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">26      fd = open(argv[1], O_RDWR);</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">27      if (fd == -1)</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">28      {</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">29              printf(&quot;can not open file %s\n&quot;, argv[1]);</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">30              return -1;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">31      }</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">32</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">33      while (1)</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">34      {</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">35              /* 3. 读文件 */</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">36              read(fd, &amp;val, 4);</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">37              printf(&quot;get button : 0x%x\n&quot;, val);</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">38      }</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="复制代码到剪贴板" title="复制" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<p>在33行～38行的循环中，APP基本上都是休眠状态。你可以执行top命令查看CPU占用率。</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="1915-上机实验">19.1.5 上机实验<a href="#1915-上机实验" class="hash-link" aria-label="19.1.5 上机实验的直接链接" title="19.1.5 上机实验的直接链接">​</a></h3>
+<p>跟上一节视频类似，<strong>需要先修改设备树，请使用上一节视频的设备树文件</strong>。然后安装驱动程序，运行测试程序。</p>
+<div class="language-bash codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-bash codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">[root@100ask:~]# insmod -f gpio_key_drv.ko</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">[root@100ask:~]# ls /dev/100ask_gpio_key</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">/dev/100ask_gpio_key</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">[root@100ask:~]# ./button_test /dev/100ask_gpio_key  &amp;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">[root@100ask:~]# top</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="复制代码到剪贴板" title="复制" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="1916-使用环形缓冲区改进驱动程序">19.1.6 使用环形缓冲区改进驱动程序<a href="#1916-使用环形缓冲区改进驱动程序" class="hash-link" aria-label="19.1.6 使用环形缓冲区改进驱动程序的直接链接" title="19.1.6 使用环形缓冲区改进驱动程序的直接链接">​</a></h3>
+<p>使用GIT命令载后，源码位于这个目录下：</p>
+<p>01_all_series_quickstart\</p>
+<p>05_嵌入式Linux驱动开发基础知识\</p>
+<p>source\06_gpio_irq\03_read_key_irq_circle_buffer</p>
+<p>使用环形缓冲区，可以在一定程序上避免按键数据丢失，关键代码如下：</p>
+<p><img loading="lazy" src="/assets/images/manual-521-e704b491f27b4ff7588f52bd87d184b5.png" width="739" height="807" class="img_ev3q"></p>
+<p>使用环形缓冲区之后，休眠函数可以这样写：</p>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">86      wait_event_interruptible(gpio_key_wait, !is_key_buf_empty());</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">87      key = get_key();</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">88      err = copy_to_user(buf, &amp;key, 4);</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="复制代码到剪贴板" title="复制" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<p>唤醒函数可以这样写：</p>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">111     key = (gpio_key-&gt;gpio &lt;&lt; 8) | val;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">112     put_key(key);</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">113     wake_up_interruptible(&amp;gpio_key_wait);</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="复制代码到剪贴板" title="复制" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<a id="_Toc197788758"></a>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="192-poll机制">19.2 POLL机制<a href="#192-poll机制" class="hash-link" aria-label="19.2 POLL机制的直接链接" title="19.2 POLL机制的直接链接">​</a></h2>
+<p>使用GIT命令载后，本节源码位于这个目录下：</p>
+<p>01_all_series_quickstart\</p>
+<p>05_嵌入式Linux驱动开发基础知识\source\06_gpio_irq\04_read_key_irq_poll</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="1921-适用场景">19.2.1 适用场景<a href="#1921-适用场景" class="hash-link" aria-label="19.2.1 适用场景的直接链接" title="19.2.1 适用场景的直接链接">​</a></h3>
+<p>在前面引入中断时，我们曾经举过一个例子：妈妈怎么知道卧室里小孩醒了？</p>
+<ul>
+<li>poll方式：妈妈要干很多活，但是可以陪小孩睡一会，定个闹钟</li>
+</ul>
+<p>要浪费点时间，但是可以继续干活。妈妈要么是被小孩吵醒，要么是被闹钟吵醒。</p>
+<p>使用休眠-唤醒的方式等待某个事件发生时，有一个缺点：等待的时间可能很久。我们可以加上一个超时时间，这时就可以使用poll机制。</p>
+<ol>
+<li>APP不知道驱动程序中是否有数据，可以先调用poll函数查询一下，poll函数可以传入超时时间；</li>
+<li>APP进入内核态，调用到驱动程序的poll函数，如果有数据的话立刻返回；</li>
+<li>如果发现没有数据时就休眠一段时间；</li>
+<li>当有数据时，比如当按下按键时，驱动程序的中断服务程序被调用，它会记录数据、唤醒APP；</li>
+<li>当超时时间到了之后，内核也会唤醒APP；</li>
+<li>APP根据poll函数的返回值就可以知道是否有数据，如果有数据就调用read得到数据。</li>
+</ol>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="1922-使用流程">19.2.2 使用流程<a href="#1922-使用流程" class="hash-link" aria-label="19.2.2 使用流程的直接链接" title="19.2.2 使用流程的直接链接">​</a></h3>
+<p>妈妈进入房间时，会先看小孩醒没醒，闹钟响之后走出房间之前又会再看小孩醒没醒。</p>
+<p><strong>注意</strong>：看了2次小孩！</p>
+<p>POLL机制也是类似的，流程如下：</p>
+<p><img loading="lazy" src="/assets/images/manual-522-c7c7c09077436b2efc95051f9d33f636.png" width="1881" height="819" class="img_ev3q"></p>
+<p>图 19.4 poll机制</p>
+<p>函数执行流程如上图①～⑧所示，重点从③开始看。假设一开始无按键数据：</p>
+<p>③PP调用poll之后，进入内核态；</p>
+<p>④致驱动程序的drv_poll被调用：</p>
+<p><strong>注意</strong>，drv_poll要把自己这个线程挂入等待队列wq中；假设不放入队列里，那以后发生中断时，中断服务程序去哪里找到你嘛？</p>
+<p>drv_poll还会判断一下：有没有数据啊？返回这个状态。</p>
+<p>⑤当前没有数据，则休眠一会；</p>
+<p>⑥过程中，按下了按键，发生了中断：</p>
+<ul>
+<li>
+<ul>
+<li>在中断服务程序里记录了按键值，并且从wq中把线程唤醒了。</li>
+</ul>
+</li>
+</ul>
+<p>⑦从休眠中被唤醒，继续执行for循环，再次调用drv_poll：</p>
+<ul>
+<li>
+<ul>
+<li>drv_poll返回数据状态</li>
+</ul>
+</li>
+</ul>
+<p>⑧哦，你有数据，那从内核态返回到应用态吧</p>
+<p>⑨APP调用read函数读数据</p>
+<p>如果一直没有数据，调用流程也是类似的，重点从③开始看，如下：</p>
+<p>③ APP调用poll之后，进入内核态；</p>
+<p>④ 导致驱动程序的drv_poll被调用：</p>
+<p><strong>注意</strong>，drv_poll要把自己这个线程挂入等待队列wq中；假设不放入队列里，那以后发生中断时，中断服务程序去哪里找到你嘛？</p>
+<p>drv_poll还会判断一下：有没有数据啊？返回这个状态。</p>
+<p>⑤ 假设当前没有数据，则休眠一会；</p>
+<p>⑥ 在休眠过程中，一直没有按下了按键，超时时间到：内核把这个线程唤醒；</p>
+<p>⑦ 线程从休眠中被唤醒，继续执行for循环，再次调用drv_poll：drv_poll返回数据状态</p>
+<p>⑧ 哦，你还是没有数据，但是超时时间到了，那从内核态返回到应用态吧</p>
+<p>⑨ APP不能调用read函数读数据</p>
+<p>注意几点：</p>
+<ul>
+<li>drv_poll要把线程挂入队列wq，但是并不是在drv_poll中进入休眠，而是在调用drv_poll之后休眠</li>
+<li>drv_poll要返回数据状态</li>
+<li>APP调用一次poll，有可能会导致drv_poll被调用2次</li>
+<li>线程被唤醒的原因有2：中断发生了去队列wq中把它唤醒，超时时间到了内核把它唤醒</li>
+<li>APP要判断poll返回的原因：有数据，还是超时。有数据时再去调用read函数。</li>
+</ul>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="1923-驱动编程">19.2.3 驱动编程<a href="#1923-驱动编程" class="hash-link" aria-label="19.2.3 驱动编程的直接链接" title="19.2.3 驱动编程的直接链接">​</a></h3>
+<p>使用poll机制时，驱动程序的核心就是提供对应的drv_poll函数。在drv_poll函数中要做2件事：</p>
+<ol>
+<li>把当前线程挂入队列wq：poll_wait<!-- -->
+<ol>
+<li>APP调用一次poll，可能导致drv_poll被调用2次，但是我们并不需要把当前线程挂入队列2次。</li>
+<li>可以使用内核的函数poll_wait把线程挂入队列，如果线程已经在队列里了，它就不会再次挂入。</li>
+</ol>
+</li>
+<li>返回设备状态：</li>
+</ol>
+<p>APP调用poll函数时，有可能是查询“有没有数据可以读”：POLLIN，也有可能是查询“你有没有空间给我写数据”：POLLOUT。所以drv_poll要返回自己的当前状态：(POLLIN | POLLRDNORM) 或 (POLLOUT | POLLWRNORM)。</p>
+<ul>
+<li>
+<ol>
+<li>POLLRDNORM等同于POLLIN，为了兼容某些APP把它们一起返回。</li>
+<li>POLLWRNORM 等同于POLLOUT ，为了兼容某些APP把它们一起返回。</li>
+</ol>
+</li>
+</ul>
+<p>APP调用poll后，很有可能会休眠。对应的，在按键驱动的中断服务程序中，也要有唤醒操作。</p>
+<p>驱动程序中poll的代码如下：</p>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">static unsigned int gpio_key_drv_poll(struct file *fp, poll_table * wait)</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">{</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">	printk(&quot;%s %s line %d\n&quot;, __FILE__, __FUNCTION__, __LINE__);</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">	poll_wait(fp, &amp;gpio_key_wait, wait);</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">	return is_key_buf_empty() ? 0 : POLLIN | POLLRDNORM;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">}</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="复制代码到剪贴板" title="复制" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="1924-应用编程">19.2.4 应用编程<a href="#1924-应用编程" class="hash-link" aria-label="19.2.4 应用编程的直接链接" title="19.2.4 应用编程的直接链接">​</a></h3>
+<p><strong>注意</strong>：APP可以调用poll或select函数，这2个函数的作用是一样的。</p>
+<p>poll/select函数可以监测多个文件，可以监测多种事件：</p>
+<table><thead><tr><th>事件类型</th><th>说明</th></tr></thead><tbody><tr><td>POLLIN</td><td>有数据可读</td></tr><tr><td>POLLRDNORM</td><td>等同于POLLIN</td></tr><tr><td>POLLRDBAND</td><td>Priority band data can be read，有优先级较较高的“band data”可读<br>Linux系统中很少使用这个事件</td></tr><tr><td>POLLPRI</td><td>高优先级数据可读</td></tr><tr><td>POLLOUT</td><td>可以写数据</td></tr><tr><td>POLLWRNORM</td><td>等同于POLLOUT</td></tr><tr><td>POLLWRBAND</td><td>Priority data may be written</td></tr><tr><td>POLLERR</td><td>发生了错误</td></tr><tr><td>POLLHUP</td><td>挂起</td></tr><tr><td>POLLNVAL</td><td>无效的请求，一般是fd未open</td></tr></tbody></table>
+<p>在调用poll函数时，要指明：</p>
+<ul>
+<li>你要监测哪一个文件：哪一个fd</li>
+<li>你想监测这个文件的哪种事件：是POLLIN、还是POLLOUT</li>
+</ul>
+<p>最后，在poll函数返回时，要判断状态。</p>
+<p>应用程序代码如下：</p>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">struct pollfd fds[1];</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">int timeout_ms = 5000;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">int ret;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">fds[0].fd = fd;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">fds[0].events = POLLIN;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">ret = poll(fds, 1, timeout_ms);</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">if ((ret == 1) &amp;&amp; (fds[0].revents &amp; POLLIN))</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">{</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">	read(fd, &amp;val, 4);</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">	printf(&quot;get button : 0x%x\n&quot;, val);</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">}</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="复制代码到剪贴板" title="复制" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="1925-现场编程">19.2.5 现场编程<a href="#1925-现场编程" class="hash-link" aria-label="19.2.5 现场编程的直接链接" title="19.2.5 现场编程的直接链接">​</a></h3>
+<p>驱动程序、应用程序的核心都在上面的章节列了出来，怎么写程序？观看视频体验更佳，更能抓住重点。</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="1926-上机实验">19.2.6 上机实验<a href="#1926-上机实验" class="hash-link" aria-label="19.2.6 上机实验的直接链接" title="19.2.6 上机实验的直接链接">​</a></h3>
+<p>使用GIT命令载后，本节源码位于这个目录下：</p>
+<p>01_all_series_quickstart\</p>
+<p>05_嵌入式Linux驱动开发基础知识\source\06_gpio_irq\04_read_key_irq_poll</p>
+<p>首先，把“04_read_key_irq_poll”整个目录上传单Ubuntu中，修改里面的Makefile指定内核路径，如下修改：</p>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">KERN_DIR =  /home/book/100ask_imx6ull-sdk/Linux-4.9.88</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="复制代码到剪贴板" title="复制" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<p>然后执行“make”命令，生成驱动程序“gpio_key_drv.ko”、应用程序“button_test”。</p>
+<p>接着，还需要修改设备树，参照下图修改Ubuntu中的设备树文件“Linux-4.9.88/arch/arm/boot/dts/100ask_imx6ull-14x14.dts”：</p>
+<p><img loading="lazy" src="/assets/images/manual-523-5ae4341650f563f596b7190fb26d29c7.png" width="384" height="290" class="img_ev3q"></p>
+<p>图 19.5 POLL机制实验的设备树</p>
+<p>修改完设备树后，在内核目录下载执行“make dtbs”生产新的设备树文件“arch/arm/boot/dts/100ask_imx6ull-14x14.dtb”，把它放到开发板的“/boot”目录下，重启开发板。</p>
+<p>最后，把Ubuntu上的驱动程序、测试程序下载到开发板/root目录，执行如下命令测试：</p>
+<p><img loading="lazy" src="/assets/images/manual-524-df85e697b9addabd0440096e0f88ef6e.png" width="1005" height="551" class="img_ev3q"></p>
+<p>图 19.6 POLL机制上机实验</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="1927-poll机制的内核代码详解">19.2.7 POLL机制的内核代码详解<a href="#1927-poll机制的内核代码详解" class="hash-link" aria-label="19.2.7 POLL机制的内核代码详解的直接链接" title="19.2.7 POLL机制的内核代码详解的直接链接">​</a></h3>
+<p>Linux APP系统调用，基本都可以在它的名字前加上“sys_”前缀，这就是它在内核中对应的函数。比如系统调用open、read、write、poll，与之对应的内核函数为：sys_open、sys_read、sys_write、sys_poll。</p>
+<p>对于系统调用poll或select，它们对应的内核函数都是sys_poll。分析sys_poll，即可理解poll机制。</p>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ol>
+<li>sys_poll函数</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>sys_poll位于fs/select.c文件中，代码如下：</p>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">SYSCALL_DEFINE3(poll, struct pollfd __user *, ufds, unsigned int, nfds,</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">		int, timeout_msecs)</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">{</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">	struct timespec64 end_time, *to = NULL;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">	int ret;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">	if (timeout_msecs &gt;= 0) {</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">		to = &amp;end_time;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">		poll_select_set_timeout(to, timeout_msecs / MSEC_PER_SEC,</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">			NSEC_PER_MSEC * (timeout_msecs % MSEC_PER_SEC));</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">	}</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">	ret = do_sys_poll(ufds, nfds, to);</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">……</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="复制代码到剪贴板" title="复制" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<ul>
+<li>SYSCALL_DEFINE3是一个宏，它定义于include/linux/syscalls.h，展开后就有sys_poll函数。</li>
+<li>sys_poll对超时参数稍作处理后，直接调用do_sys_poll。<!-- -->
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ol>
+<li>do_sys_poll函数</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>do_sys_poll位于fs/select.c文件中，我们忽略其他代码，只看关键部分：</p>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">int do_sys_poll(struct pollfd __user *ufds, unsigned int nfds,</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">		struct timespec64 *end_time)</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">{</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">……</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">	poll_initwait(&amp;table);</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">	fdcount = do_poll(head, &amp;table, end_time);</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">	poll_freewait(&amp;table);</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">……</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">}</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="复制代码到剪贴板" title="复制" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<p>poll_initwait函数非常简单，它初始化一个poll_wqueues变量table：</p>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">poll_initwait</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">init_poll_funcptr(&amp;pwq-&gt;pt, __pollwait);</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">pt-&gt;qproc = qproc;</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="复制代码到剪贴板" title="复制" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<p>即table-&gt;pt-&gt;qproc = __pollwait，__pollwait将在驱动的poll函数里用到。do_poll函数才是核心，继续看代码。</p>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ol>
+<li>do_poll函数</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>do_poll函数位于fs/select.c文件中，这是POLL机制中最核心的代码，贴图如下：</p>
+<p><img loading="lazy" src="/assets/images/manual-525-06ef692ac7d0d38104eebaa97cbe6bf5.png" width="1790" height="1124" class="img_ev3q"></p>
+<p>图 19.7 do_poll机制</p>
+<p>① 从这里开始，将会导致驱动程序的poll函数被第一次调用。</p>
+<p>沿着②③④⑤，你可以看到：驱动程序里的poll_wait会调用__pollwait函数把线程放入某个队列。</p>
+<p>当执行完①之后，在⑥或⑦处，pt-&gt;_qproc被设  置为NULL，所以第二次调用驱动程序的poll时，不会再次把线程放入某个队列里。</p>
+<p>⑧ 如果驱动程序的poll返回有效值，则count非0，跳出循环；</p>
+<p>⑨ 否则休眠一段时间；当休眠时间到，或是被中断唤醒时，会再次循环、再次调用驱动程序的poll。</p>
+<p>回顾APP的代码，APP可以指定“想等待某些事件”，poll函数返回后，可以知道“发生了哪些事件”：</p>
+<p><img loading="lazy" src="/assets/images/manual-526-27dca68b85e7a7bcf705f8009fe37863.png" width="619" height="293" class="img_ev3q"></p>
+<p>图 19.8 POLL机制的APP核心代码</p>
+<p>驱动程序里怎么体现呢？在上上一个图中，看②位置处，细说如下：</p>
+<p><img loading="lazy" src="/assets/images/manual-527-f3efc6e773eb4fb95195841d3cb38e07.png" width="885" height="413" class="img_ev3q"></p>
+<p>图 19.9 POLL机制的内核核心代码</p>
+<a id="_Toc197788759"></a>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="193-异步通知">19.3 异步通知<a href="#193-异步通知" class="hash-link" aria-label="19.3 异步通知的直接链接" title="19.3 异步通知的直接链接">​</a></h2>
+<p>使用GIT命令载后，本节源码位于这个目录下：</p>
+<p>01_all_series_quickstart\</p>
+<p>05_嵌入式Linux驱动开发基础知识\</p>
+<p>source\06_gpio_irq\05_read_key_irq_poll_fasync</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="1931-适用场景">19.3.1 适用场景<a href="#1931-适用场景" class="hash-link" aria-label="19.3.1 适用场景的直接链接" title="19.3.1 适用场景的直接链接">​</a></h3>
+<p>在前面引入中断时，我们曾经举过一个例子：</p>
+<p><img loading="lazy" src="/assets/images/manual-528-96680b70149a3cfcafee71b715790b41.png" width="476" height="378" class="img_ev3q"></p>
+<p>妈妈怎么知道卧室里小孩醒了？</p>
+<ul>
+<li>异步通知：妈妈在客厅干活，小孩醒了他会自己走出房门告诉妈妈<!-- -->
+<ul>
+<li>妈妈、小孩互不耽误。</li>
+</ul>
+</li>
+</ul>
+<p>使用休眠-唤醒、POLL机制时，都需要休眠等待某个事件发生时，它们的差别在于后者可以指定休眠的时长。</p>
+<p>在现实生活中：妈妈可以不陪小孩睡觉，小孩醒了之后可以主动通知妈妈。</p>
+<p>如果APP不想休眠怎么办？也有类似的方法：驱动程序有数据时主动通知APP，APP收到信号后执行信息处理函数。</p>
+<p>什么叫“异步通知”？</p>
+<ul>
+<li>你去买奶茶：<!-- -->
+<ul>
+<li>你在旁边等着，眼睛盯着店员，生怕别人插队，他一做好你就知道：你是主动等待他做好，这叫“同步”。</li>
+<li>你付钱后就去玩手机了，店员做好后他会打电话告诉你：你是被动获得结果，这叫“异步”。</li>
+</ul>
+</li>
+</ul>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="1932-使用流程">19.3.2 使用流程<a href="#1932-使用流程" class="hash-link" aria-label="19.3.2 使用流程的直接链接" title="19.3.2 使用流程的直接链接">​</a></h3>
+<p>驱动程序怎么通知APP：发信号，这只有3个字，却可以引发很多问题：</p>
+<ol>
+<li>谁发：驱动程序发</li>
+<li>发什么：信号</li>
+<li>发什么信号：SIGIO</li>
+<li>怎么发：内核里提供有函数</li>
+<li>发给谁：APP，APP要把自己告诉驱动</li>
+<li>APP收到后做什么：执行信号处理函数</li>
+<li>信号处理函数和信号，之间怎么挂钩：APP注册信号处理函数</li>
+</ol>
+<p>小孩通知妈妈的事情有很多：饿了、渴了、想找人玩。</p>
+<p>Linux系统中也有很多信号，在Linux内核源文件include\uapi\asm-generic\signal.h中，有很多信号的宏定义：</p>
+<p><img loading="lazy" src="/assets/images/manual-529-5faf270788f990d6647c94b16dd63440.png" width="529" height="681" class="img_ev3q"></p>
+<p>就APP而言，你想处理SIGIO信息，那么需要提供信号处理函数，并且要跟SIGIO挂钩。这可以通过一个signal函数来“给某个信号注册处理函数”，  用法如下：</p>
+<p><img loading="lazy" src="/assets/images/manual-530-583d4e7386bff2d39d1013821e475c26.png" width="1026" height="221" class="img_ev3q"></p>
+<p>APP还要做什么事？想想这几个问题：</p>
+<ul>
+<li>
+<ol>
+<li>内核里有那么多驱动，你想让哪一个驱动给你发SIGIO信号？</li>
+</ol>
+</li>
+</ul>
+<p>APP要打开驱动程序的设备节点。</p>
+<ul>
+<li>
+<ol>
+<li>驱动程序怎么知道要发信号给你而不是别人？</li>
+</ol>
+</li>
+</ul>
+<p>APP要把自己的进程ID告诉驱动程序。</p>
+<ul>
+<li>
+<ol>
+<li>APP有时候想收到信号，有时候又不想收到信号：</li>
+</ol>
+</li>
+</ul>
+<p>应该可以把APP的意愿告诉驱动。</p>
+<p>驱动程序要做什么？发信号。</p>
+<ol>
+<li>APP设置进程ID时，驱动程序要记录下进程ID；</li>
+<li>APP还要使能驱动程序的异步通知功能，驱动中有对应的函数：</li>
+</ol>
+<p>APP打开驱动程序时，内核会创建对应的file结构体，file中有f_flags；</p>
+<p>f_flags中有一个FASYNC位，它被设置为1时表示使能异步通知功能。</p>
+<p>当f_flags中的FASYNC位发生变化时，驱动程序的fasync函数被调用。</p>
+<ul>
+<li>
+<ol>
+<li>发生中断时，有数据时，驱动程序调用内核辅助函数发信号。</li>
+</ol>
+</li>
+</ul>
+<p>这个辅助函数名为kill_fasync。完美！</p>
+<p>APP收到信号后，是怎么执行信号处理函数的？这个，很难，有兴趣的话就看本节最后的文档。初学者没必要看。</p>
+<p>综上所述，使用异步通知，也就是使用信号的流程如下图所示：</p>
+<p><img loading="lazy" src="/assets/images/manual-531-a101bbea3c35b7ded5686c627bf12f63.png" width="1773" height="682" class="img_ev3q"></p>
+<p>图 19.10 异步通知的信号流程</p>
+<p>重点从②开始：</p>
+<p>② APP给SIGIO这个信号注册信号处理函数func，以后APP收到SIGIO信号时，这个函数会被自动调用；</p>
+<p>③ 把APP的PID(进程ID)告诉驱动程序，这个调用不涉及驱动程  序，在内核的文件系统层次记录PID；</p>
+<p>④ 读取驱动程序文件Flag；</p>
+<p>⑤ 设置Flag里面的FASYNC位为1：当FASYNC位发生变化时，会导致驱动程序的fasync被调用；</p>
+<p>⑥⑦ 调用faync_helper，它会根据FAYSNC的值决定是否设置button_async-&gt;fa_file=驱动文件filp：</p>
+<p>驱动文件filp结构体里面含有之前设置的PID。</p>
+<p>⑧ APP可以做其他事；</p>
+<p>⑨⑩ 按下按键，发生中断，驱动程序的中断服务程序被调用，里面调用kill_fasync发信号；</p>
+<p>⑪⑫⑬ APP收到信号后，它的信号处理函数被自动调用，可以在里面调用read函数读取按键。</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="1933-驱动编程">19.3.3 驱动编程<a href="#1933-驱动编程" class="hash-link" aria-label="19.3.3 驱动编程的直接链接" title="19.3.3 驱动编程的直接链接">​</a></h3>
+<p>使用异步通知时，驱动程序的核心有2：</p>
+<p>① 提供对应的drv_fasync函数；</p>
+<p>② 并在合适的时机发信号。</p>
+<p>drv_fasync函数很简单，调用fasync_helper函数就可以，如下：</p>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">static struct fasync_struct *button_async;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">static int drv_fasync (int fd, struct file *filp, int on)</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">{</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">	return fasync_helper (fd, filp, on, &amp;button_async);</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">}</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="复制代码到剪贴板" title="复制" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<p>fasync_helper函数会分配、构造一个fasync_struct结构体button_async：</p>
+<ul>
+<li>驱动文件的flag被设置为FAYNC时：</li>
+</ul>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">button_async-&gt;fa_file = filp;  // filp表示驱动程序文件，里面含有之前设置的PID</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="复制代码到剪贴板" title="复制" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<ul>
+<li>驱动文件被设置为非FASYNC时：</li>
+</ul>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">button_async-&gt;fa_file = NULL;</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="复制代码到剪贴板" title="复制" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<p>以后想发送信号时，使用button_async作为参数就可以，它里面“可能”含有PID。</p>
+<p>什么时候发信号呢？在本例中，在GPIO中断服务程序中发信号。</p>
+<p>怎么发信号呢？代码如下：</p>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">kill_fasync (&amp;button_async, SIGIO, POLL_IN);</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="复制代码到剪贴板" title="复制" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<ol>
+<li>第1个参数：button_async-&gt;fa_file非空时，可以从中得到PID，表示发给哪一个APP；</li>
+<li>第2个参数表示发什么信号：SIGIO；</li>
+<li>第3个参数表示为什么发信号：POLL_IN，有数据可以读了。(APP用不到这个参数)</li>
+</ol>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="1934-应用编程">19.3.4 应用编程<a href="#1934-应用编程" class="hash-link" aria-label="19.3.4 应用编程的直接链接" title="19.3.4 应用编程的直接链接">​</a></h3>
+<p>应用程序要做的事情有这几件：</p>
+<ol>
+<li>编写信号处理函数：</li>
+</ol>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">static void sig_func(int sig)</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">{</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">	int val;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">	read(fd, &amp;val, 4);</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">	printf(&quot;get button : 0x%x\n&quot;, val);</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">}</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="复制代码到剪贴板" title="复制" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<ol>
+<li>注册信号处理函数：</li>
+</ol>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">signal(SIGIO, sig_func);</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="复制代码到剪贴板" title="复制" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<ol>
+<li>打开驱动：</li>
+</ol>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">fd = open(argv[1], O_RDWR);</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="复制代码到剪贴板" title="复制" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<ol>
+<li>把进程ID告诉驱动：</li>
+</ol>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">fcntl(fd, F_SETOWN, getpid());</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="复制代码到剪贴板" title="复制" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<ol>
+<li>使能驱动的FASYNC功能：</li>
+</ol>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">flags = fcntl(fd, F_GETFL);</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">fcntl(fd, F_SETFL, flags | FASYNC);</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="复制代码到剪贴板" title="复制" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="1935-现场编程">19.3.5 现场编程<a href="#1935-现场编程" class="hash-link" aria-label="19.3.5 现场编程的直接链接" title="19.3.5 现场编程的直接链接">​</a></h3>
+<p>驱动程序、应用程序的核心都在上面的章节列了出来，怎么写程序？观看视频体验更佳，更能抓住重点。</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="1936-上机实验">19.3.6 上机实验<a href="#1936-上机实验" class="hash-link" aria-label="19.3.6 上机实验的直接链接" title="19.3.6 上机实验的直接链接">​</a></h3>
+<p>使用GIT命令载后，本节源码位于这个目录下：</p>
+<p>01_all_series_quickstart\</p>
+<p>05_嵌入式Linux驱动开发基础知识\</p>
+<p>source\06_gpio_irq\05_read_key_irq_poll_fasync</p>
+<p>首先，把“05_read_key_irq_poll_fasync”整个目录上传单Ubuntu中，修改里面的Makefile指定内核路径，如下修改：</p>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">KERN_DIR =  /home/book/100ask_imx6ull-sdk/Linux-4.9.88</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="复制代码到剪贴板" title="复制" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<p>然后执行“make”命令，生成驱动程序“gpio_key_drv.ko”、应用程序“button_test”。</p>
+<p>接着，还需要修改设备树，参照下图修改Ubuntu中的设备树文件“Linux-4.9.88/arch/arm/boot/dts/100ask_imx6ull-14x14.dts”：</p>
+<p><img loading="lazy" src="/assets/images/manual-532-5ae4341650f563f596b7190fb26d29c7.png" width="384" height="290" class="img_ev3q"></p>
+<p>图 19.11 异步通知机制实验的设备树</p>
+<p>修改完设备树后，在内核目录下载执行“make dtbs”生产新的设备树文件“arch/arm/boot/dts/100ask_imx6ull-14x14.dtb”，把它放到开发板的“/boot”目录下，重启开发板。</p>
+<p>最后，把Ubuntu上的驱动程序、测试程序下载到开发板/root目录，，执行如下命令测试：</p>
+<p><img loading="lazy" src="/assets/images/manual-533-d50b0a7caeadca75fc5aa37aeb440688.png" width="1236" height="667" class="img_ev3q"></p>
+<p>图 19.12 异步通知机制上机实验</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="1937-异步通知机制内核代码详解">19.3.7 异步通知机制内核代码详解<a href="#1937-异步通知机制内核代码详解" class="hash-link" aria-label="19.3.7 异步通知机制内核代码详解的直接链接" title="19.3.7 异步通知机制内核代码详解的直接链接">​</a></h3>
+<p>异步通知的本质是“发信号”，涉及2个对象：发送者、接收者。发送者可以是驱动程序，可以是进程；接收者必定是进程。驱动程序要想给进程发送信号，有2个问题需要解决：</p>
+<p>① 使能驱动程序的“异步”功能，即：允许它发出信号</p>
+<p>② 告诉驱动程序，发信号时，发给“谁”</p>
+<p>应用编程时，需要执行如下操作：</p>
+<ul>
+<li>打开驱动：</li>
+</ul>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">fd = open(“/dev/xxx”, O_RDWR);</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="复制代码到剪贴板" title="复制" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<ul>
+<li>把进程ID告诉驱动：</li>
+</ul>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">fcntl(fd, F_SETOWN, getpid());</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="复制代码到剪贴板" title="复制" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<ul>
+<li>使能驱动的FASYNC功能：</li>
+</ul>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">flags = fcntl(fd, F_GETFL);</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">fcntl(fd, F_SETFL, flags | FASYNC);</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="复制代码到剪贴板" title="复制" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<p>对于F_SETOWN、F_GETFL、F_SETFL，内核或驱动程序如何处理？</p>
+<p>APP执行fcntl系统调用时，会导致内核“fs/fcntl.c”的如下函数被调用：</p>
+<p><img loading="lazy" src="/assets/images/manual-534-00c875f10b394161dac272d31be1087c.png" width="743" height="382" class="img_ev3q"></p>
+<p>图 19.13 异步通知机制系统调用接口</p>
+<p>在“do_fcntl”函数中，对于“F_SETOWN”，一路查看代码，发现最终如下设置：</p>
+<p><img loading="lazy" src="/assets/images/manual-535-d5f6d16871decc2360f707d88bd931ba.png" width="684" height="297" class="img_ev3q"></p>
+<p>图 19.14 异步通知机制F_SETOWN内部实现</p>
+<p>在“do_fcntl”函数中，对于“F_GETFL”，仅仅是返回“filp-&gt;f_flags”；对于“F_SETFL”，会调用“setfl”函数进一步处理。代码如下：</p>
+<p><img loading="lazy" src="/assets/images/manual-536-972c0f3e253245cde60d2dd600f1d0f8.png" width="605" height="409" class="img_ev3q"></p>
+<p>图 19.15 异步通知机制F_GETFL/F_SETFL内部实现</p>
+<p>“setfl”函数会比较“filp-&gt;f_flags”中的“FASYNC”位，发现它发生了变化时，就会调用驱动程序的faysnc函数：</p>
+<p><img loading="lazy" src="/assets/images/manual-537-11d4dd1fb6699d77c3a5d9fd5b1c0149.png" width="570" height="185" class="img_ev3q"></p>
+<p>图 19.16 异步通知机制F_SETFL内部实现</p>
+<p>驱动程序的faysnc函数代码如下：</p>
+<p><img loading="lazy" src="/assets/images/manual-538-9575e4f535c1578bc0faec0cbac03e36.png" width="702" height="145" class="img_ev3q"></p>
+<p>图 19.17 驱动程序中的异步通知代码</p>
+<p>它使用fasync_helper函数来设置指针button_fasync，简化后的示例代码如下：</p>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">if (on)</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">{</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">    struct fasync_struct *new;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">    new = fasync_alloc();</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">    new-&gt;magic = FASYNC_MAGIC;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">    new-&gt;fa_file = filp;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">    new-&gt;fa_fd = fd;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">    button_fasync = new;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">}</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">else</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">{</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">    kfree(button_fasync);</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">    button_fasync = NULL;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">}</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="复制代码到剪贴板" title="复制" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<p>所以，启动了FASYNC功能的话，驱动程序的button_fasync就被设置了，它指向的fasync_struct结构体里含有filp，filp里含有PID(接收方的PID)。</p>
+<p>在驱动程序的中断函数里，使用如下代码发出中断：</p>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">kill_fasync(&amp;button_fasync, SIGIO, POLL_IN);</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="复制代码到剪贴板" title="复制" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<p>它的核心就是从button_fasync指针中，取出fasync_struct结构体，从这个结构体的fa_file中得到接收方的PID，然后使用“send_sigio”函数发送信号。</p>
+<p><img loading="lazy" src="/assets/images/manual-539-800d15658032a3690a7a7f287010913a.png" width="811" height="722" class="img_ev3q"></p>
+<p>图 19.18 驱动程序中的发信号的过程</p>
+<p>“send_sigio”函数的实质是：根据PID找到进程在内核的task_struct结构体，修改里面的某些成员表示收到了信号。</p>
+<p>APP收到信号后，它的信号处理函数时如何被调用的呢？信号相当于APP的中断，处理过程也跟中断的处理过程类似：保存现场、处理信号，恢复现场。</p>
+<p>APP进入内核态时，内核在APP的栈里保存“APP的运行环境”：APP在用户态进入内核态瞬间各个寄存器的值，包括“运行地址”(即  恢复运行时从哪里继续运行)。</p>
+<p>APP退出内核态时，内核会从APP的栈里恢复“APP的运行环境”，比如APP将从之前保存的“运行地址”继续运行。</p>
+<p>APP收到信号瞬间，APP必定处于内核态，因为信号的发送函数“send_sigio”要么由驱动程序调用，要么由APP通过系统调用来间接调用，函数“send_sigio”处于内核态。APP从内核态返回到用户态前，内核发现APP有信号在等待处理时，会修改APP的栈，增加一个新的“运行环境”：新环境里“运行地址”是信号处理函数的地址。这样，APP从内核态返回用户态时，运行的是信号处理函数。信号处理函数执行完后，会再次返回到内核态，在内核态里再使用旧的“运行环境”恢复APP的运行。</p>
+<a id="_Toc197788760"></a>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="194-阻塞与非阻塞">19.4 阻塞与非阻塞<a href="#194-阻塞与非阻塞" class="hash-link" aria-label="19.4 阻塞与非阻塞的直接链接" title="19.4 阻塞与非阻塞的直接链接">​</a></h2>
+<p>所谓阻塞，就是等待某件事情发生。比如调用read读取按键时，如果没有按键数据则read函数不会返回，它会让线程休眠等待。</p>
+<p>使用poll时，如果传入的超时时间不为0，这种访问方法也是阻塞的。</p>
+<p>使用poll时，可以设置超时时间为0，这样即使没有数据它也会立刻返回，这就是非阻塞方式。能不能让read函数既能工作于阻塞方式，也可以工作于非阻塞方式？<strong>可以</strong>！</p>
+<p>APP调用open函数时，传入O_NONBLOCK，就表示要使用非阻塞方式；默认是阻塞方式。</p>
+<p><strong>注意</strong>：对于普通文件、块设备文件，O_NONBLOCK不起作用。</p>
+<p><strong>注意</strong>：对于字符设备文件，O_NONBLOCK起作用的前提是驱动程序针对O_NONBLOCK做了处理。</p>
+<p>只能在open时表明O_NONBLOCK吗？在open之后，也可以 通过fcntl修改为阻塞或非阻塞。</p>
+<p>使用GIT命令载后，本节源码位于这个目录下：</p>
+<p>01_all_series_quickstart\</p>
+<p>05_嵌入式Linux驱动开发基础知识\</p>
+<p>source\06_gpio_irq\06_read_key_irq_poll_fasync_block</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="1941-应用编程">19.4.1 应用编程<a href="#1941-应用编程" class="hash-link" aria-label="19.4.1 应用编程的直接链接" title="19.4.1 应用编程的直接链接">​</a></h3>
+<ul>
+<li>open时设置：</li>
+</ul>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">int  fd = open(“/dev/xxx”, O_RDWR | O_NONBLOCK);  /* 非阻塞方式 */</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">int  fd = open(“/dev/xxx”, O_RDWR );  /* 阻塞方式 */</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="复制代码到剪贴板" title="复制" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<ul>
+<li>open之后设置：</li>
+</ul>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">int	flags = fcntl(fd, F_GETFL);</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">fcntl(fd, F_SETFL, flags | O_NONBLOCK);  /* 非阻塞方式 */</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">fcntl(fd, F_SETFL, flags &amp; ~O_NONBLOCK);  /* 阻塞方式 */</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="复制代码到剪贴板" title="复制" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="1942-驱动编程">19.4.2 驱动编程<a href="#1942-驱动编程" class="hash-link" aria-label="19.4.2 驱动编程的直接链接" title="19.4.2 驱动编程的直接链接">​</a></h3>
+<ul>
+<li>以drv_read为例：</li>
+</ul>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">static ssize_t drv_read(struct file *fp, char __user *buf, size_t count, loff_t *ppos)</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">｛</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">if (queue_empty(&amp;as-&gt;queue) &amp;&amp; fp-&gt;f_flags &amp; O_NONBLOCK)</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">		return -EAGAIN;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">	wait_event_interruptible(apm_waitqueue, !queue_empty(&amp;as-&gt;queue));</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">    ……</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">｝</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="复制代码到剪贴板" title="复制" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<p>从驱动代码也可以看出来，当APP打开某个驱动时，在内核中会有一个struct file结构体对应这个驱动，这个结构体中有f_flags，就是打开文件时的标记位；可以设置f_flasgs的O_NONBLOCK位，表示非阻塞；也可以清除这个位表示阻塞。</p>
+<p>驱动程序要根据这个标记位决定事件未就绪时是休眠和还是立刻返回。</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="1943-驱动开发原则">19.4.3 驱动开发原则<a href="#1943-驱动开发原则" class="hash-link" aria-label="19.4.3 驱动开发原则的直接链接" title="19.4.3 驱动开发原则的直接链接">​</a></h3>
+<p>驱动程序程序“只提供功能，不提供策略”。就是说驱动程序可以提供休眠唤醒、查询等等各种方式，，驱动程序只提供这些能力，怎么用由APP决定。</p>
+<a id="_Toc197788761"></a>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="195-定时器">19.5 定时器<a href="#195-定时器" class="hash-link" aria-label="19.5 定时器的直接链接" title="19.5 定时器的直接链接">​</a></h2>
+<p>使用GIT命令载后，本节源码位于这个目录下：</p>
+<p>01_all_series_quickstart\</p>
+<p>05_嵌入式Linux驱动开发基础知识\</p>
+<p>source\06_gpio_irq\07_read_key_irq_poll_fasync_block_timer</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="1951-内核函数">19.5.1 内核函数<a href="#1951-内核函数" class="hash-link" aria-label="19.5.1 内核函数的直接链接" title="19.5.1 内核函数的直接链接">​</a></h3>
+<p>所谓定时器，就是闹钟，时间到后你就要做某些事。有2个要素：时间、做事，换成程序员的话就是：超时时间、函数。</p>
+<p>在内核中使用定时器很简单，涉及这些函数(参考内核源码include\linux\timer.h)：</p>
+<ul>
+<li>setup_timer(timer, fn, data)：<!-- -->
+<ul>
+<li>设置定时器，主要是初始化timer_list结构体，设置其中的函数、参数。</li>
+</ul>
+</li>
+<li>void add_timer(struct timer_list *timer)：<!-- -->
+<ul>
+<li>向内核添加定时器。timer-&gt;expires表示超时时间。</li>
+<li>当超时时间到达，内核就会调用这个函数：timer-&gt;function(timer-&gt;data)。</li>
+</ul>
+</li>
+<li>int mod_timer(struct timer_list *timer, unsigned long expires):<!-- -->
+<ul>
+<li>修改定时器的超时时间，</li>
+<li>它等同于：del_timer(timer); timer-&gt;expires = expires; add_timer(timer);</li>
+<li>但是更加高效。</li>
+</ul>
+</li>
+<li>int del_timer(struct timer_list *timer)：<!-- -->
+<ul>
+<li>删除定时器。</li>
+</ul>
+</li>
+</ul>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="1952-定时器时间单位">19.5.2 定时器时间单位<a href="#1952-定时器时间单位" class="hash-link" aria-label="19.5.2 定时器时间单位的直接链接" title="19.5.2 定时器时间单位的直接链接">​</a></h3>
+<p>编译内核时，可以在内核源码根目录下用“ls -a”看到一个隐藏文件，它就是内核配置文件。打开后可以看到如下这项：</p>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">CONFIG_HZ=100</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="复制代码到剪贴板" title="复制" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<p>这表示内核每秒中会发生100次系统滴答中断(tick)，这就像人类的心跳一样，这是Linux系统的心跳。每发生一次tick中断，全局变量jiffies就会累加1。</p>
+<p>CONFIG_HZ=100表示每个滴答是10ms。</p>
+<p>定时器的时间就是基于jiffies的，我们修改超时时间时，一般使用这2种方法：</p>
+<ol>
+<li>在add_timer之前，直接修改：</li>
+</ol>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">timer.expires = jiffies + xxx;   // xxx表示多少个滴 答后超时，也就是xxx*10ms</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">timer.expires = jiffies + 2*HZ;  // HZ等于CONFIG_HZ，2*HZ就相当于2秒</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="复制代码到剪贴板" title="复制" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<ol>
+<li>在add_timer之后，使用mod_timer修改：</li>
+</ol>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">mod_timer(&amp;timer, jiffies + xxx);   // xxx表示多少个滴答后超时，也就是xxx*10ms</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">mod_timer(&amp;timer, jiffies + 2*HZ);  // HZ等于CONFIG_HZ，2*HZ就相当于2秒</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="复制代码到剪贴板" title="复制" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="1953-使用定时器处理按键抖动">19.5.3 使用定时器处理按键抖动<a href="#1953-使用定时器处理按键抖动" class="hash-link" aria-label="19.5.3 使用定时器处理按键抖动的直接链接" title="19.5.3 使用定时器处理按键抖动的直接链接">​</a></h3>
+<p>在实际的按键操作中，可能会有机械抖动：</p>
+<p><img loading="lazy" src="/assets/images/manual-540-b1fa71c67f1c8c4444e7ce281b57249d.png" width="753" height="585" class="img_ev3q"></p>
+<p>图 19.19 按键震动</p>
+<p>按下或松开一个按键，它的GPIO电平会反复变化，最后才稳定。一般是几十毫秒才会稳定。</p>
+<p>如果不处理抖动的话，用户只操作一次按键，中断程序可能会上报多个数据。怎么处理？</p>
+<ul>
+<li>
+<ul>
+<li>在按键中断程序中，可以循环判断几十亳秒，发现电平稳定之后再上报</li>
+<li>使用定时器</li>
+</ul>
+</li>
+</ul>
+<p>显然第1种方法太耗时，违背“中断要尽快处理”的原则，你的系统会很卡。怎么使用定时器？看下图：</p>
+<p><img loading="lazy" src="/assets/images/manual-541-73f6063b08aba26110de15a986ac2e03.png" width="752" height="438" class="img_ev3q"></p>
+<p>图 19.20 震动触发定时器</p>
+<p>核心在于：在GPIO中断中并不立刻记录按键值，而是修改定时器超时时间，10ms后再处理。</p>
+<ul>
+<li>
+<ul>
+<li>如果10ms内又发生了GPIO中断，那就认为是抖动，这时再次修改超时时间为10ms。</li>
+<li>只有10ms之内再无GPIO中断发生，那么定时器的函数才会被调用。在定时器函数中记录按键值。</li>
+</ul>
+</li>
+</ul>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="1954-现场编程">19.5.4 现场编程<a href="#1954-现场编程" class="hash-link" aria-label="19.5.4 现场编程的直接链接" title="19.5.4 现场编程  的直接链接">​</a></h3>
+<p>驱动程序、应用程序的核心都在上面的章节列了出来，怎么写程序？观看视频体验更佳，更能抓住重点。</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="1955-深入研究定时器的内部机制">19.5.5 深入研究：定时器的内部机制<a href="#1955-深入研究定时器的内部机制" class="hash-link" aria-label="19.5.5 深入研究：定时器的内部机制的直接链接" title="19.5.5 深入研究：定时器的内部机制的直接链接">​</a></h3>
+<p>初学者会用定时器就行，本节不用看。</p>
+<p>怎么实现定时器，逻辑上很简单：每发生一次硬件中断时，硬件中断处理完后就会看看有没有软件中断要处理。</p>
+<p>定时器就是通过软件中断来实现的，它属于TIMER_SOFTIRQ软中断。</p>
+<p>对于TIMER_SOFTIRQ软中断，初始化代码如下：</p>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">void __init init_timers(void)</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">{</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">	init_timer_cpus();</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">	init_timer_stats();</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">	open_softirq(TIMER_SOFTIRQ, run_timer_softirq);</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">}</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="复制代码到剪贴板" title="复制" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<p>当发生硬件中断时，硬件中断处理完后，内核会调用软件中断的处理函数。对于TIMER_SOFTIRQ，会调用run_timer_softirq，它的函数如下：</p>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">run_timer_softirq</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">__run_timers(base);</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">    while (time_after_eq(jiffies, base-&gt;clk)) {</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">        ……</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">expire_timers(base, heads + levels);</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">    fn = timer-&gt;function;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">    data = timer-&gt;data;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">    call_timer_fn(timer, fn, data);</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">        fn(data);</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="复制代码到剪贴板" title="复制" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<p>简单地说，add_timer函数会把timer放入内核里某个链表；</p>
+<p>在TIMER_SOFTIRQ的处理函数中，会从链表中把这些超时的timer取出来，执行其中的函数。</p>
+<p>怎么判断是否超时？jiffies大于或等于timer-&gt;expires时，timer就超时。</p>
+<p>内核中有很多timer，如果高效地找到超时的timer？这是比较复杂的，可以看看这文章：</p>
+<p><a href="https://blog.csdn.net/tianmohust/article/details/8707162" target="_blank" rel="noopener noreferrer">https://blog.csdn.net/tianmohust/article/details/8707162</a></p>
+<p>我们以后如果要深入讲解timer的话，会用视频来讲解。</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="1956-深入研究找到系统滴答">19.5.6 深入研究：找到系统滴答<a href="#1956-深入研究找到系统滴答" class="hash-link" aria-label="19.5.6 深入研究：找到系统滴答的直接链接" title="19.5.6 深入研究：找到系统滴答的直接链接">​</a></h3>
+<p>在开发板执行以下命令，可以看到CPU0下有一个数值变化特别快，它就是滴答中断：</p>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain"># cat /proc/interrupts</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">           CPU0</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain"> 16:       2532       GPC  55 Level     i.MX Timer Tick</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain"> 19:         22       GPC  33 Level     2010000.ecspi</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain"> 20:        384       GPC  26 Level     2020000.serial</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain"> 21:          0       GPC  98 Level     sai</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="复制代码到剪贴板" title="复制" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<ul>
+<li>以100ASK_IMX6ULL为做，滴答中断名字就是“i.MX Timer Tick”。在Linux内核源码目录下执行以下命令：</li>
+</ul>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">$ grep &quot;i.MX Timer Tick&quot; * -nr</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">drivers/clocksource/timer-imx-gpt.c:319:        act-&gt;name = &quot;i.MX Timer Tick&quot;;</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="复制代码到剪贴板" title="复制" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<ul>
+<li>打开timer-imx-gpt.c 319行左右，可得如下源码：</li>
+</ul>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">act-&gt;name = &quot;i.MX Timer Tick&quot;;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">act-&gt;flags = IRQF_TIMER | IRQF_IRQPOLL;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">act-&gt;handler = mxc_timer_interrupt;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">act-&gt;dev_id = ced;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">return setup_irq(imxtm-&gt;irq, act);</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="复制代码到剪贴板" title="复制" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<ul>
+<li>mxc_timer_interrupt应该就是滴答中断的处理函数，代码如下：</li>
+</ul>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">static irqreturn_t mxc_timer_interrupt(int irq, void *dev_id)</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">{</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">	struct clock_event_device *ced = dev_id;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">	struct imx_timer *imxtm = to_imx_timer(ced);</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">	uint32_t tstat;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">	tstat = readl_relaxed(imxtm-&gt;base + imxtm-&gt;gpt-&gt;reg_tstat);</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">	imxtm-&gt;gpt-&gt;gpt_irq_acknowledge(imxtm);</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">	ced-&gt;event_handler(ced);</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">	return IRQ_HANDLED;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">}</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="复制代码到剪贴板" title="  复制" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<p>在上述代码中没看到对jiffies的累加操作啊，应该是在ced-&gt;event_handler(ced)中进行。</p>
+<p>ced-&gt;event_handler(ced)是哪一个函数？不太好找，我使用QEMU来调试内核，在mxc_timer_interrupt中打断点跟踪代码(以后的课程会讲怎么用QEMU调试内核)，发现它对应tick_handle_periodic。</p>
+<p>tick_handle_periodic位于kernel\time\tick-common.c中，它里面的调用关系如下：</p>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">tick_handle_periodic</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">tick_periodic(cpu);</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">    do_timer(1);</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">        jiffies_64 += ticks;  // jiffies就是jiffies_64</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="复制代码到剪贴板" title="复制" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<p>你为何说jiffies就是jiffies_64？在arch\arm\kernel\vmlinux.lds.S有如下代码：</p>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">#ifndef __ARMEB__</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">jiffies = jiffies_64;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">#else</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">jiffies = jiffies_64 + 4;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">#endif</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="复制代码到剪贴板" title="复制" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<p>上述代码说明了，对于大字节序的CPU，jiffies指向jiffies_64的高4字节；对于小字节序的CPU，jiffies指向jiffies_64的低4字节。</p>
+<p>对jiffies_64的累加操作，就是对jiffies的累加操作。</p>
+<a id="_Toc197788762"></a>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="196-中断下半部tasklet">19.6 中断下半部tasklet<a href="#196-中断下半部tasklet" class="hash-link" aria-label="19.6 中断下半部tasklet的直接链接" title="19.6 中断下半部tasklet的直接链接">​</a></h2>
+<p>使用GIT命令载后，本节源码位于这个目录下：</p>
+<p>01_all_series_quickstart\</p>
+<p>05_嵌入式Linux驱动开发基础知识\</p>
+<p>source\06_gpio_irq\08_read_key_irq_poll_fasync_block_timer_tasklet</p>
+<p>在前面我们介绍过中断上半部、下半部。中断的处理有几个原则：</p>
+<ul>
+<li>不能嵌套；</li>
+<li>越快越好。</li>
+</ul>
+<p>在处理当前中断时，即使发生了其他中断，其他中断也不会得到处理，所以中断的处理要越快越好。但是某些中断要做的事情稍微耗时，这时可以把中断拆分为上半部、下半部。</p>
+<p>在上半部处理紧急的事情，在上半部的处理过程中，中断是被禁止的；</p>
+<p>在下半部处理耗时的事情，在下半部的处理过程中，中断是使能的。</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="1961-内核函数">19.6.1 内核函数<a href="#1961-内核函数" class="hash-link" aria-label="19.6.1 内核函数的直接链接" title="19.6.1 内核函数的直接链接">​</a></h3>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ol>
+<li>定义tasklet</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>中断下半部使用结构体tasklet_struct来表示，它在内核源码include\linux\interrupt.h中定义：</p>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">struct tasklet_struct</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">{</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">	struct tasklet_struct *next;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">	unsigned long state;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">	atomic_t count;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">	void (*func)(unsigned long);</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">	unsigned long data;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">};</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="复制代码到剪贴板" title="复制" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<ul>
+<li>其中的state有2位：<!-- -->
+<ul>
+<li>bit0表示TASKLET_STATE_SCHED</li>
+</ul>
+</li>
+</ul>
+<p>等于1时表示已经执行了tasklet_schedule把该tasklet放入队列了；tasklet_schedule会判断该位，如果已经等于1那么它就不会再次把tasklet放入队列。</p>
+<ul>
+<li>
+<ul>
+<li>bit1表示TASKLET_STATE_RUN</li>
+</ul>
+</li>
+</ul>
+<p>等于1时，表示正在运行tasklet中的func函数；函数执行完后内核会把该位清0。</p>
+<ul>
+<li>其中的count表示该tasklet是否使能：等于0表示使能了，非0表示被禁止了。对于count非0的tasklet，里面的func函数不会被执行。</li>
+</ul>
+<p>使用中  断下半部之前，要先实现一个tasklet_struct结构体，这可以用这2个宏来定义结构体：</p>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">#define DECLARE_TASKLET(name, func, data) \</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">struct tasklet_struct name = { NULL, 0, ATOMIC_INIT(0), func, data }</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">#define DECLARE_TASKLET_DISABLED(name, func, data) \</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">struct tasklet_struct name = { NULL, 0, ATOMIC_INIT(1), func, data }</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="复制代码到剪贴板" title="复制" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<ul>
+<li>
+<ul>
+<li>使用DECLARE_TASKLET定义的tasklet结构体，它是使能的；</li>
+<li>使用DECLARE_TASKLET_DISABLED定义的tasklet结构体，它是禁止的；使用之前要先调用tasklet_enable使能它。</li>
+</ul>
+</li>
+</ul>
+<p>也可以使用函数来初始化tasklet结构体：</p>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">extern void tasklet_init(struct tasklet_struct *t,</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">			 void (*func)(unsigned long), unsigned long data);</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="复制代码到剪贴板" title="复制" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ol>
+<li>使能/禁止tasklet</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">static inline void tasklet_enable(struct tasklet_struct *t);</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">static inline void tasklet_disable(struct tasklet_struct *t);</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="复制代码到剪贴板" title="复制" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<ul>
+<li>
+<ul>
+<li>tasklet_enable把count减1；</li>
+<li>tasklet_disable把count增1。<!-- -->
+<ul>
+<li>
+<ul>
+<li>
+<ol>
+<li>调度tasklet</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">static inline void tasklet_schedule(struct tasklet_struct *t);</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="复制代码到剪贴板" title="复制" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<ul>
+<li>
+<ul>
+<li>把tasklet放入链表，并且设置它的TASKLET_STATE_SCHED状态为1。<!-- -->
+<ul>
+<li>
+<ul>
+<li>
+<ol>
+<li>kill tasklet</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">extern void tasklet_kill(struct tasklet_struct *t);</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="复制代码到剪贴板" title="复制" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<ul>
+<li>
+<ul>
+<li>如果一个tasklet未被调度，tasklet_kill会把它的TASKLET_STATE_SCHED状态清0；</li>
+<li>如果一个tasklet已被调度，tasklet_kill会等待它执行完华，再把它的TASKLET_STATE_SCHED状态清0。</li>
+</ul>
+</li>
+</ul>
+<p>通常在卸载驱动程序时调用tasklet_kill。</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="1962-tasklet使用方法">19.6.2 tasklet使用方法<a href="#1962-tasklet使用方法" class="hash-link" aria-label="19.6.2 tasklet使用方法的直接链接" title="19.6.2 tasklet使用方法的直接链接">​</a></h3>
+<p>先定义tasklet，需要使用时调用tasklet_schedule，驱动卸载前调用tasklet_kill。</p>
+<p>tasklet_schedule只是把tasklet放入内核队列，它的func函数会在软件中断的执行过程中被调用。</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="1963-tasklet内部机制">19.6.3 tasklet内部机制<a href="#1963-tasklet内部机制" class="hash-link" aria-label="19.6.3 tasklet内部机制的直接链接" title="19.6.3 tasklet内部机制的直接链接">​</a></h3>
+<p>tasklet属于TASKLET_SOFTIRQ软件中断，入口函数为tasklet_action，这在内核kernel\softirq.c中设置：</p>
+<p><img loading="lazy" src="/assets/images/manual-542-385f2925eb7ac0769b29d3b67e263d4b.png" width="631" height="322" class="img_ev3q"></p>
+<p>图 19.21 softirq.c</p>
+<p>当驱动程序调用tasklet_schedule时，会设置tasklet的state为TASKLET_STATE_SCHED，并把它放入某个链表：</p>
+<p><img loading="lazy" src="/assets/images/manual-543-5f3f608c4511864cbebab87825a2d0af.png" width="997" height="390" class="img_ev3q"></p>
+<p>图 19.22 放入队列</p>
+<p>当发生硬件中断时，内核处理完硬件中断后，会处理软件中断。对于TASKLET_SOFTIRQ软件中断，会调用tasklet_action函数。</p>
+<p>执行过程还是挺简单的：从队列中找到tasklet，进行状态判断后执行func函数，从队列中删除tasklet。</p>
+<p>从这里可以看出：</p>
+<ol>
+<li>tasklet_schedule调度tasklet时，其中的函数并不会立刻执行，而只是把tasklet放入队列；</li>
+<li>调用一次tasklet_schedule，只会导致tasklnet的函数被执行一次；</li>
+<li>如果tasklet的函数尚未执行，多次调用tasklet_schedule也是无效的，只会放入队列一次。</li>
+</ol>
+<p>tasklet_action函数解析如下：</p>
+<p><img loading="lazy" src="/assets/images/manual-544-4bdcced0c79c7a18b55f6ccda4410d80.png" width="922" height="821" class="img_ev3q"></p>
+<p>图 19.23 tasklet_action</p>
+<a id="_Toc197788763"></a>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="197-工作队列">19.7 工作队列<a href="#197-工作队列" class="hash-link" aria-label="19.7 工作队列的直接链接" title="19.7 工作队列的直接链接">​</a></h2>
+<p>使用GIT命令载后，本节源码位于这个目录下：</p>
+<p>01_all_series_quickstart\</p>
+<p>05_嵌入式Linux驱动开发基础知识\</p>
+<p>source\06_gpio_irq\09_read_key_irq_poll_fasync_block_timer_tasklet_workqueue</p>
+<p>前面讲的定时器、下半部tasklet，它们都是在中断上下文中执行，它们无法休眠。当要处理更复杂的事情时，往往更耗时。这些更耗时的工作放在定时器或是下半部中，会使得系统很卡；并且循环等待某件事情完成也太浪费CPU资源了。</p>
+<p>如果使用线程来处理这些耗时的工作，那就可以解决系统卡顿的问题：因为线程可以休眠。</p>
+<p>在内核中，我们并不需要自己去创建线程，可以使用“工作队列”(workqueue)。内核初始化工作队列是，就为它创建了内核线程。以后我们要使用“工作队列”，只需要把“工作”放入“工作队列中”，对应的内核线程就会取出“工作”，执行里面的函数。</p>
+<p>在2.xx的内核中，工作队列的内部机制比较简单；在现在4.x的内核中，工作队列的内部机制做得复杂无比，但是用法是一样的。</p>
+<p>工作队列的应用场合：要做的事情比较耗时，甚至可能需要休眠，那么可以使用工作队列。</p>
+<p>缺点：多个工作(函数)是在某个内核线程中依序执行的，前面函数执行很慢，就会影响到后面的函数。</p>
+<p>在多CPU的系统下，一个工作队列可以有多个内核线程，可以在一定程度上缓解这个问题。</p>
+<p>我们先使用看看怎么使用工作队列。</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="1971-内核函数">19.7.1 内核函数<a href="#1971-内核函数" class="hash-link" aria-label="19.7.1 内核函数的直接链接" title="19.7.1 内核函数的直接链接">​</a></h3>
+<p>内核线程、工作队列(workqueue)都由内核创建了，我们只是使用。使用的核心是一个work_struct结构体，定义如下：</p>
+<p><img loading="lazy" src="/assets/images/manual-545-af0db03dc6947a6472b5d60708330ddb.png" width="906" height="226" class="img_ev3q"></p>
+<p>图 19.24 work_struct</p>
+<p>使用工作队列时，步骤如下：</p>
+<ol>
+<li>构造一个work_struct结构体，里面有函数；</li>
+<li>把这个work_struct结构体放入工作队列，内核线程就会运行work中的函数。<!-- -->
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ol>
+<li>定义work</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+<p>参考内核头文件：include\linux\workqueue.h</p>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">#define DECLARE_WORK(n, f)						\</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">	struct work_struct n = __WORK_INITIALIZER(n, f)</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">#define DECLARE_DELAYED_WORK(n, f)					\</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">	struct delayed_work n = __DELAYED_WORK_INITIALIZER(n, f, 0)</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="复制代码到剪贴板" title="复制" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<ul>
+<li>第1个宏是用来定义一个work_struct结构体，要指定它的函数。</li>
+<li>第2个宏用来定义一个delayed_work结构体，也要指定它的函数。所以“delayed”，意思就是说要让它运行时，可以指定：某段时间之后你再执行。</li>
+</ul>
+<p>如果要在代码中初始化work_struct结构体，可以使用下面的宏：</p>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">#define INIT_WORK(_work, _func)</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="复制代码到剪贴板" title="复制" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ol>
+<li>使用work：schedule_work</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>调用schedule_work时，就会把work_struct结构体放入队列中，并唤醒对应的内核线程。内核线程就会从队列里把work_struct结构体取出来，执行里面的函数。</p>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ol>
+<li>其他函数</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>表 19‑2 workqueue其它函数</p>
+<table><thead><tr><th>序号</th><th>函数</th><th>说明</th></tr></thead><tbody><tr><td>1</td><td>create_workqueue</td><td>在Linux系统中已经有了现成的system_wq等工作队列，<br>你当然也可以自己调用create_workqueue创建工作队列，<br>对于SMP系统，这个工作队列会有多个内核线程与它对应，<br>创建工作队列时，内核会帮这个工作队列创建多个内核线程</td></tr><tr><td>2</td><td>create_singlethread_workqueue</td><td>如果想只有一个内核线程与工作队列对应，<br>可以用本函数创建工作队列，<br>创建工作队列时，内核会帮这个工作队列创建一个内核线程</td></tr><tr><td>3</td><td>destroy_workqueue</td><td>销毁工作队列</td></tr><tr><td>4</td><td>schedule_work</td><td>调度执行一个具体的work，<br>执行的work将会被挂入Linux系统提供的工作队列</td></tr><tr><td>5</td><td>schedule_delayed_work</td><td>延迟一定时间去执行一个具体的任务，<br>功能与schedule_work类似，多了一个延迟时间</td></tr><tr><td>6</td><td>queue_work</td><td>跟schedule_work类似，<br>schedule_work是在系统默认的工作队列上执行一个work，<br>queue_work需要自己指定工作队列</td></tr><tr><td>7</td><td>queue_delayed_work</td><td>跟schedule_delayed_work类似，<br>schedule_delayed_work是在系统默认的工作队列上执行一个work，<br>queue_delayed_work需要自己指定工作队列</td></tr><tr><td>8</td><td>flush_work</td><td>等待一个work执行完毕，<br>如果这个work已经被放入队列，那么本函数等它执行完毕，并且返回true；<br>如果这个work已经执行完华才调用本函数，那么直接返回false</td></tr><tr><td>9</td><td>flush_delayed_work</td><td>等待一个delayed_work执行完毕，<br>如果这个delayed_work已经被放入队列，那么本函数等它执行完毕，并且返回true；<br>如果这个delayed_work已经执行完华才调用本函数，那么直接返回false</td></tr></tbody></table>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="1972-编程上机">19.7.2 编程、上机<a href="#1972-编程上机" class="hash-link" aria-label="19.7.2 编程、上机的直接链接" title="19.7.2 编程、上机的直接链接">​</a></h3>
+<p>驱动程序、应用程序的核心都在上面的章节列了出来，怎么写程序？观看视频体验更佳，更能抓住重点。</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="1973-内部机制">19.7.3 内部机制<a href="#1973-内部机制" class="hash-link" aria-label="19.7.3 内部机制的直接链接" title="19.7.3 内部机制的直接链接">​</a></h3>
+<p>初学者知道work_struct中的函数是运行于内核线程的上下文，这就足够了。</p>
+<p>在2.xx版本的Linux内核中，创建workqueue时就会同时创建内核线程；</p>
+<p>在4.xx版本的Linux内核中，内核线程和workqueue是分开创建的，比较复杂。</p>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ol>
+<li>Linux 2.x的工作队列创建过程</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>代码在kernel\workqueue.c中：</p>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">init_workqueues</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">keventd_wq = create_workqueue(&quot;events&quot;);</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">    __create_workqueue((name), 0, 0)</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">        for_each_possible_cpu(cpu) {</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">            err = create_workqueue_thread(cwq, cpu);</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">                p = kthread_create(worker_thread, cwq, fmt, wq-&gt;name, cpu);</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="复制代码到剪贴板" title="复制" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<p>对于每一个CPU，都创建一个名为“events/X”的内核线程，X从0开始。在创建workqueue的同时创建内核线程。</p>
+<p><img loading="lazy" src="/assets/images/manual-546-33a8dc0f8608dcf614d3f6f3b0d7a005.png" width="923" height="294" class="img_ev3q"></p>
+<p>图 19.25 Linux 2.x的工作队列</p>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ol>
+<li>Linux 4.x的工作队列创建过程</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>Linux4.x中，内核线程和工作队列是分开创建的。先创建内核线程，代码在kernel\workqueue.c中：</p>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">init_workqueues</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">/* initialize CPU pools */</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">for_each_possible_cpu(cpu) {</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">    for_each_cpu_worker_pool(pool, cpu) {</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">         /* 对每一个CPU都创建2个worker_pool结构体，它是含有ID的 */</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">         /*  一个worker_pool对应普通优先级的work，第2个对应高优先级的work */</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">}</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">/* create the initial worker */</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">for_each_online_cpu(cpu) {</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">    for_each_cpu_worker_pool(pool, cpu) {</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">        /* 对每一个CPU的每一个worker_pool，创建一个worker */</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">/* 每一个worker对应一个内核线程 */</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">        BUG_ON(!create_worker(pool));</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">    }</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">}</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="复制代码到剪贴板" title="复制" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<p>create_worker函数代码如下：</p>
+<p><img loading="lazy" src="/assets/images/manual-547-762a16133a50b2872152fd3f7b940030.png" width="927" height="605" class="img_ev3q"></p>
+<p>图 19.26 create_worker函数</p>
+<p>创建好内核线程后，再创建workqueue，代码在kernel\workqueue.c中：</p>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">init_workqueues</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">system_wq = alloc_workqueue(&quot;events&quot;, 0, 0);</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">    __alloc_workqueue_key</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">        wq = kzalloc(sizeof(*wq) + tbl_size, GFP_KERNEL);  // 分配workqueue_struct</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">        alloc_and_link_pwqs(wq) // 跟worker_poll建立联系</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="复制代码到剪贴板" title="复制" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<p><img loading="lazy" src="/assets/images/manual-548-dc9f03ff3c062453e558cc87a4bb8f1d.png" width="1415" height="432" class="img_ev3q"></p>
+<p>图 19.27 Linux 4.x的工作队列</p>
+<p>一开始时，每一个worker_poll下只有一个线程，但是系统会根据任务繁重程度动态创建、销毁内核线程。所以你可以在work中打印线程ID，发现它可能是变化的。</p>
+<p>参考文章：</p>
+<p><a href="https://zhuanlan.zhihu.com/p/91106844" target="_blank" rel="noopener noreferrer">https://zhuanlan.zhihu.com/p/91106844</a></p>
+<p><a href="https://www.cnblogs.com/vedic/p/11069249.html" target="_blank" rel="noopener noreferrer">https://www.cnblogs.com/vedic/p/11069249.html</a></p>
+<p><a href="https://www.cnblogs.com/zxc2man/p/4678075.html" target="_blank" rel="noopener noreferrer">https://www.cnblogs.com/zxc2man/p/4678075.html</a></p>
+<a id="_Toc197788764"></a>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="198-中断的线程化处理">19.8 中断的线程化处理<a href="#198-中断的线程化处理" class="hash-link" aria-label="19.8 中断的线程化处理的直接链接" title="19.8 中断的线程化处理的直接链接">​</a></h2>
+<p>使用GIT命令载后，本节源码位于这个目录下：</p>
+<p>01_all_series_quickstart\</p>
+<p>05_嵌入式Linux驱动开发基础知识\</p>
+<p>source\06_gpio_irq\10_read_key_irq_poll_fasync_block_timer_tasklet_workqueue_threadedirq</p>
+<p>复杂、耗时的事情，尽量使用内核线程来处理。上节视频介绍的工作队列用起来挺简单，但是它有一个缺点：工作队列中有多个work，前一个work没处理完会影响后面的work。解决方法有很多种，比如干脆自己创建一个内核线程，不跟别的work凑在一块了。在Linux系统中，对于存储设备比如SD/TF卡，它的驱动程序就是这样做的，它有自己的内核线程。</p>
+<p>对于中断处理，还有另一种方法：threaded irq，线程化的中断处理。中断的处理仍然可以认为分为上半部、下半部。上半部用来处理紧急的事情，下半部用一个内核线程来处理，这个内核线程专用于这个中断。</p>
+<p>内核提供了这个函数：</p>
+<p><img loading="lazy" src="/assets/images/manual-549-423441a8b8bca7841911b2cbc7ecbb86.png" width="1021" height="156" class="img_ev3q"></p>
+<p>图 19.28 内核的中断线程</p>
+<p>你可以只提供thread_fn，系统会为这个函数创建一个内核线程。发生中断时，系统会立刻调用handler函数，然后唤醒某个内 核线程，内核线程再来执行thread_fn函数。</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="1981-内核机制">19.8.1 内核机制<a href="#1981-内核机制" class="hash-link" aria-label="19.8.1 内核机制的直接链接" title="19.8.1 内核机制的直接链接">​</a></h3>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ol>
+<li>调用request_threaded_irq后内核的数据结构、</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p><img loading="lazy" src="/assets/images/manual-550-992d5f90f0cb7f8f226263d87b45f01d.png" width="1227" height="704" class="img_ev3q"></p>
+<p>图 19.29 调用request_threaded_irq后</p>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ol>
+<li>request_threaded_irq</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>request_threaded_irq函数，肯定会创建一个内核线程。</p>
+<p>源码在内核文件kernel\irq\manage.c中，</p>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">int request_threaded_irq(unsigned int irq, irq_handler_t handler,</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">			 irq_handler_t thread_fn, unsigned long irqflags,</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">			 const char *devname, void *dev_id)</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">{</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">    // 分配、设置一个irqaction结构体</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">	action = kzalloc(sizeof(struct irqaction), GFP_KERNEL);</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">	if (!action)</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">		return -ENOMEM;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">	action-&gt;handler = handler;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">	action-&gt;thread_fn = thread_fn;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">	action-&gt;flags = irqflags;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">	action-&gt;name = devname;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">	action-&gt;dev_id = dev_id;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">    retval = __setup_irq(irq, desc, action);  // 进一步处理</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">}</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="复制代码到剪贴板" title="复制" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<ul>
+<li>__setup_irq函数代码如下(只摘取重要部分)：</li>
+</ul>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">	if (new-&gt;thread_fn &amp;&amp; !nested) {</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">		ret = setup_irq_thread(new, irq, false);</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="复制代码到剪贴板" title="复制" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<ul>
+<li>setup_irq_thread函数代码如下(只摘取重要部分)：</li>
+</ul>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">	if (!secondary) {</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">		t = kthread_create(irq_thread, new, &quot;irq/%d-%s&quot;, irq,</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">				   new-&gt;name);</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">	} else {</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">		t = kthread_create(irq_thread, new, &quot;irq/%d-s-%s&quot;, irq,</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">				   new-&gt;name);</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">		param.sched_priority -= 1;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">	}</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">new-&gt;thread = t;</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="复制代码到剪贴板" title="复制" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ol>
+<li>中断的执行过程</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>对于GPIO中断，我使用QEMU的调试功能找出了所涉及的函数调用，其他板子可能稍有不同。</p>
+<p>调用关系如下，反过来看：</p>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">Breakpoint 1, gpio_keys_gpio_isr (irq=200, dev_id=0x863e6930) at drivers/input/keyboard/gpio_keys.c:393</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">393	{</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">(gdb) bt</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">#0  gpio_keys_gpio_isr (irq=200, dev_id=0x863e6930) at drivers/input/keyboard/gpio_keys.c:393</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">#1  0x80270528 in __handle_irq_event_percpu (desc=0x8616e300, flags=0x86517edc) at kernel/irq/handle.c:145</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">#2  0x802705cc in handle_irq_event_percpu (desc=0x8616e300) at kernel/irq/handle.c:185</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">#3  0x80270640 in handle_irq_event (desc=0x8616e300) at kernel/irq/handle.c:202</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">#4  0x802738e8 in handle_level_irq (desc=0x8616e300) at kernel/irq/chip.c:518</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">#5  0x8026f7f8 in generic_handle_irq_desc (desc=&lt;optimized out&gt;) at ./include/linux/irqdesc.h:150</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">#6  generic_handle_irq (irq=&lt;optimized out&gt;) at kernel/irq/irqdesc.c:590</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">#7  0x805005e0 in mxc_gpio_irq_handler (port=0xc8, irq_stat=2252237104) at drivers/gpio/gpio-mxc.c:274</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">#8  0x805006fc in mx3_gpio_irq_handler (desc=&lt;optimized out&gt;) at drivers/gpio/gpio-mxc.c:291</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">#9  0x8026f7f8 in generic_handle_irq_desc (desc=&lt;optimized out&gt;) at ./include/linux/irqdesc.h:150</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">#10 generic_handle_irq (irq=&lt;optimized out&gt;) at kernel/irq/irqdesc.c:590</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">#11 0x8026fd0c in __handle_domain_irq (domain=0x86006000, hwirq=32, lookup=true, regs=0x86517fb0) at kernel/irq/irqdesc.c:627</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">#12 0x80201484 in handle_domain_irq (regs=&lt;optimized out&gt;, hwirq=&lt;optimized out&gt;, domain=&lt;optimized out&gt;) at ./include/linux/irqdesc.h:168</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">#13 gic_handle_irq (regs=0xc8) at drivers/irqchip/irq-gic.c:364</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">#14 0x8020b704 in __irq_usr () at arch/arm/kernel/entry-armv.S:464</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="复制代码到剪贴板" title="复制" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<p>我们只需要分析__handle_irq_event_percpu函数，它在kernel\irq\handle.c中：</p>
+<p><img loading="lazy" src="/assets/images/manual-551-2f89505904c16f39ffd51ce1f9b46615.png" width="1093" height="681" class="img_ev3q"></p>
+<p>线程的处理函数为irq_thread，代码在kernel\irq\handle.c中：</p>
+<p><img loading="lazy" src="/assets/images/manual-552-7ad1713b0f6099cdeb85ac8ca4b14d53.png" width="764" height="305" class="img_ev3q"></p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="1982-编程上机">19.8.2 编程、上机<a href="#1982-编程上机" class="hash-link" aria-label="19.8.2 编程、上机的直接链接" title="19.8.2 编程、上机的直接链接">​</a></h3>
+<p>调用request_threaded_irq函数注册中断，调用free_irq卸载中断。</p>
+<p>从前面可知，我们可以提供上半部函数，  也可以不提供：</p>
+<ul>
+<li>如果不提供<!-- -->
+<ul>
+<li>内核会提供默认的上半部处理函数：irq_default_primary_handler，它是直接返回IRQ_WAKE_THREAD。</li>
+</ul>
+</li>
+<li>如果提供的话<!-- -->
+<ul>
+<li>返回值必须是：IRQ_WAKE_THREAD。</li>
+</ul>
+</li>
+</ul>
+<p>在thread_fn中，如果中断被正确处理了，应该返回IRQ_HANDLED。</p>
+<a id="_Toc197788765"></a>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="199-mmap">19.9 mmap<a href="#199-mmap" class="hash-link" aria-label="19.9 mmap的直接链接" title="19.9 mmap的直接链接">​</a></h2>
+<p>应用程序和驱动程序之间传递数据时，可以通过read、write函数进行。这涉及在用户态buffer和内核态buffer之间传数据，如下图所示：</p>
+<p><img loading="lazy" src="/assets/images/manual-553-1d58044cbacc10a34c1a0cc56d4aa413.png" width="1636" height="201" class="img_ev3q"></p>
+<p>图 19.30 mmap</p>
+<p>应用程序不能直接读写驱动程序中的buffer，需要在用户态buffer和内核态buffer之间进行一次数据拷贝。这种方式在数据量比较小时没什么问题；但是数据量比较大时效率就太低了。比如更新LCD显示时，如果每次都让APP传递一帧数据给内核，假设LCD采用1024*600*32bpp的格式，一帧数据就有1024*600*32/8=2.3MB左右，这无法忍受。</p>
+<p>改进的方法就是让程序可以直接读写驱动程序中的buffer，这可以通过mmap实现(memory map)，把内核的buffer映射到用户态，让APP在用户态直接读写。</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="1991-内存映射现象与数据结构">19.9.1 内存映射现象与数据结构<a href="#1991-内存映射现象与数据结构" class="hash-link" aria-label="19.9.1 内存映射现象与数据结构的直接链接" title="19.9.1 内存映射现象与数据结构的直接链接">​</a></h3>
+<p>假设有这样的程序，名为test.c：</p>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">#include &lt;stdio.h&gt;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">#include &lt;unistd.h&gt;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">#include &lt;stdlib.h&gt;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain" style="display:inline-block"></span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">int a;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">int main(int argc, char **argv)</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">{</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">	if (argc != 2)</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">	{</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">		printf(&quot;Usage: %s &lt;number&gt;\n&quot;, argv[0]);</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">		return -1;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">	}</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">	a = strtol(argv[1], NULL, 0);</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">	printf(&quot;a&#x27;s address = 0x%lx, a&#x27;s value = %d\n&quot;, &amp;a, a);</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">	while (1)</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">	{</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">		sleep(10);</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">	}</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">	return 0;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">}</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="复制代码到剪贴板" title="复制" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<p>在PC上如下编译(必须静态编译)：</p>
+<div class="language-bash codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-bash codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">gcc  -o  test  test.c  -staitc</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="复制代码到剪贴板" title="复制" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<p>分别执行test程序2次，最后执行ps，可以看到这2个程序同时存在，这2个程序里a变量的地址相同，但是值不同。如下图：</p>
+<p><img loading="lazy" src="/assets/images/manual-554-afe32f5ae5a139b61403d5435e569fe1.png" width="1061" height="521" class="img_ev3q"></p>
+<p>图 19.31 执行两次test</p>
+<p>观察到这些现象：</p>
+<ul>
+<li>
+<ul>
+<li>2个程序同时运行，它们的变量a的地址都是一样的：0x6bc3a0；</li>
+<li>2个程序同时运行，它们的变量a的值是不一样的，一个是12，另一个是123。</li>
+</ul>
+</li>
+</ul>
+<p>疑问来了：</p>
+<ul>
+<li>
+<ul>
+<li>这2个程序同时在内存中运行，它们的值不一样，所以变量a的地址肯定不同；</li>
+<li>但是打印出来的变量a的地址却是一样的。</li>
+</ul>
+</li>
+</ul>
+<p>怎么回事？</p>
+<p>这里要引入虚拟地址的概念：CPU发出的地址是虚拟地址，它经过MMU(Memory Manage Unit，内存管理单元)映射到物理地址上，对于不同进程的同一个虚拟地址，MMU会把它们映射到不同的物理地址。如下图：</p>
+<p><img loading="lazy" src="/assets/images/manual-555-646c006c6c064ceb66cf9092f0e99202.png" width="1010" height="466" class="img_ev3q"></p>
+<p>图 19.32 MMU</p>
+<ul>
+<li>当前运行的是app1时，MMU会把CPU发出的虚拟地址addr映射为物理地址paddr1，用paddr1去访问内存。</li>
+<li>当前运行的是app2时，MMU会把CPU发出的虚拟地址addr映射为物理地址paddr2，用paddr2去访问内存。</li>
+<li>MMU负责把虚拟地址映射为物理地址，虚拟地址映射到哪个物理地址去？</li>
+</ul>
+<p>可以执行ps命令查看进程ID，然后执行“cat /proc/325/maps”得到映射关系。</p>
+<p>每一个APP在内核里都有一个tast_struct，这个结构体中保存有内存信息：mm_struct。而虚拟地址、物理地址的映射关系保存在页目录表中，如下图所示：</p>
+<p><img loading="lazy" src="/assets/images/manual-556-a628f52aee16ee313fdbef37b716d9da.png" width="1018" height="737" class="img_ev3q"></p>
+<p>解析如下：</p>
+<ul>
+<li>每个APP在内核中都有一个task_struct结构体，它用来描述一个进程；</li>
+<li>每个APP都要占据内存，在task_struct中用mm_struct来管理进程占用的内存；<!-- -->
+<ul>
+<li>内存有虚拟地址、物理地址，mm_struct中用mmap来描述虚拟地址，用pgd来描述对应的物理地址。</li>
+<li><strong>注意</strong>：pgd，Page Global Directory，页目录。</li>
+</ul>
+</li>
+<li>每个APP都有一系列的VMA：virtual memory<!-- -->
+<ul>
+<li>比如APP含有代码段、数据段、BSS段、栈等等，还有共享库。这些单元会保存在内存里，它们的地址空间不同，权限不同(代码段是只读的可运行的、数据段可读可写)，内核用一系列的vm_area_struct来描述它们。</li>
+<li>vm_area_struct中的vm_start、vm_end是虚拟地址。</li>
+</ul>
+</li>
+<li>vm_area_struct中虚拟地址如何映射到物理地址去？<!-- -->
+<ul>
+<li>每一个APP的虚拟地址可能相同，物理地址不相同，这些对应关系保存在pgd中。</li>
+</ul>
+</li>
+</ul>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="1992-arm架构内存映射简介">19.9.2 ARM架构内存映射简介<a href="#1992-arm架构内存映射简介" class="hash-link" aria-label="19.9.2 ARM架构内存映射简介的直接链接" title="19.9.2 ARM架构内存映射简介的直接链接">​</a></h3>
+<p>ARM架构支持一级页表映射，也就是说MMU根据CPU发来的虚拟地址可以找到第1个页表，从第1个页表里就可以知道这个虚拟地址对应的物理地址。一级页表里地址映射的最小单位是1M。</p>
+<p>ARM架构还支持二级页表映射，也就是说MMU根据CPU发来的虚拟地址先找到第1个页表，从第1个页表里就可以知道第2级页表在哪里；再取出第2级页表，从第2个页表里才能确定这个虚拟地址对应的物理地址。二级页表  地址映射的最小单位有4K、1K，Linux使用4K。</p>
+<p>一级页表项里的内容，决定了它是指向一块物理内存，还是指问二级页表，如下图：</p>
+<p><img loading="lazy" src="/assets/images/manual-557-e7e453a35d92a9c25eb14bb603b90fd9.png" width="1312" height="371" class="img_ev3q"></p>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ol>
+<li>一级页表映射过程</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>一线页表中每一个表项用来设置1M的空间，对于32位的系统，虚拟地址空间有4G，4G/1M=4096。所以一级页表要映射整个4G空间的话，需要4096个页表项。</p>
+<p>第0个页表项用来表示虚拟地址第0个1M(虚拟地址为0～0xFFFFF)对应哪一块物理内存，并且有一些权限设置；</p>
+<p>第1个页表项用来表示虚拟地址第1个1M(虚拟地址为0x100000～0x1FFFFF)对应哪一块物理内存，并且有一些权限设置；</p>
+<p>依次类推。</p>
+<p>使用一级页表时，先在内存里设置好各个页表项，然后把页表基地址告诉MMU，就可以启动MMU了。</p>
+<p>以下图为例介绍地址映射过程：</p>
+<ul>
+<li>
+<ol>
+<li>CPU发出虚拟地址vaddr，假设为0x12345678</li>
+<li>MMU根据vaddr[31:20]找到一级页表项：<!-- -->
+<ul>
+<li>虚拟地址0x12345678是虚拟地址空间里第0x123个1M，所以找到页表里第0x123项，根据此项内容知道它是一个段页表项。</li>
+</ul>
+</li>
+</ol>
+</li>
+</ul>
+<p>段内偏移是0x45678。</p>
+<ul>
+<li>
+<ol>
+<li>从这个表项里取出物理基地址：Section Base Address，假设是0x81000000</li>
+<li>物理基地址加上段内偏移得到：0x81045678</li>
+</ol>
+</li>
+</ul>
+<p>所以CPU要访问虚拟地址0x12345678时，实际上访问的是0x81045678的物理地址。</p>
+<p><img loading="lazy" src="/assets/images/manual-558-8df2e12f140a09b975f85e3ef65b4ad5.png" width="1862" height="779" class="img_ev3q"></p>
+<p>图 19.33内存映射</p>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ol>
+<li>二级页表映射  过程</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>首先设置好一级页表、二级页表，并且把一级页表的首地址告诉MMU。</p>
+<p>以下图为例介绍地址映射过程：</p>
+<ul>
+<li>
+<ul>
+<li>CPU发出虚拟地址vaddr，假设为0x12345678</li>
+<li>MMU根据vaddr[31:20]找到一级页表项：</li>
+</ul>
+</li>
+</ul>
+<p>虚拟地址0x12345678是虚拟地址空间里第0x123个1M，所以找到页表里第0x123项。根据此项内容知道它是一个二级页表项。</p>
+<ul>
+<li>
+<ul>
+<li>从这个表项里取出地址，假设是address，这表示的是二级页表项的物理地址；</li>
+<li>vaddr[19:12]表示的是二级页表项中的索引index即0x45，在二级页表项中找到第0x45项；</li>
+<li>二级页表项格式如下：</li>
+</ul>
+</li>
+</ul>
+<p><img loading="lazy" src="/assets/images/manual-559-e8fc6170bac8dbd74924cd02c0b80ae5.png" width="1156" height="325" class="img_ev3q"></p>
+<p>图 19.34二级页表</p>
+<p>里面含有这4K或1K物理空间的基地址page base addr，假设是0x81889000：</p>
+<p>它跟vaddr[11:0]组合得到物理地址：0x81889000 + 0x678 = 0x81889678。</p>
+<p>所以CPU要访问虚拟地址0x12345678时，实际上访问的是0x81889678的物理地址</p>
+<p><img loading="lazy" src="/assets/images/manual-560-c0b99e36ad4ef99aa43e9ce0d12c20cc.png" width="1036" height="522" class="img_ev3q"></p>
+<p>图 19.35二级页表</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="1993-怎么给app新建一块内存映射">19.9.3 怎么给APP新建一块内存映射<a href="#1993-怎么给app新建一块内存映射" class="hash-link" aria-label="19.9.3 怎么给APP新建一块内存映射的直接链接" title="19.9.3 怎么给APP新建一块内存映射的直接链接">​</a></h3>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ol>
+<li>mmap调用过程</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>从上面内存映射的过程可以知道，要给APP新开劈一块虚拟内存，并且让它指向某块内核buffer，我们要做这些事：</p>
+<ol>
+<li>得到一个vm_area_struct，它表示APP的一块虚拟内存空间；</li>
+</ol>
+<p>很幸运，APP调用mmap系统函数时，内核就帮我们构造了一个vm_area_stuct结构体。里面含有虚拟地址的地址范围、权限。</p>
+<ol>
+<li>确定物理地址：</li>
+</ol>
+<p>你想映射某个内核buffer，你需要得到它的物理地址，这得由你提供。</p>
+<ol>
+<li>给vm_area_struct和物理地址建立映射关系：</li>
+</ol>
+<p>也很幸运，内核提供有相关函数。</p>
+<p>APP里调用mmap时，导致的内核相关函数调用过程如下：</p>
+<p><img loading="lazy" src="/assets/images/manual-561-96c8e9b7e161b2f12412c68655e450af.png" width="1666" height="614" class="img_ev3q"></p>
+<p>图 19.36 mmap调用过程</p>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ol>
+<li>cache和buffer</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>本小节参考ARM的cache和写缓冲器（write buffer）：</p>
+<p><a href="https://blog.csdn.net/gameit/article/details/13169445" target="_blank" rel="noopener noreferrer">https://blog.csdn.net/gameit/article/details/13169445</a></p>
+<p>使用mmap时，需要有cache、buffer的知识。下图是CPU和内存之间的关系，有cache、buffer(写缓冲器)。Cache是一块高速内存；写缓冲器相当于一个FIFO，可以把多个写操作集合起来一次写入内存。</p>
+<p><img loading="lazy" src="/assets/images/manual-562-ba70e7570270ee9cd534b34137d667d7.png" width="659" height="384" class="img_ev3q"></p>
+<p>图 19.37 cache</p>
+<p>程序运行时有“局部性原理”，这又分为时间局部性、空间局部性。</p>
+<ul>
+<li>时间局部性：</li>
+</ul>
+<p>在某个时间点访问了存储器的特定位置，很可能在一小段时间里，会反复地访问这个位置。</p>
+<ul>
+<li>空间局部性：</li>
+</ul>
+<p>访问了存储器的特定位置，很可能在不久的将来访问它附近的位置。</p>
+<p>而CPU的速度非常快，内存的速度相对来说很慢。CPU要读写比较慢的内存时，怎样可以加快速度？根据“局部性原理”，可以引入cache。</p>
+<ol>
+<li>
+<p>读取内存addr处的数据时：</p>
+<ul>
+<li>先看看cache中有没有addr的数据，如果有就直接从cache里返回数据：这被称为cache命中。</li>
+<li>如果cache中没有addr的数据，则从内存里把数据读入，注意：它不是仅仅读入一个数据，而是读入一行数据(cache line)。</li>
+<li>而CPU很可能会再次用到这个addr的数据，或是会用到它附近的数据，这时就可以快速地从cache中获得数据。</li>
+</ul>
+</li>
+<li>
+<p>写数据：</p>
+<ul>
+<li>CPU要写数据时，可以直接写内存，这很慢；也可以先把数据写入cache，这很快。</li>
+<li>但是cache中的数据终究是要写入内存的啊，这有2种写策略：</li>
+</ul>
+<ol>
+<li>写通(write through)：<!-- -->
+<ul>
+<li>数据要同时写入cache和内存，所以cache和内存中的数据保持一致，但是它的效率很低。能改进吗？可以！使用“写缓冲器”：cache大哥，你把数据给我就可以了，我来慢慢写，保证帮你写完。</li>
+<li>有些写缓冲器有“写合并”的功能，比如CPU执行了4条写指令：写第0、1、2、3个字节，每次写1字节；写缓冲器会把这4个写操作合并成一个写操作：写word。对于内存来说，这没什么差别，但是对于硬件寄存器，这就有可能导致问题。</li>
+<li>所以对于寄存器操作，不会启动buffer功能；对于内存操作，比如LCD的显存，可以启用buffer功能。</li>
+</ul>
+</li>
+<li>写回(write back)：<!-- -->
+<ul>
+<li>新数据只是写入cache，不会立刻写入内存，cache和内存中的数据并不一致。</li>
+<li>新数据写入cache时，这一行cache被标为“脏”(dirty)；当cache不够用时，才需要把脏的数据写入内存。</li>
+</ul>
+</li>
+</ol>
+</li>
+</ol>
+<p>使用写回功能，可以大幅提高效率。但是要注意cache和内存中的数据很可能不 一致。这在很多时间要小心处理：比如CPU产生了新数据，DMA把数据从内存搬到网卡，这时候就要CPU执行命令先把新数据从cache刷到内存。反过来也是一样的，DMA从网卡得过了新数据存在内存里，CPU读数据之前先把cache中的数据丢弃。</p>
+<p>是否使用cache、是否使用buffer，就有4种组合(Linux内核文件arch\arm\include\asm\pgtable-2level.h)：</p>
+<p><img loading="lazy" src="/assets/images/manual-563-8e1f315654aeed364e5508222fad079d.png" width="848" height="113" class="img_ev3q"></p>
+<p>图 19.38 cache和buffer的组合</p>
+<p>上面4种组合对应下表中的各项，一一对应(下表来自s3c2410芯片手册，高架构的cache、buffer更复杂，但是这些基础知识没变)：</p>
+<p>表 19‑3 s3c2410的cache&amp;buffer组合</p>
+<table><thead><tr><th>是否启用cache</th><th>是否启用buffer</th><th>说明</th></tr></thead><tbody><tr><td>0</td><td>0</td><td>Non-cached, non-buffered (NCNB)<br>读、写都直达外设硬件</td></tr><tr><td>0</td><td>1</td><td>Non-cached buffered (NCB)<br>读、写都直达外设硬件；<br>写操作通过buffer实现，CPU不等待写操作完成，CPU会马上执行下一条指令</td></tr><tr><td>1</td><td>0</td><td>Cached, write-through mode (WT)，写通<br>读：cache hit时从cahce读数据；cache miss时已入一行数据到cache；<br>写：通过buffer实现，CPU不等待写操作完成，CPU会马上执行下一条指令</td></tr><tr><td>1</td><td>1</td><td>Cached, write-back mode (WB)，写回<br>读：cache hit时从cahce读数据；cache miss时已入一行数据到cache；<br>写：通过buffer实现，cache hit时新数据不会到达硬件，而是在cahce中被标为“脏”；cache miss时，通过buffer写入硬件，CPU不等待写操作完成，CPU会马上执行下一条指令</td></tr></tbody></table>
+<ul>
+<li>
+<ul>
+<li>第1种是不使用cache也不使用buffer，读写时都直达硬件，这适合寄存器的读写。</li>
+<li>第2种是不使用cache但是使用buffer，写数据时会用buffer进行优化，可能会有“写合并”，这适合显存的操作。因为对显存很少有读操作，基本都是写操作，而写操作即使被“合并”也没有关系。</li>
+<li>第3种是使用cache不使用buffer，就是“write through”，适用于只读设备：在读数据时用cache加速，基本不需要写。</li>
+<li>第4种是既使用cache又使用buffer，适合一般的内存读写。<!-- -->
+<ul>
+<li>
+<ul>
+<li>
+<ol>
+<li>驱动程序要做的事</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>驱动程序要做的事情有3点：</p>
+<ol>
+<li>确定物理地址</li>
+<li>确定属性：是否使用cache、buffer</li>
+<li>建立映射关系</li>
+</ol>
+<p>参考Linux源文件，示例代码如下：</p>
+<p><img loading="lazy" src="/assets/images/manual-564-321e8cd4aed5db55e9324e200c1ba1a9.png" width="912" height="654" class="img_ev3q"></p>
+<p>图 19.39 驱动程序要做的3件事</p>
+<p>还有一个更简单的函数：</p>
+<p><img loading="lazy" src="/assets/images/manual-565-ac81f27c00d27e796d058df7377a34c9.png" width="856" height="600" class="img_ev3q"></p>
+<p>图 19.40 controlfb_mmap函数</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="1994-编程">19.9.4 编程<a href="#1994-编程" class="hash-link" aria-label="19.9.4 编程的直接链接" title="19.9.4 编程的直接链接">​</a></h3>
+<p>使用GIT命令载后，本节源码位于这个目录下：</p>
+<p>01_all_series_quickstart\</p>
+<p>05_嵌入式Linux驱动开发基础知识\source\07_mmap</p>
+<p>目的：我们在驱动程序中申请一个8K的buffer，让APP通过mmap能直接访问。</p>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ol>
+<li>APP编程</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>APP怎么写？open驱动、buf=mmap(……)映射内存，直接读写buf就可以了，代码如下：</p>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">22      /* 1. 打开文件 */</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">23      fd = open(&quot;/dev/hello&quot;, O_RDWR);</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">24      if (fd == -1)</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">25      {</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">26              printf(&quot;can not open file /dev/hello\n&quot;);</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">27              return -1;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">28      }</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">29</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">30      /* 2. mmap</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">31       * MAP_SHARED  : 多个APP都调用mmap映射同一块内存时, 对内存的修改大家都可以看到。</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">32       *               就是说多个APP、驱动程序实际上访问的都是同一块内存</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">33       * MAP_PRIVATE : 创建一个copy on write的私有映射。</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">34       *               当APP对该内存进行修改时，其他程序是看不到这些修改的。</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">35       *               就是当APP写内存时, 内核会先创建一个拷贝给这个APP,</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">36       *               这个拷贝是这个APP私有的, 其他APP、驱动无法访问。</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">37       */</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">38      buf =  mmap(NULL, 1024*8, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">39      if (buf == MAP_FAILED)</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">40      {</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">41              printf(&quot;can not mmap file /dev/hello\n&quot;);</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">42              return -1;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">43      }</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="复制代码到剪贴板" title="复制" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<p>最难理解的是mmap函数MAP_SHARED、MAP_PRIVATE参数。使用MAP_PRIVATE映射时，在没有发生写操作时，APP、驱动访问的都是同一块内存；当APP发起写操作时，就会触发“copy on write”，即内核会先创建该内 存块的拷贝，APP的写操作在这个新内存块上进行，这个新内存块是APP私有的，别的APP、驱动看不到。</p>
+<p>仅用MAP_SHARED参数时，多个APP、驱动读、写时，操作的都是同一个内存块，“共享”。</p>
+<p>MAP_PRIVATE映射是很有用的，Linux中多个APP都会使用同一个动态库，在没有写操作之前大家都使用内存中唯一一份代码。当APP1发起写操作时，内核会为它复制一份代码，再执行写操作，APP1就有了专享的、私有的动态库，在里面做的修改只会影响到APP1。其他程序仍然共享原先的、未修改的代码。</p>
+<p>有了这些知识后，下面的代码就容易理解了，请看代码中的注释：</p>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">45      printf(&quot;mmap address = 0x%x\n&quot;, buf);</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">46      printf(&quot;buf origin data = %s\n&quot;, buf); /* old */</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">47</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">48      /* 3. write */</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">49      strcpy(buf, &quot;new&quot;);</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">50</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">51      /* 4. read &amp; compare */</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">52      /* 对于MAP_SHARED映射:  str = &quot;new&quot;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">53       * 对于MAP_PRIVATE映射: str = &quot;old&quot;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">54       */</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">55      read(fd, str, 1024);</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">56      if (strcmp(buf, str) == 0)</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">57      {</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">58              /* 对于MAP_SHARED映射，APP写的数据驱动可见</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">59               * APP和驱动访问的是同一个内存块</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">60               */</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">61              printf(&quot;compare ok!\n&quot;);</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">62      }</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">63      else</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">64      {</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">65              /* 对于MAP_PRIVATE映射，APP写数据时, 是写入另一个内存块(是原内存块的&quot;拷贝&quot;)</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">66               */</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">67              printf(&quot;compare err!\n&quot;);</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">68              printf(&quot;str = %s!\n&quot;, str);  /* old */</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">69              printf(&quot;buf = %s!\n&quot;, buf);  /* new */</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">70      }</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="复制代码到剪贴板" title="复制" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<p>执行测试程序后，查看到它的进程号PID，执行这样的命令查看这个程序的内存使用情况：</p>
+<div class="language-bash codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-bash codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">[root@100ask:~]# cat  /proc/PIC/maps</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="复制代码到剪贴板" title="复制" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ol>
+<li>驱动编程</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>驱动程序要做什么？</p>
+<ol>
+<li>分配一块8K的内存</li>
+</ol>
+<p>使用哪一个函数分配内存？</p>
+<p>表 19‑4 分配内存函数</p>
+<table><thead><tr><th>函数名</th><th>说明</th></tr></thead><tbody><tr><td>kmalloc</td><td>分配到的内存物理地址是连续的</td></tr><tr><td>kzalloc</td><td>分配到的内存物理地址是连续的，内容清0</td></tr><tr><td>vmalloc</td><td>分配到的内存物理地址不保证是连续的</td></tr><tr><td>vzalloc</td><td>分配到的内存物理地址不保证是连续的，内容清0</td></tr></tbody></table>
+<p>我们应该使用kmalloc或kzalloc，这样得到的内存物理地址是连续的，在mmap时后APP才可以使用同一个基地址去访问这块内存。(如果物理地址不连续，就要执行多次mmap了)。</p>
+<ol>
+<li>提供mmap函数</li>
+</ol>
+<p>关键在于mmap函数，代码如下：</p>
+<p><img loading="lazy" src="/assets/images/manual-566-7e964e6c8901d05b06e58f1727bc2e5d.png" width="964" height="406" class="img_ev3q"></p>
+<p>图 19.41 hello_drv_mmap</p>
+<p>要注意的是，remap_pfn_range中，pfn的意思是“Page Frame Number”。在Linux中，整个物理地址空间可以分为第0页、第1页、第2页，诸如此类，这就是pfn。假设每页大小是4K，那么给定物理地址phy，它的pfn = phy / 4096 = phy &gt;&gt; 12。内核的page一般是4K，但是也可以配置内核修改page的大小。所以为了通用，pfn = phy &gt;&gt; PAGE_SHIFT。</p>
+<p>APP调用mmap后，会导致驱动程序的mmap函数被调用，最终APP的虚拟地址和驱动程序中的物理地址就建立了映射关系。APP可以直接访问驱动程序的buffer。</p>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ol>
+<li>上机测试</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>在Ubuntu中编译好驱动、测试程序，放到开发板。</p>
+<p>在开发板上安装驱动、执行测试程序。</p>
+<p>掌握了嵌入式Linux应用开发基础、驱动开发基础后，就可以做项目了。百问网的《第六篇 实战项目》是录播课程，对应的文档和源码放在GIT仓库里。</p>
+<p>GIT仓库地址：</p>
+<p><a href="https://e.coding.net/weidongshan/01_all_series_quickstart.git" target="_blank" rel="noopener noreferrer">https://e.coding.net/weidongshan/01_all_series_quickstart.git</a></p>
+<p>目录的位置如下：</p>
+<p><img loading="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAXYAAACBCAIAAABb3AYnAAAAAXNSR0IArs4c6QAAAAlwSFlzAAAOxAAADsQBlSsOGwAAFZ1JREFUeF7tnX9sVOWax08XzKokugnegLKIi7RqUzC5Eq9pZRd/ZGMLXEkucgVjKia2wcRtgzZmA7lRUtxos6T1biCtfyBRjKD3piq0YhDuqkW4AROg2yitJsIFcYFs0PVH7ird73ueM2/fOefMzHmnc4aZnu8xDtMz73l/fN73/Z7ned8zz1SMjo46PEiABEggHgJ/E0+2zJUESIAEFAFKDMcBCZBAjAQoMTHCZdYkQAKUGI4BEiCBGAnEIjHnz5+fP38+XvWbgrTg6NGj119/PV4Lklv2TLKU9cMPP9x99927du0qQjVKpAhp8saNG0Prg/OaBlI+9NBDw8PDt9xyS7CnkKwicKxatQrZhn6EtFdffXVxetwWdZaxDSDBZsoZaazvQPpQtijiuuuuC2aFk/hIMpGuyZ7GLC60rEwFSba6OHQEuiNYVvY+GpMYXYzvAjmfaXjZdgzTF59App7Vs9ocsrp65py/8sor9+3b9+STT5rDK5PIfvfddxj3H3300aOPPoqiMan0VcgcO5jff//9ypUrz507h/c4tmzZIoU+8sgjckYfSHnXXXfFQSy/0W4yueaaaw4fPoxX3ToNZM2aNaENQVs2bdqE5vg0CGB9bHWP4BJAyM7k2muv1TAlpcktSlmo0unTp3Up/+4e+k98NHXqVOkF9KavafgzVDd1r3kSgzHxwAMPPPXUU7jgtddeu++++9AHIpBz58697bbb4uhm2zznzZt34sQJvNpemEf68Zdla+zYpo/YqNCexbWYDxhGMnzNMWRma44z38DCR2bKxYsXy+0OGd5www34CIPy0KFDeIWCHDly5P7778dHM2fOxA0MgoUxJpMzVN0iNi3vZOMZ7VoHMasxL/Tc9gHxGQ7Tp0/v7Ozcu3fvFVdcgY9Eg3DtzTffDDhaF0BJ/szUI6FN/uqrr0ylA1W5JUjiwpaF3gxaMfomEVo9T2Jg2aKijY2NSARZQcsPHDgAHICC1qIBeXcnLyw4AcyQ99577+eff46Sc2jPIoeXXnoJg15GfJYjonO6c+dOc2K88MILMhCDxq95W/YZKS+//LJv+JpTJXs9x88kptEups2FCxeCt0boL2y97du3S9Mef/zxxx57zJcMSgEIJpYgk+xWjGQepawowyl/K+bkyZN33HGHmENgPWvWrM8++yxKkUhjemjRVyi0/abvY6ZDKENTbuyvvPIK0uDNwYMH4eGLFxpMjJPBPH1N8PmcyBNFoP46W/3ePBlaluQsbRdD0SwdE/vGG2/E+MDtXZei/VihZLaupqYGNzozfRb4H3zwwccff/z6669HUZnQnkX1kP9zzz2XSQjw6aJFi3ADxIjHSGhtbRUfXksGPkICXyWFQFdX12WXXSZ3ZiQLbYi5fKMTjMdRGj+TiKNd66DPUYKnEzEHSSb+IzLRvYCcxRjUSzaYj6b/EvRckIlpEmol0idl7EUpK2Ll87dioguKrypowI4dO86cOYP241YGGdYLUVkqjZmJu6gYmWIT4qo777zz3XffFU8SWWm1evrpp48dO6aNTNGXYOJgnkF9gdOHcqWrMKCjYEVZuEpcSN+cQQ0XLFjw4Ycfgruv9MrKys8//xx3bDQENUdBmShJ6wYHB8FQp89uXNx7771z5swZGRmJojKhPQvdeeuttx5++GG0CJY5zJnQJVU0ELIIPUITRCxuuukmE5qsTWB2ydzAp8gQLsOyZctEc4u2hDd+JlEGA9Jkd5SCi68g41tnkWmPrMT0Cz1kRJlrq0BtrgTJgimSYRJhYUscXmQovi3+FJ9Lz5rsZUVsuyhjsMKR1mJ8Qyd6kZgM7e3tmzdvxggDzYgXzpgxA6bj7Nmz9ciGX/bpp5/eeuut2pPUcwOioFebJP/QxME8fZXBVXAA0cFyXqZBzkOuWr16tS/l22+/DT394osvxLLNXnoWSsHW5azSpEmTsHB2+eWXQ2UGBgayp8/Us5AzQYH633PPPXv27AnmAzsFwicmDD6FFAbT6PUavRiBEtF3uATpM1kxoXUej6NUECY5yedMIN6WOQn1tNcnZdpDI7AylT1DPZ/17VALnDmrtTOl5cznTEUpK2fTJEH+Vgwu/vLLL0Vc8Yr3EUVHtBZXyf1Q3uc8xAKU4as3sHyL59lHZzBxaJ45a5J3AsztyZMnnzp1SnLIXnp+lDLVDf7RG2+88eOPP8KWqaury9mEYM9icF911VXZLxSvx9xLMi15bcwHM0Hmzz77LKaW7J7IIdMAazTyJ5btgxNsPI7S+JnkxCgJCuUoRSwuSjI9F0wrJqaduPytGLmhiUkvr/pun72RMLmxri43edwJYZtEgYIphzEHLYfth8tlvQBWjBSNY+3atVkcrtDEwTx9NTGvgoyaWwDYZxWxCDbBvApVwsKQZPv888+jR+EoiUOXvfT8KGUiiUrCfoG+PPjgg7h7Zwce2rPw47755hvYnlLz999/H46GLx/fzivmP1RJb3/gjhK6jwBE2I6cMmUKRBDmOh6PWrJkCYxTbCHhkldffbW3txe9jPUaoIMLtm3bNp+JGmX8BNOMn0nEcjM5SmgdRBO3zCj5YPidPXsWlm+UxFnSiBcPtrIkbFoxcIRBGJ1bkLLEAUQ/ouOCO0o4iY+0A+ivsLbfMHrkzhZcoAbWTPuX5qYAnrmCTwHnUO/n+Tb2TAMyaPvpCqAO4jpK5tqNRALJXywmfR/WCYJ5+vxGpJT249oNGzZo+ddyo5sQWpaQMWuFP3FSzgdLl2xRCoaCvqvoInytk1UMSe97FMLXCny6e/fun376KZMn7zsf2rNSc6GRxVHXi1aywy2t0NNM85R8mpqaRIZwHmn0XrWv3wWXVCBTVnqY+nQtU5MLwkQyzzLazdKDY9v3OIkkDjpKcjJosmXqNd1HJu1QLHmX5Ss6tCGSxhyiwfEQ2jvKwUnmgf7IOZmTSUbPtEwCJGMdr+aYxuAzpUoE17wzidL57lX4UyZb6KzTy5al2RG+HQNz2pu33qCCt7S0mPZgaOuQAMl0XwhtLUz4CKuEOb0hJMCKYc6ycm59iOz6OlRXW8ZDJiukAunGaa2V6eXy7Blecz4bUqYNZLVJoBQI2H1HKfhdhigPwuR31TjpXJJCx1nnS3g5cQXhk0lBBmRyrZiC4GMmJEAC2QnYWTGkSQIkQAJWBCgxVriYmARIwI4AJcaOF1OTAAlYEaDEWOFiYhIgATsClBg7XkxNAiRgRYASY4WLiUmABOwIUGLseDE1CZCAFYGKvCPFWBXDxCRAAskkwEfvktnvbDUJFIkAHaUigWYxJJBMApSYZPY7W00CRSJAiSkSaBZDAskkQIlJZr+z1SRQJAKUmCKBZjEkkEwClJhk9jtbTQJFIkCJKRJoFkMC0Ql8++23zzzzDF6jX1KyKSkxJds1rFhCCUBZmpub8Quo+I23CaAylJiEjmM2uzQJiL6sWLECP+eA3yCdACpDiSnNkcZaJZGA1hf8+BTaX1VVNQFUhl8gSOJQZptLkwAk5vDhwwsXLjSrd/z4cZGb0qxzzlpRYnIiYgISIIH8CdBRyp8dryQBEshJgBKTExETkAAJ5E/AVmKGNq568c0zmcs786eWVWuXrNp+0HEO9qzd+En+NeOVJEACE4CA1VoM9GXbvkCjZ/+mtWvxL/6y88XVf/jaceat2/LbXyENtOZfv14p73mQAAkklUBUiREFueuJDWt+aaCCjmxy2tYv/Hvv3Nk3f7d35nrICt50bj2ZBlWUKKmc2W4SSCiBSBKj9OXP8zavX3iq58WTv/6XZdNdWJ9sX9I7DSddfQlqSsqccdPCaRqYny5PCQXOZpNAsghEkhgDifKVnCc21B1a2+489E5TdTotfHqsTjlHQ2/u/MUy13vqcFZ0zf+vdGMnWYjZWhJIMgHb5d7q5b+Ztu/3yiQJ6AvsmmP7nKPtaj24GvoyhnX6wq4xZyrJtNl2EkgcAQsrBs5O+8chgFKLLGff7Nl74i9O3fq5A7/77+VLv159aO7m6/Z0OPcu+PO2E0vpJSVubLHBJAACkSRGxGX2zGnO7Sv8S7afbG85fbfsKLlqcsxd7vU8phniKC0+u3HVnuv/LbWIQ/AkQAKJIRDJUfpV04Z3tmxouz0blVOnp630nCMs/WK9xtyurl7zxLStm/6UGKpsKAmQgEcgkhUjaVNPvvjZGbvRetPaS+Mt93KvmuONBJJKwE5iXK8n/dmWlKPkAjQkBlvavz+KU/5HaZIKmu0mgWQSsJCYZAJiq0mABMZDINJazHgK4LUkQAJJJkCJSXLvs+0kEDsBSkzsiFkACSSZACUmyb3PtpNA7AQoMbEjZgEkkGQClJgk9z7bTgKxE6DExI6YBZBAkglQYpLc+2w7CcROgBITO2IWQAJJJkCJSXLvs+0kEDsBSkzsiFkACSSZACUmyb3PtpNA7AQoMbEjZgEkkGQClJgk9z7bTgKxE6DExI6YBZBAkgnYxYv59uivR0dHHfWfo17x3niDvyZd8Q9X1/xHkoGy7SRAAiYBO4n55siSq2b8VqmLcxECo16V0oy9nv/ynam39xExCZAACQgBS0dJrJcM+uKeJ1gSIAESGCNgJzGugITbL+75i5EUpr+5oq5rJI5eGOmqiyvrOKrLPElg4hOwkxhlpIT5R6Ivsjwz8ZmxhSRAApEJ2EmMu77rX38Z0xfn4iVWmDktA6MDLXMit54JSYAEYiZgJzFuZdLWd019oQkTc2cxexIoPwKWEqMcJcOK0f6RXqDJaMZgASZ1NPQYnIzzFc39Yx+MnQ9bt1GLLs39Y2m8K+W0l0n2HMqvq1hjEihHAnYS4zpKKSsmoC+jF/9PPTTz0/8GQGC2Nzh9uFodfU36c3V+sHM49YHT4AlE2vlMnk9PQ+/SVI49DaY8If9IOZRjh7HOJFBeBOwkxvWTXCsmaL84oxfOHJk0+fILn673I+jv7antbKv3TtcvTWmMe36rXjupb+us7emFEeI7n4FoU1+3l6W+cEy70nMurz5hbUlgAhGwkxjXDQrXF0jPX3/8n7+79pd/vaB+Zzbfo7a6Mt9LeR0JkEDpEbCTGG/HesyQSdtggtcyafLfet8qMJsKu2V/a4e3RjLS1Z5ai3HPN+pHZPo7Wp3li7AflJa+vyvDMzSuwaOOka7G1v1NS1NWkjoVLYfS6w7WiAQmGgE7iXGNGO0oBTawZTE45MmY+u6+pp4GWe5tdJbrxZj67tG+mtZKbx0YyzXeukt993DnoJe+tyrDLnST0ysXVrbW9I2mnKaUNxYlh4nWmWwPCZQeAbvvKJ0/2DB11n2ZHvA988V/Tp/9T+p1we6YW4qto8qhdX5diblQZk8CJGBNwN6KyfEFJX5NyboPeAEJTGACdlbMuQP13oMvardYYUmL7eCMVjgVFZOnTKv9Y0GRqR1o81mapr7h6nZaMQVlzMxIIB4CdhITTx2YKwmQwIQlYOcoTVgMbBgJkEA8BCgx8XBlriRAAi4BSgwHAgmQQIwEKDExwmXWJEACdsu9DA/OEUMCJGBFwE5iGB7cCi4TkwAJWDpKDA/OIUMCJGBDwE5iChMe3KZ+TEsCJFDWBOwkhuHBy7qzWXkSKD4BO4kp9fDgxefHEkmABLISsJMYNyuGB+eYIgESiErAUmLyDQ+u4nZ7R0j47god09uM7z323ggG7sUKD4b+ZjDwqF3OdCRQTAJ2EpNneHAVlg5Ro+SQ2FGZAoNnbLsXDFzFrAqG/saZ9movyvjw8h2VvljhxQTKskiABEwCdhLj+kn24cHnVNU4CHpn/FpJpsDgmTtnLBh4MHg4zjj7U8HzKlv3O4PHY/k9Ww4dEiABWwJ2EpNveHAE0MSx1WmEs5Tp56zHFxi8Vv9UiiqJvwhpOw6YngRiImAnMXmGBx/p6lKRvPFzsMOdtfuHhr3w3SGBwVUrPRNkZNeO/aGNDob+TjsDP4p+UkyjhdmSgDUBO4nJMzz4nJYqI5K3uxiTITD4nJatnY64PI1DNbXhzQkGDzfPVPQu9YUKt4bCC0iABApFwO47SiUTHrxQzWc+JEAC8RKwt2IYHjzeHmHuJDChCNhZMZcoPPiEIs7GkECiCNhJTKLQsLEkQALjJ2DnKI2/POZAAiSQKAKUmER1NxtLAsUmQIkpNnGWRwKJIkCJSVR3s7EkUGwCdsu9DA9e7P5heSRQ5gTsJIbhwcu8u1l9Eig2AUtHieHBi91BLI8EypuAncTkFx58LFqU+qJ1c7OOTpWKUuV++zotlf4kLY6VGbBKpc/0dUekC36fGyf59cjyHqysfTkSsJOY/MKDSygHHH1NTtO67u4B74+xAAwq+IJO5SUe+weXyaG+ql3d7ipLf3NDj4pBk3bgg/5mLS6iQXjNFD6iHPuLdSaBMiNgJzH5hgdX87yuTkWmw5egvSCbDT06ipQv1mY2YwMq0+e0Nze3O14UPSVbeIsoEbWdbfVOfdvyHY0dQ44z1IEkKA3KpeLU0IAps4HJ6k4UAnYS47Y6j/DgmOfravbXLl80R7iZAaQgDhqmWDJL3cgPobaH8qbaq9e1tQ2ogA3qr4bB2sGGiubhlgGJQwUNGmirdpxqSeIZP144z4nSa2wHCZQNAUuJySs8uBsaHH6NWC3Nuzw4hk+TjkuEJhi5zovQO9BSP9zhOki9S1W6ATheokoVzV1uWYit6ZXVr1SIFkzZDEdWdOIRsJOY/MKDt6jFFxgrcGj6mmqrqyJTVC6Va8xI0E1Iz0DLMDRD6ZU6xtZiGnqUtzTa3aLKUnaR2End9UquoD9UmcjQmZAECkrATmJcP8k+PLiuMeJ411QptchxeLtLjc7WEGMmPUyvuypsOltOfwcChCsrJqUrkJnuenXWlSQu/uaiz89JoIAE7CQm3/DgqQq7kz3lJym58dZmvFP615ZcDyjlK40cHwxtcOjWtNpqcjrV2u8wNp+am5XNI05VtWtGMXR4AQcPsyKB3ATsJCbP8ODp1VALsi1OV7vadIahgT+V7Ch5qRxaJ1vVkYLvDg/t92sUVoB7sY+0yC1QZdyd2i8f9U7mJsIUJEACBSRgJzF5hgf31ddVkx3L1WKJWqYVzwWCEC4t6pcIDCmp78Y6sGvuNAw2Oe1ionRUpbaP6rsjyVMBCTIrEiCBLATsJEY9eqf+v+iZM+kb2O6zv64vlX64KyuVrY5as1XvXWNFNozUauy6oZBfbxx71rcSPyTpyYY+KeYOjBR5ik9vKKmfUuFBAiRQQgTsvgZ57mDDNbP+OVRfoDtnPv9w+o0L1Os/7i6hJrIqJEACl46ApcQcqPesFGU7iNGCJ/E84wb/VjgVFZOnTKv946VrEUsmARIoIQJ2ElNCFWdVSIAEyoGA5VpMOTSJdSQBEigdAv8PKjZRnK6rK50AAAAASUVORK5CYII=" width="374" height="129" class="img_ev3q"></p>
+<p>除了录播的项目之外，还有更多直播项目。直播的项目有3大类：调试Bug、毕业设计级别项目、产品级别项目。会不断更新这些项目。</p>
+<p>直播的视频也都录制下来，放在官网：</p>
+<p><img loading="lazy" src="/assets/images/manual-568-5b5bd126b0c237ab246f019efdf960c8.png" width="935" height="409" class="img_ev3q"></p>
+<p>从零编写带GUI的应用：<a href="https://www.bilibili.com/video/BV1it4y1Q75z" target="_blank" rel="noopener noreferrer">https://www.bilibili.com/video/BV1it4y1Q75z</a></p>
+<p>驱动大全是收费视频，适合想深入研究某个内核主题、深入研究Linux驱动的人。驱动大全的录制目标，是称为“驱动开发的字典”，并不需要从头学完，用到哪部分，再学习哪部分。</p>
+<p>驱动大全的文档、源码等所有配套资料，放在另一个GIT仓库：</p>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">https://e.coding.net/weidongshan/linux/doc_and_source_for_drivers.git</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="复制代码到剪贴板" title="复制" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<p>视频放在官网：</p>
+<p><img loading="lazy" src="/assets/images/manual-569-ebf3dd62b36a4644cf0d617dffed8553.png" width="1420" height="733" class="img_ev3q"></p>
+<p>驱动大全使用两个板子进行录制：IMX6ULL、STM32MP157，购买一套就可以得到另一套。可以购买整套驱动大全，也可以单独都买里面的某个专题。</p>
+<p>驱动大全尚未录制完毕，正在持续更新。</p>
+<p>驱动大全规划的大纲如下：</p>
+<p><img loading="lazy" src="/assets/images/manual-570-b8586385f90e4cdc81adaac9e3c6b025.jpg" width="732" height="1704" class="img_ev3q"></p></div><footer class="theme-doc-footer docusaurus-mt-lg"><div class="theme-doc-footer-edit-meta-row row"><div class="col"><a href="https://github.com/100askTeam/linux-docs/tree/main/docs/Linux-Application-Development-Manual/part-5/chapter-41.md" target="_blank" rel="noopener noreferrer" class="theme-edit-this-page"><svg fill="currentColor" height="20" width="20" viewBox="0 0 40 40" class="iconEdit_Z9Sw" aria-hidden="true"><g><path d="m34.5 11.7l-3 3.1-6.3-6.3 3.1-3q0.5-0.5 1.2-0.5t1.1 0.5l3.9 3.9q0.5 0.4 0.5 1.1t-0.5 1.2z m-29.5 17.1l18.4-18.5 6.3 6.3-18.4 18.4h-6.3v-6.2z"></path></g></svg>编辑此页</a></div><div class="col lastUpdated_vwxv"></div></div></footer></article><nav class="pagination-nav docusaurus-mt-lg" aria-label="文件选项卡"><a class="pagination-nav__link pagination-nav__link--prev" href="/docs/Linux-Application-Development-Manual/part-5/chapter-40"><div class="pagination-nav__sublabel">上一页</div><div class="pagination-nav__label">第18章 Linux系统对中断的处理</div></a><a class="pagination-nav__link pagination-nav__link--next" href="/docs/category/第八篇-其他应用"><div class="pagination-nav__sublabel">下一页</div><div class="pagination-nav__label">第八篇 其他应用</div></a></nav></div></div><div class="col col--3"><div class="tableOfContents_bqdL thin-scrollbar theme-doc-toc-desktop"><ul class="table-of-contents table-of-contents__left-border"><li><a href="#191-休眠与唤醒" class="table-of-contents__link toc-highlight">19.1 休眠与唤醒</a><ul><li><a href="#1911-适用场景" class="table-of-contents__link toc-highlight">19.1.1 适用场景</a></li><li><a href="#1912-内核函数" class="table-of-contents__link toc-highlight">19.1.2 内核函数</a></li><li><a href="#1913-驱动框架" class="table-of-contents__link toc-highlight">19.1.3 驱动框架</a></li><li><a href="#1914-编程" class="table-of-contents__link toc-highlight">19.1.4 编程</a></li><li><a href="#1915-上机实验" class="table-of-contents__link toc-highlight">19.1.5 上机实验</a></li><li><a href="#1916-使用环形缓冲区改进驱动程序" class="table-of-contents__link toc-highlight">19.1.6 使用环形缓冲区改进驱动程序</a></li></ul></li><li><a href="#192-poll机制" class="table-of-contents__link toc-highlight">19.2 POLL机制</a><ul><li><a href="#1921-适用场景" class="table-of-contents__link toc-highlight">19.2.1 适用场景</a></li><li><a href="#1922-使用流程" class="table-of-contents__link toc-highlight">19.2.2 使用流程</a></li><li><a href="#1923-驱动编程" class="table-of-contents__link toc-highlight">19.2.3 驱动编程</a></li><li><a href="#1924-应用编程" class="table-of-contents__link toc-highlight">19.2.4 应用编程</a></li><li><a href="#1925-现场编程" class="table-of-contents__link toc-highlight">19.2.5 现场编程</a></li><li><a href="#1926-上机实验" class="table-of-contents__link toc-highlight">19.2.6 上机实验</a></li><li><a href="#1927-poll机制的内核代码详解" class="table-of-contents__link toc-highlight">19.2.7 POLL机制的内核代码详解</a></li></ul></li><li><a href="#193-异步通知" class="table-of-contents__link toc-highlight">19.3 异步通知</a><ul><li><a href="#1931-适用场景" class="table-of-contents__link toc-highlight">19.3.1 适用场景</a></li><li><a href="#1932-使用流程" class="table-of-contents__link toc-highlight">19.3.2 使用流程</a></li><li><a href="#1933-驱动编程" class="table-of-contents__link toc-highlight">19.3.3 驱动编程</a></li><li><a href="#1934-应用编程" class="table-of-contents__link toc-highlight">19.3.4 应用编程</a></li><li><a href="#1935-现场编程" class="table-of-contents__link toc-highlight">19.3.5 现场编程</a></li><li><a href="#1936-上机实验" class="table-of-contents__link toc-highlight">19.3.6 上机实验</a></li><li><a href="#1937-异步通知机制内核代码详解" class="table-of-contents__link toc-highlight">19.3.7 异步通知机制内核代码详解</a></li></ul></li><li><a href="#194-阻塞与非阻塞" class="table-of-contents__link toc-highlight">19.4 阻塞与非阻塞</a><ul><li><a href="#1941-应用编程" class="table-of-contents__link toc-highlight">19.4.1 应用编程</a></li><li><a href="#1942-驱动编程" class="table-of-contents__link toc-highlight">19.4.2 驱动编程</a></li><li><a href="#1943-驱动开发原则" class="table-of-contents__link toc-highlight">19.4.3 驱动开发原则</a></li></ul></li><li><a href="#195-定时器" class="table-of-contents__link toc-highlight">19.5 定时器</a><ul><li><a href="#1951-内核函数" class="table-of-contents__link toc-highlight">19.5.1 内核函数</a></li><li><a href="#1952-定时器时间单位" class="table-of-contents__link toc-highlight">19.5.2 定时器时间单位</a></li><li><a href="#1953-使用定时器处理按键抖动" class="table-of-contents__link toc-highlight">19.5.3 使用定时器处理按键抖动</a></li><li><a href="#1954-现场编程" class="table-of-contents__link toc-highlight">19.5.4 现场编程</a></li><li><a href="#1955-深入研究定时器的内部机制" class="table-of-contents__link toc-highlight">19.5.5 深入研究：定时器的内部机制</a></li><li><a href="#1956-深入研究找到系统滴答" class="table-of-contents__link toc-highlight">19.5.6 深入研究：找到系统滴答</a></li></ul></li><li><a href="#196-中断下半部tasklet" class="table-of-contents__link toc-highlight">19.6 中断下半部tasklet</a><ul><li><a href="#1961-内核函数" class="table-of-contents__link toc-highlight">19.6.1 内核函数</a></li><li><a href="#1962-tasklet使用方法" class="table-of-contents__link toc-highlight">19.6.2 tasklet使用方法</a></li><li><a href="#1963-tasklet内部机制" class="table-of-contents__link toc-highlight">19.6.3 tasklet内部机制</a></li></ul></li><li><a href="#197-工作队列" class="table-of-contents__link toc-highlight">19.7 工作队列</a><ul><li><a href="#1971-内核函数" class="table-of-contents__link toc-highlight">19.7.1 内核函数</a></li><li><a href="#1972-编程上机" class="table-of-contents__link toc-highlight">19.7.2 编程、上机</a></li><li><a href="#1973-内部机制" class="table-of-contents__link toc-highlight">19.7.3 内部机制</a></li></ul></li><li><a href="#198-中断的线程化处理" class="table-of-contents__link toc-highlight">19.8 中断的线程化处理</a><ul><li><a href="#1981-内核机制" class="table-of-contents__link toc-highlight">19.8.1 内核机制</a></li><li><a href="#1982-编程上机" class="table-of-contents__link toc-highlight">19.8.2 编程、上机</a></li></ul></li><li><a href="#199-mmap" class="table-of-contents__link toc-highlight">19.9 mmap</a><ul><li><a href="#1991-内存映射现象与数据结构" class="table-of-contents__link toc-highlight">19.9.1 内存映射现象与数据结构</a></li><li><a href="#1992-arm架构内存映射简介" class="table-of-contents__link toc-highlight">19.9.2 ARM架构内存映射简介</a></li><li><a href="#1993-怎么给app新建一块内存映射" class="table-of-contents__link toc-highlight">19.9.3 怎么给APP新建一块内存映射</a></li><li><a href="#1994-编程" class="table-of-contents__link toc-highlight">19.9.4 编程</a></li></ul></li></ul></div></div></div></div></main></div></div></div><footer class="footer footer--dark"><div class="container container-fluid"><div class="row footer__links"><div class="col footer__col"><div class="footer__title">Docs</div><ul class="footer__items clean-list"><li class="footer__item"><a href="https://dongshanpi.com" target="_blank" rel="noopener noreferrer" class="footer__link-item">DongshanPI<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a></li><li class="footer__item"><a href="https://canaan-docs.100ask.net/" target="_blank" rel="noopener noreferrer" class="footer__link-item">Canaan-Docs<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a></li><li class="footer__item"><a href="https://renesas-docs.100ask.net/" target="_blank" rel="noopener noreferrer" class="footer__link-item">Renesas-Docs<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a></li><li class="footer__item"><a href="https://rtos.100ask.net/" target="_blank" rel="noopener noreferrer" class="footer__link-item">RTOS<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a></li><li class="footer__item"><a href="https://tina.100ask.net/" target="_blank" rel="noopener noreferrer" class="footer__link-item">TinaSDK-Docs<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a></li><li class="footer__item"><a href="https://allwinner-docs.100ask.net/" target="_blank" rel="noopener noreferrer" class="footer__link-item">Allwinner-Docs<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a></li><li class="footer__item"><a href="https://aw-r128.100ask.net/" target="_blank" rel="noopener noreferrer" class="footer__link-item">R128-Docs<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a></li></ul></div><div class="col footer__col"><div class="footer__title">Community</div><ul class="footer__items clean-list"><li class="footer__item"><a href="https://space.bilibili.com/275908810" target="_blank" rel="noopener noreferrer" class="footer__link-item">BiliBili<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a></li><li class="footer__item"><a href="https://forums.100ask.net" target="_blank" rel="noopener noreferrer" class="footer__link-item">Stack Overflow<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a></li><li class="footer__item"><a href="https://video.100ask.net/" target="_blank" rel="noopener noreferrer" class="footer__link-item">VideoCenter<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a></li><li class="footer__item"><a href="https://twitter.com/dongshanpi" target="_blank" rel="noopener noreferrer" class="footer__link-item">Twitter<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a></li></ul></div><div class="col footer__col"><div class="footer__title">More</div><ul class="footer__items clean-list"><li class="footer__item"><a href="https://weidongshan.coding.net/public/" target="_blank" rel="noopener noreferrer" class="footer__link-item">Coding<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a></li><li class="footer__item"><a href="https://github.com/100askTeam" target="_blank" rel="noopener noreferrer" class="footer__link-item">GitHub<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a></li><li class="footer__item"><a href="https://gitee.com/weidongshan" target="_blank" rel="noopener noreferrer" class="footer__link-item">Gitee<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a></li></ul></div></div><div class="footer__bottom text--center"><div class="footer__copyright">Copyright © 2026 100askTeam, Inc. Built with Docusaurus.</div></div></div></footer></div>
+</body>
+</html>

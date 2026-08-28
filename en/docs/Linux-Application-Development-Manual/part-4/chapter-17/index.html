@@ -1,0 +1,1252 @@
+<!doctype html>
+<html lang="en" dir="ltr" class="docs-wrapper plugin-docs plugin-id-default docs-version-current docs-doc-page docs-doc-id-Linux-Application-Development-Manual/part-4/chapter-17" data-has-hydrated="false">
+<head>
+<meta charset="UTF-8">
+<meta name="generator" content="Docusaurus v3.0.1">
+<title data-rh="true">第6章 文字显示 | 韦东山Linux</title><meta data-rh="true" name="viewport" content="width=device-width,initial-scale=1"><meta data-rh="true" name="twitter:card" content="summary_large_image"><meta data-rh="true" property="og:image" content="https://linux.100ask.net/en/img/docusaurus-social-card.jpg"><meta data-rh="true" name="twitter:image" content="https://linux.100ask.net/en/img/docusaurus-social-card.jpg"><meta data-rh="true" property="og:url" content="https://linux.100ask.net/en/docs/Linux-Application-Development-Manual/part-4/chapter-17"><meta data-rh="true" property="og:locale" content="en"><meta data-rh="true" property="og:locale:alternate" content="zh_Hans"><meta data-rh="true" name="docusaurus_locale" content="en"><meta data-rh="true" name="docsearch:language" content="en"><meta data-rh="true" name="docusaurus_version" content="current"><meta data-rh="true" name="docusaurus_tag" content="docs-default-current"><meta data-rh="true" name="docsearch:version" content="current"><meta data-rh="true" name="docsearch:docusaurus_tag" content="docs-default-current"><meta data-rh="true" property="og:title" content="第6章 文字显示 | 韦东山Linux"><meta data-rh="true" name="description" content="6.1 字符的编码方式"><meta data-rh="true" property="og:description" content="6.1 字符的编码方式"><link data-rh="true" rel="icon" href="/en/img/favicon.ico"><link data-rh="true" rel="canonical" href="https://linux.100ask.net/en/docs/Linux-Application-Development-Manual/part-4/chapter-17"><link data-rh="true" rel="alternate" href="https://linux.100ask.net/docs/Linux-Application-Development-Manual/part-4/chapter-17" hreflang="zh-Hans"><link data-rh="true" rel="alternate" href="https://linux.100ask.net/en/docs/Linux-Application-Development-Manual/part-4/chapter-17" hreflang="en"><link data-rh="true" rel="alternate" href="https://linux.100ask.net/docs/Linux-Application-Development-Manual/part-4/chapter-17" hreflang="x-default"><link rel="stylesheet" href="/en/assets/css/styles.f22fa3d1.css">
+<script src="/en/assets/js/runtime~main.5483192b.js" defer="defer"></script>
+<script src="/en/assets/js/main.42c7fc72.js" defer="defer"></script>
+</head>
+<body class="navigation-with-keyboard">
+<script>!function(){function t(t){document.documentElement.setAttribute("data-theme",t)}var e=function(){try{return new URLSearchParams(window.location.search).get("docusaurus-theme")}catch(t){}}()||function(){try{return localStorage.getItem("theme")}catch(t){}}();t(null!==e?e:"light")}(),function(){try{const c=new URLSearchParams(window.location.search).entries();for(var[t,e]of c)if(t.startsWith("docusaurus-data-")){var a=t.replace("docusaurus-data-","data-");document.documentElement.setAttribute(a,e)}}catch(t){}}()</script><div id="__docusaurus"><div role="region" aria-label="Skip to main content"><a class="skipToContent_fXgn" href="#__docusaurus_skipToContent_fallback">Skip to main content</a></div><nav aria-label="Main" class="navbar navbar--fixed-top"><div class="navbar__inner"><div class="navbar__items"><button aria-label="Toggle navigation bar" aria-expanded="false" class="navbar__toggle clean-btn" type="button"><svg width="30" height="30" viewBox="0 0 30 30" aria-hidden="true"><path stroke="currentColor" stroke-linecap="round" stroke-miterlimit="10" stroke-width="2" d="M4 7h22M4 15h22M4 23h22"></path></svg></button><a class="navbar__brand" href="/en/"><div class="navbar__logo"><img src="/en/img/logo.svg" alt="东山PI" class="themedComponent_mlkZ themedComponent--light_NVdE"><img src="/en/img/logo.svg" alt="东山PI" class="themedComponent_mlkZ themedComponent--dark_xIcU"></div><b class="navbar__title text--truncate">韦东山Linux</b></a><a class="navbar__item navbar__link" href="/en/docs/Learn-Linux/LearnStudyPath">嵌入式Linux学习指南</a><a aria-current="page" class="navbar__item navbar__link navbar__link--active" href="/en/docs/Linux-Application-Development-Manual">嵌入式Linux应用开发完全手册</a><a class="navbar__item navbar__link" href="/en/docs/Linux-CourseList/Introduction">嵌入式Linux课程列表</a><a class="navbar__item navbar__link" href="/en/docs/Knowledge-Notes/InputSystem">官方笔记知识库</a><a class="navbar__item navbar__link" href="/en/docs/Study-Notes/intro">学员笔记</a></div><div class="navbar__items navbar__items--right"><a href="https://github.com/100askTeam/linux-docs" target="_blank" rel="noopener noreferrer" class="navbar__item navbar__link">GitHub<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a><div class="toggle_vylO colorModeToggle_DEke"><button class="clean-btn toggleButton_gllP toggleButtonDisabled_aARS" type="button" disabled="" title="Switch between dark and light mode (currently light mode)" aria-label="Switch between dark and light mode (currently light mode)" aria-live="polite"><svg viewBox="0 0 24 24" width="24" height="24" class="lightToggleIcon_pyhR"><path fill="currentColor" d="M12,9c1.65,0,3,1.35,3,3s-1.35,3-3,3s-3-1.35-3-3S10.35,9,12,9 M12,7c-2.76,0-5,2.24-5,5s2.24,5,5,5s5-2.24,5-5 S14.76,7,12,7L12,7z M2,13l2,0c0.55,0,1-0.45,1-1s-0.45-1-1-1l-2,0c-0.55,0-1,0.45-1,1S1.45,13,2,13z M20,13l2,0c0.55,0,1-0.45,1-1 s-0.45-1-1-1l-2,0c-0.55,0-1,0.45-1,1S19.45,13,20,13z M11,2v2c0,0.55,0.45,1,1,1s1-0.45,1-1V2c0-0.55-0.45-1-1-1S11,1.45,11,2z M11,20v2c0,0.55,0.45,1,1,1s1-0.45,1-1v-2c0-0.55-0.45-1-1-1C11.45,19,11,19.45,11,20z M5.99,4.58c-0.39-0.39-1.03-0.39-1.41,0 c-0.39,0.39-0.39,1.03,0,1.41l1.06,1.06c0.39,0.39,1.03,0.39,1.41,0s0.39-1.03,0-1.41L5.99,4.58z M18.36,16.95 c-0.39-0.39-1.03-0.39-1.41,0c-0.39,0.39-0.39,1.03,0,1.41l1.06,1.06c0.39,0.39,1.03,0.39,1.41,0c0.39-0.39,0.39-1.03,0-1.41 L18.36,16.95z M19.42,5.99c0.39-0.39,0.39-1.03,0-1.41c-0.39-0.39-1.03-0.39-1.41,0l-1.06,1.06c-0.39,0.39-0.39,1.03,0,1.41 s1.03,0.39,1.41,0L19.42,5.99z M7.05,18.36c0.39-0.39,0.39-1.03,0-1.41c-0.39-0.39-1.03-0.39-1.41,0l-1.06,1.06 c-0.39,0.39-0.39,1.03,0,1.41s1.03,0.39,1.41,0L7.05,18.36z"></path></svg><svg viewBox="0 0 24 24" width="24" height="24" class="darkToggleIcon_wfgR"><path fill="currentColor" d="M9.37,5.51C9.19,6.15,9.1,6.82,9.1,7.5c0,4.08,3.32,7.4,7.4,7.4c0.68,0,1.35-0.09,1.99-0.27C17.45,17.19,14.93,19,12,19 c-3.86,0-7-3.14-7-7C5,9.07,6.81,6.55,9.37,5.51z M12,3c-4.97,0-9,4.03-9,9s4.03,9,9,9s9-4.03,9-9c0-0.46-0.04-0.92-0.1-1.36 c-0.98,1.37-2.58,2.26-4.4,2.26c-2.98,0-5.4-2.42-5.4-5.4c0-1.81,0.89-3.42,2.26-4.4C12.92,3.04,12.46,3,12,3L12,3z"></path></svg></button></div><div class="navbarSearchContainer_Bca1"></div></div></div><div role="presentation" class="navbar-sidebar__backdrop"></div></nav><div id="__docusaurus_skipToContent_fallback" class="main-wrapper mainWrapper_z2l0"><div class="docsWrapper_hBAB"><button aria-label="Scroll back to top" class="clean-btn theme-back-to-top-button backToTopButton_sjWU" type="button"></button><div class="docRoot_UBD9"><aside class="theme-doc-sidebar-container docSidebarContainer_YfHR"><div class="sidebarViewport_aRkj"><div class="sidebar_njMd"><nav aria-label="Docs sidebar" class="menu thin-scrollbar menu_SIkG"><ul class="theme-doc-sidebar-menu menu__list"><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class="menu__link" href="/en/docs/Linux-Application-Development-Manual">手册首页</a></li><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item menu__list-item--collapsed"><div class="menu__list-item-collapsible"><a class="menu__link menu__link--sublist" aria-expanded="false" href="/en/docs/category/第一篇-学习路线教程介绍资料下载">第一篇 学习路线、教程介绍、资料下载</a><button aria-label="Expand sidebar category &#x27;第一篇 学习路线、教程介绍、资料下载&#x27;" type="button" class="clean-btn menu__caret"></button></div></li><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item menu__list-item--collapsed"><div class="menu__list-item-collapsible"><a class="menu__link menu__link--sublist" aria-expanded="false" href="/en/docs/category/第二篇-ubuntu-基本操作">第二篇 Ubuntu 基本操作</a><button aria-label="Expand sidebar category &#x27;第二篇 Ubuntu 基本操作&#x27;" type="button" class="clean-btn menu__caret"></button></div></li><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item menu__list-item--collapsed"><div class="menu__list-item-collapsible"><a class="menu__link menu__link--sublist" aria-expanded="false" href="/en/docs/category/第三篇-环境搭建与开发板操作">第三篇 环境搭建与开发板操作</a><button aria-label="Expand sidebar category &#x27;第三篇 环境搭建与开发板操作&#x27;" type="button" class="clean-btn menu__caret"></button></div></li><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item"><div class="menu__list-item-collapsible"><a class="menu__link menu__link--sublist menu__link--active" aria-expanded="true" href="/en/docs/category/第四篇-嵌入式-linux-应用开发基础知识">第四篇 嵌入式 Linux 应用开发基础知识</a><button aria-label="Collapse sidebar category &#x27;第四篇 嵌入式 Linux 应用开发基础知识&#x27;" type="button" class="clean-btn menu__caret"></button></div><ul style="display:block;overflow:visible;height:auto" class="menu__list"><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/en/docs/Linux-Application-Development-Manual/part-4/chapter-12">第1章 HelloWorld背后没那么简单</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/en/docs/Linux-Application-Development-Manual/part-4/chapter-13">第2章 GCC编译器的使用</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/en/docs/Linux-Application-Development-Manual/part-4/chapter-14">第3章 Makefile的使用</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/en/docs/Linux-Application-Development-Manual/part-4/chapter-15">第4章 文件IO</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/en/docs/Linux-Application-Development-Manual/part-4/chapter-16">第5章 Framebuffer应用编程</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link menu__link--active" aria-current="page" tabindex="0" href="/en/docs/Linux-Application-Development-Manual/part-4/chapter-17">第6章 文字显示</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/en/docs/Linux-Application-Development-Manual/part-4/chapter-18">第7章 输入系统应用编程</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/en/docs/Linux-Application-Development-Manual/part-4/chapter-19">第8章 网络通信</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/en/docs/Linux-Application-Development-Manual/part-4/chapter-20">第9章 多线程编程</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/en/docs/Linux-Application-Development-Manual/part-4/chapter-21">第10章 I2C应用编程</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/en/docs/Linux-Application-Development-Manual/part-4/chapter-22">第11章 Linux串口应用编程</a></li></ul></li><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item menu__list-item--collapsed"><div class="menu__list-item-collapsible"><a class="menu__link menu__link--sublist" aria-expanded="false" href="/en/docs/category/第五篇-嵌入式-linux-驱动开发基础知识">第五篇 嵌入式 Linux 驱动开发基础知识</a><button aria-label="Expand sidebar category &#x27;第五篇 嵌入式 Linux 驱动开发基础知识&#x27;" type="button" class="clean-btn menu__caret"></button></div></li><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item menu__list-item--collapsed"><div class="menu__list-item-collapsible"><a class="menu__link menu__link--sublist" aria-expanded="false" href="/en/docs/category/第八篇-其他应用">第八篇 其他应用</a><button aria-label="Expand sidebar category &#x27;第八篇 其他应用&#x27;" type="button" class="clean-btn menu__caret"></button></div></li></ul></nav></div></div></aside><main class="docMainContainer_TBSr"><div class="container padding-top--md padding-bottom--lg"><div class="row"><div class="col docItemCol_VOVn"><div class="docItemContainer_Djhp"><article><nav class="theme-doc-breadcrumbs breadcrumbsContainer_Z_bl" aria-label="Breadcrumbs"><ul class="breadcrumbs" itemscope="" itemtype="https://schema.org/BreadcrumbList"><li class="breadcrumbs__item"><a aria-label="Home page" class="breadcrumbs__link" href="/en/"><svg viewBox="0 0 24 24" class="breadcrumbHomeIcon_YNFT"><path d="M10 19v-5h4v5c0 .55.45 1 1 1h3c.55 0 1-.45 1-1v-7h1.7c.46 0 .68-.57.33-.87L12.67 3.6c-.38-.34-.96-.34-1.34 0l-8.36 7.53c-.34.3-.13.87.33.87H5v7c0 .55.45 1 1 1h3c.55 0 1-.45 1-1z" fill="currentColor"></path></svg></a></li><li itemscope="" itemprop="itemListElement" itemtype="https://schema.org/ListItem" class="breadcrumbs__item"><a class="breadcrumbs__link" itemprop="item" href="/en/docs/category/第四篇-嵌入式-linux-应用开发基础知识"><span itemprop="name">第四篇 嵌入式 Linux 应用开发基础知识</span></a><meta itemprop="position" content="1"></li><li itemscope="" itemprop="itemListElement" itemtype="https://schema.org/ListItem" class="breadcrumbs__item breadcrumbs__item--active"><span class="breadcrumbs__link" itemprop="name">第6章 文字显示</span><meta itemprop="position" content="2"></li></ul></nav><div class="tocCollapsible_ETCw theme-doc-toc-mobile tocMobile_ITEo"><button type="button" class="clean-btn tocCollapsibleButton_TO0P">On this page</button></div><div class="theme-doc-markdown markdown"><header><h1>第6章 文字显示</h1></header><a id="_Toc197788635"></a>
+<a id="_Toc197788636"></a>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="61-字符的编码方式">6.1 字符的编码方式<a href="#61-字符的编码方式" class="hash-link" aria-label="Direct link to 6.1 字符的编码方式" title="Direct link to 6.1 字符的编码方式">​</a></h2>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="611-编码与字体">6.1.1 编码与字体<a href="#611-编码与字体" class="hash-link" aria-label="Direct link to 6.1.1 编码与字体" title="Direct link to 6.1.1 编码与字体">​</a></h3>
+<p>在计算机上，我们看到的字符“A”可能长这样：</p>
+<p><img loading="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACwAAAAtCAIAAABauh7zAAAAAXNSR0IArs4c6QAAAhNJREFUWEftV73NwjAUTL4NgBFYARoWYAEkKGlZgQ0oaBEbINFTUdJSsAAbIDFCOGTl6eQY+z1HAulTXAXF8Z3v3fuhrKqq+PX6+zWBN35Hoo5Cp8R/UGKxWJT16vf7bVMMdcK67ve7h3o4HKyH8P4cY57PZ4/EdrttJUbGDYbDoYOUBzzfbreMo9wnhfXLy+Uilz6dTvK8Wq2sR8l+MwmACTBOmc/n7mev13s8Hnk8bCQAAzCHOp1OAQlLCqf9fv8NEk1I0BISsMg3SIxGI4FEojpIiQhewTEZPAzh4PLgYuEWy5NnTwOJ9XotMnjVSYyCDaKQXhIDCUFqJgKnzGaz0cPb6kS8JKBStbGnVgl2Hwg178rVM7ghIo+KBFvyUx6iSIgYYGyKiIoEwiwAsGcQwGutJnuqSLDUkdORt0muwQukSXDHQrGK6MwFAxmkj0iaBKefaWjQTzoJEtwaTAykw2n0SJBgha0k9JNO+R5sPq/xeHy9Xt175MhkMklSWS6XkikI5W63S34SU4LroH5m4YKh/Co26B6PR7kEZvzBYJC+U1HMZjPZ9nw+m1Nx4JCIcbg3mgYFTqh4VicaGFvSOjJxadFMOh89wR0rY3jkIpucdMIk2jQCpzDbE2LEB/EwCe5Y1pboSHhVLq5lmASLqa++nsfZnnFXJYqVJifb78n5Q9we1TuhI1EL0inRKeGn1wssOquYl3lneAAAAABJRU5ErkJggg==" width="44" height="45" class="img_ev3q"></p>
+<p>也可能长这样：</p>
+<p><img loading="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACoAAAAoCAIAAAAHaf8HAAAAAXNSR0IArs4c6QAAAoVJREFUWEftVrGuQUEQfd4HELQ6GomSTkPDH/ABGiQKjUSn5AOERKETrYRSQ0dBoiU+gPgE78gkk313r929y43k5W11c3d2zp6ZszMTuN/vX59b35+DfiD/dfjr9aoIsF/s1+v1cDhMJBLq5AZel95isTgcDsvlEkS3262Il06nN5uNL+wB1uv1IpFIo9E4n8/5fL7T6axWq+Px2G63CTKTyWikDfYW63K5gFk8Hgee4/hkMmHIbrerdv5lgY0jhI1LOI7vdrtwOMzw8/n8/fCDwQAAYOlwjdvgTtgqlUp0Azk2jiM2yh+NRnAdi8Ucea3X60g8Ag5B0FYymXx/7smjI7CU8kKhQKkhG21m9RayC3KNCPMWSCPlWKQGMsAltPA2wad3lcvlOLC1Wu12u81ms2g0ioJD//GtibxJfLQMkGz4wZ3IEkkhVP6j8GDDXuS03+9brRYE32w26T8qIH2EQiEt+1fhK5UKMMbjMYcaFZBQU6mUv/BoKijyCHI2m2Wk0+lE38FgUAtvo3zKJaldrn1c9bSiebwREyNXGzxxkJPrGjM28WwJT0VG1jZqPsFT/dEuG3jUFrGvuCbYEN5G+ajtSLkrM6oBWGj/et1ZjJqYbabTKXUdefGrM8F+2GjTIxpQ2BVDBDcbbaslt97gkVF1I2HS74cHaVCHtp8FjKu9eVBN2YMNnMoTjniVarUqspdHMfneRoM2+graa7lc7vf7Ck0Vi0XeFYduXF2syr88aKVHQy2WCRutN4eBJvg8UPuB7aJ8BIpFCymhvGAp5OaVroq9KF3KEAY6n3i7vHv0UOpjBGz4dl8JgJHyTSuodzubluMd5emJf/g3BtOrqw8H/wdgHbYjunn42QAAAABJRU5ErkJggg==" width="42" height="40" class="img_ev3q"></p>
+<p>对于同一个TXT文件中的内容，你在Notepad上选择不同字体时，字符显示的形状不一样。</p>
+<p>所以TXT文件中保存的是字符的核心：它的编码值。而Notepad上显示时，这些字符对应什么样的形状态，这是由字符文件决定的。编码值，字体是两个不一样的东西，比如A的编码值是0x41，但是在屏幕上显示出来时可以使用不同的形状。</p>
+<p>什么叫编码？就是一个字符用什么数字来表示。在计算机里一切都是用数字来表示，比如字符A，用0x01还是0x02来表示它？我们使用0x41来表示它。当你去打开一个TXT文件时，发现里面含有数值0x41，你就知道了：哦，这里有一个字符A。</p>
+<p>一个字符用哪个数字来表示？有很多标准，举例讲解。</p>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ol>
+<li>ASCII</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>是“American Standard Code for Information Interchange”的缩写，美国信息交换标准代码。</p>
+<p>电脑毕竟是西方人发明的，他们常用字母就26个，区分大小写、加上标点符号也没超过127个，每个字符用一个字节来表示就足够了。一个字节的7位就可以表示128个数值，在ASCII码中最高位永远是0。</p>
+<p>字符和数值的对应关系可以参考：</p>
+<p><a href="https://baike.baidu.com/item/ASCII" target="_blank" rel="noopener noreferrer">https://baike.baidu.com/item/ASCII</a></p>
+<p>下面摘录部分给大家一个印象：</p>
+<p><img loading="lazy" src="/en/assets/images/manual-236-7f06a97328bfb44cb977ea1db08dd2a2.png" width="1184" height="513" class="img_ev3q"></p>
+<p>图 6.1 ASCII表</p>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ol>
+<li>ANSI</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>强烈建议阅读：<a href="https://www.cnblogs.com/malecrab/p/5300486.html" target="_blank" rel="noopener noreferrer">https://www.cnblogs.com/malecrab/p/5300486.html</a></p>
+<p>使用记事本保存文件时，可以选择“ANSI”编码，却没有“ASCII”，如图 6.2所示，怎么回事？</p>
+<p><img loading="lazy" src="/en/assets/images/manual-237-4567ea99b5a33dcc165e469bad67808f.png" width="940" height="613" class="img_ev3q"></p>
+<p><a id="_Ref108705180"></a>图 6.2 不能保存为ASCII</p>
+<p>ASNI是ASCII的扩展，向下包含ASCII。对于ASCII字符仍以一个字节来表示，对于非ASCII字符则使用2字节来表示。并没有固定的ASNI编码，它跟“本地化”(locale)密切相关。比如在中国大陆地区，ANSI的默认编码是GB2312；在港澳台地区默认编码是BIG5。以数值“0xd0d6”为例，对于GB2312编码它表示“中”；对于BIG5编码它表示“笢”。所以对于ANSI编码的TXT文件，如果你打开它发现乱码，那么还得再次细分它的具体编码。</p>
+<p>比如对于一个TXT文件，里面的数值如下：</p>
+<p><img loading="lazy" src="/en/assets/images/manual-238-3cad6a5c13e20663bd83a5496d7544ed.png" width="959" height="387" class="img_ev3q"></p>
+<p>图 6.3 txt编码</p>
+<p>使用Notepad打开后，选择不同的编码(或称为字符集)，有不一样的显示，如下：</p>
+<p><img loading="lazy" src="/en/assets/images/manual-239-2c7c18838d62199c42cee81ae439a2c3.png" width="1350" height="432" class="img_ev3q"></p>
+<p>图 6.4 选择不同编码打开txt</p>
+<p>这仅仅是在中国地区就出现这些不兼容的问题。对于不同国家，它们默认的ANSI编码各不相同，所以同一个TXT文件在不同国家就很有可能出现乱码。</p>
+<p>根本的原理在于没有“统一的编码”，那解决方法自然就是使用“统一的编码”：UNICODE。</p>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ol>
+<li>UNICODE</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>在ANSI标准中，很多种文字都有自己的编码标准，汉字简体字有GB2312、繁体字有BIG5，这难免同一个数值对应不同字符。比如数值“0xd0d6” ，对于GB2312编码它表示“中”；对于BIG5编码它表示“笢”。这造成了使用ANSI编码保存的文件，不适合跨地区交流。</p>
+<p>UNICODE编码就是解决这类问题：对于地球上任意一个字符，都给它一个唯一的数值。</p>
+<p>UNICODE仍然向下兼容ASCII，但是对于其他字符会有对应的数值，比如对于“中”、“笢”，它们的数值分别是：0x4e2d、0x7b22</p>
+<p>UNICODE中的数值范围是0x0000至0x10FFFF，有1,114,111即100多万个数值，可以表示100多万个字符，足够地球人使用了。</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="612-unicode编码实现">6.1.2 UNICODE编码实现<a href="#612-unicode编码实现" class="hash-link" aria-label="Direct link to 6.1.2 UNICODE编码实现" title="Direct link to 6.1.2 UNICODE编码实现">​</a></h3>
+<p>所谓编码实现，就是对于一个数值，怎么表示它。这很奇怪，数值还能怎么表示？比如“中”的UNICODE值是0x4e2d，在TXT文件中怎么表示0x4e2d？直接写入0x4e2d？不行！</p>
+<p>比如在TXT文件中写入2字节数据“0x2d 0x4e”，它可以用来表示“中”字吗？不能！它们对应ASCII字符“-N”。</p>
+<p>问题的关键在于：怎么断字。在TXT文件中，2字节数据“0x2d 0x4e”是作为一个整体看待，还是拆成2部分看待？</p>
+<p>所以，需要用一定的技巧来表示数值，这就对应不同的编码实现。</p>
+<p>现在我们知道：</p>
+<ol>
+<li>ASCII编码中使用一个字节来表示一个字符，只用到其中的7位，最高位恒为0；</li>
+<li>ANSI编码中，对于ASCII字符仍使用一个字节来表示(BIT7是0)，对于非ASCII字符一般使用2个字节来表示，非ASCII字符的数值BIT7都是1。</li>
+<li>UNICODE：这就有点复杂了，下面一一讲解。</li>
+</ol>
+<p>先用记事本新建3个文件：utf-16_le.txt、utf-16_be.txt、utf-8.txt、bom_utf-8.txt，里面的内容都是“ab中”，保存时编码分别选择“UTF-16 LE”、“UTF-16 BE”、“UTF-8”、“带有BOM的UTF-8”，图 6.5是其中一个例子：</p>
+<p><img loading="lazy" src="/en/assets/images/manual-240-7677f6b5a2e3eac6716f873221a2563f.png" width="986" height="590" class="img_ev3q"></p>
+<p><a id="_Ref108705431"></a>图 6.5 选择编码保存文件</p>
+<p>怎么表示一个UNICODE数值？</p>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ol>
+<li>使用3个字节表示一个UNICODE</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>不，太浪费。</p>
+<p>UNICODE的最大值是0x10FFFF，那使用3个字节来表示一个UNICODE数值？这当然是很省事的方法，但是会造成浪费，比如字符A的UNICOCDE值是0x41，难道也用“0x41 0x00 0x00”这3个字节来表示？</p>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ol>
+<li>UCS-2 Little endian/UTF-16 LE</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>每个UNICODE值用3字节来表示有点浪费，那只用2字节呢？它可以表示2^16=65536个字符，全世界常用的字符都可以表示了。</p>
+<p>Little endian表示小字节序，数值中权重低的字节放在前面，比如字符“A中”在TXT文件中的数值如下，其中的“A”使用“0x41 0x00”两字节表示；“中”使用“0x2d 0x4e”两字节表示。文件开头的“0xff 0xfe”表示“UTF-16 LE”。</p>
+<p><img loading="lazy" src="/en/assets/images/manual-241-14a428213060e7a49efed1856fc0638c.png" width="472" height="199" class="img_ev3q"></p>
+<p>图 6.6 UTF-16 LE</p>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ol>
+<li>UCS-2 Big endian/UTF-16 BE</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>Big endian表示大字节序，数值中权重低的字节放在后面，比如字符“ab中”在TXT文件中的数值如下，其中的“A”使用“0x00 0x41”两字节表示；“中”使用“0x4e 0x2d”两字节表示。文件开头的“0xfe 0xff”表示“UTF-16 BE”。</p>
+<p><img loading="lazy" src="/en/assets/images/manual-242-ff989bbaf0f287d6ffcbe038c4cd55c6.png" width="471" height="198" class="img_ev3q"></p>
+<p>图 6.7 UTF-16 BE</p>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ol>
+<li>UTF8</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>在上面2种方法中，每一个UNICODE使用2字节来表示，这有3个缺点：表示的字符数量有限、对于ASCII字符有空间浪费、如果文件中有某个字节丢失，这会使得后面所有字符都因为错位而无法显示。</p>
+<p>使用UTF8可以解决上述所有问题。UTF8是变长的编码方法，有2种UTF8格式的文件：带有头部、不带头部。先举例，看图 6.8：</p>
+<p><img loading="lazy" src="/en/assets/images/manual-243-8a3336543d97950d9579a137124a815b.png" width="736" height="640" class="img_ev3q"></p>
+<p><a id="_Ref108705543"></a>图 6.8 UTF-8</p>
+<p>对于其中的ASCII字符，在UTF8文件中直接用其ASCII码来表示，比如上图中的0x61表示字符a、0x62表示字符b。上图中的3个字节“0xe4 0xb8 0xad”表示的数值是0x4e2d，对应“中”的UNICODE码。</p>
+<p>对于非ASCII字符，使用变长的编码：每一个字节的高位都自带长度信息。请看图 6.9：</p>
+<p><img loading="lazy" src="/en/assets/images/manual-244-2d3fc4040818fb9c77dc6b0fd5b42725.png" width="1159" height="551" class="img_ev3q"></p>
+<p><a id="_Ref108705583"></a>图 6.9 变长编码</p>
+<p>上图中，0xe4的二进制是“11100100”，高位有3个1，表示从当前字节起有3字节参与表示UNICODE；</p>
+<p>0xb8的二进制是“10111000”，高位有1个1，表示从当前字节起有1字节参与表示UNICODE；</p>
+<p>0xad的二进制是“10101101”，高位有1个1，表示从当前字节起有1字节参与表示UNICODE；</p>
+<p>除去高位的“1110”、“10”、“10”后，剩下的二进制数组合起来得到“01001110001101”，它就是0x4e2d，即“中”的UNICODE值。</p>
+<p>使用UTF8编码时，即使TXT文件中丢失了某些数据，也只会影响到当前字符的显示，后面的字符不受影响。</p>
+<a id="_Toc197788637"></a>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="62-ascii字符的点阵显示">6.2 ASCII字符的点阵显示<a href="#62-ascii字符的点阵显示" class="hash-link" aria-label="Direct link to 6.2 ASCII字符的点阵显示" title="Direct link to 6.2 ASCII字符的点阵显示">​</a></h2>
+<p>要在LCD中显示一个ASCII字符，即英文字母这些字符，首先是要找到字符对应的点阵。在Linux内核源码中有这个文件：lib\fonts\font_8x16.c，里面以数组形式保存各个字符的点阵，比如：</p>
+<p><img loading="lazy" src="/en/assets/images/manual-245-e1dd61df49cc4400169e8415bb5bd741.png" width="1536" height="1605" class="img_ev3q"></p>
+<p>图 6.10 LCD的ASCII点阵</p>
+<p>数组里的数字是如何表示点阵的？以字符A为例，如图 6.11所示：</p>
+<p><img loading="lazy" src="/en/assets/images/manual-246-9532785b38de6e87b4caf1b3f90fea04.png" width="755" height="620" class="img_ev3q"></p>
+<p><a id="_Ref108705723"></a><a id="_Ref108705893"></a>图 6.11 字符A的点阵</p>
+<p>上图左侧有16行数值，每行1个字节。每一个节对应右侧一行中8个像素：像素从右边数起，bit0对应第0个像素，bit1对应第1个像素，……，bit7对应第7个像素。某位的值为1时，表示对应的像素要被点亮；值为0时表示对应的像素要熄灭。</p>
+<p>所以要显示某个字符时，根据它的ASCII码在fontdata_8x16数组中找到它的点阵，然后取出这16个字节去描画16行像素。</p>
+<p>比如字符A的ASCII值是0x41，那么从fontdata_8x16[0x41*16]开始取其点阵数据。</p>
+<p>使用GIT下载所有源码后，本节源码位于如下目录：</p>
+<p>01_all_series_quickstart\</p>
+<p>04_嵌入式Linux应用开发基础知识\source\08_show_ascii\show_ascii.c</p>
+<p>核心函数是void lcd_put_ascii(int x, int y, unsigned char c)，它在LCD的(x,y)位置处显示字符c，代码如下图所示：</p>
+<p><img loading="lazy" src="/en/assets/images/manual-247-eddd48ed5cb051baa2ffc9c0211e41eb.png" width="1732" height="1109" class="img_ev3q"></p>
+<p>图 6.12 显示字符函数</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="621-获取点阵">6.2.1 获取点阵<a href="#621-获取点阵" class="hash-link" aria-label="Direct link to 6.2.1 获取点阵" title="Direct link to 6.2.1 获取点阵">​</a></h3>
+<p>对于字符c，char c，它的点阵获取方法如下：</p>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">4693		unsigned char *dots = (unsigned char *)&amp;fontdata_8x16[c*16];</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="Copy code to clipboard" title="Copy" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="622-描点">6.2.2 描点<a href="#622-描点" class="hash-link" aria-label="Direct link to 6.2.2 描点" title="Direct link to 6.2.2 描点">​</a></h3>
+<p>根据“图 6.11 字符A的点阵”，我们分析下如何利用点阵在LCD上显示一个英文字母。</p>
+<p>因为有十六行，所以首先要有一个循环16次的大循环，然后每一行里有8位，那么在每一个大循环里也需要一个循环8次的小循环。小循环里的判断单行的描点情况，如果是1，就填充白色，如果是0就填充黑色，如此一来，就可以显示出黑色底，白色轮廓的英文字母。</p>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">4697		for (i = 0; i &lt; 16; i++)</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">4698		{</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">4699			byte = dots[i];</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">4700			for (b = 7; b &gt;= 0; b--)</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">4701			{</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">4702				if (byte &amp; (1&lt;&lt;b))</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">4703				{</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">4704					/* show */</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">4705					lcd_put_pixel(x+7-b, y+i, 0xffffff); /* 白 */</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">4706				}</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">4707				else</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">4708				{</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">4709					/* hide */</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">4710					lcd_put_pixel(x+7-b, y+i, 0); /* 黑 */</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">4711				}</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">4712			}</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">4713 }</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="Copy code to clipboard" title="Copy" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="623-main函数">6.2.3 main函数<a href="#623-main函数" class="hash-link" aria-label="Direct link to 6.2.3 main函数" title="Direct link to 6.2.3 main函数">​</a></h3>
+<p>main函数中首先要打开LCD设备，获取Framebuffer参数，实现lcd_put_pixel函数；然后调用lcd_put_ascii即可绘制字符。</p>
+<p>代码如下：</p>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">4716 int main(int argc, char **argv)</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">4717 {</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">4718    fd_fb = open(&quot;/dev/fb0&quot;, O_RDWR);</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">4719    if (fd_fb &lt; 0)</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">4720    {</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">4721            printf(&quot;can&#x27;t open /dev/fb0\n&quot;);</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">4722            return -1;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">4723    }</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">4724    if (ioctl(fd_fb, FBIOGET_VSCREENINFO, &amp;var))</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">4725    {</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">4726            printf(&quot;can&#x27;t get var\n&quot;);</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">4727            return -1;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">4728    }</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">4729</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">4730    line_width  = var.xres * var.bits_per_pixel / 8;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">4731    pixel_width = var.bits_per_pixel / 8;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">4732    screen_size = var.xres * var.yres * var.bits_per_pixel / 8;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">4733    fbmem = (unsigned char *)mmap(NULL , screen_size, PROT_READ | PROT_WRITE, MAP_SHARED, fd_fb, 0);</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">4734    if (fbmem == (unsigned char *)-1)</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">4735    {</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">4736            printf(&quot;can&#x27;t mmap\n&quot;);</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">4737            return -1;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">4738    }</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">4739</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">4740    /* 清屏: 全部设为黑色 */</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">4741    memset(fbmem, 0, screen_size);</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">4742</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">4743    lcd_put_ascii(var.xres/2, var.yres/2, &#x27;A&#x27;); /*在屏幕中间显示8*16的字母A*/</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">4744</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">4745    munmap(fbmem , screen_size);</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">4746    close(fd_fb);</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">4747</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">4748    return 0;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">4749 }</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">4750</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="Copy code to clipboard" title="Copy" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="624-编译c文件show_asciic">6.2.4 编译c文件show_ascii.c<a href="#624-编译c文件show_asciic" class="hash-link" aria-label="Direct link to 6.2.4 编译c文件show_ascii.c" title="Direct link to 6.2.4 编译c文件show_ascii.c">​</a></h3>
+<p>编译命令：arm-buildroot-linux-gnueabihf-gcc -o show_ascii show_ascii.c</p>
+<p><strong>注意</strong>：不同的板子，编译工具的前缀可能不一样。</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="625-机实验">6.2.5 机实验<a href="#625-机实验" class="hash-link" aria-label="Direct link to 6.2.5 机实验" title="Direct link to 6.2.5 机实验">​</a></h3>
+<p>把show_ascii程序放到板子上，执行命令：./show_ascii。如果实验成功，我们将看到屏幕中间会显示出一个白色的字母‘A’。</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="626-课后作业">6.2.6 课后作业<a href="#626-课后作业" class="hash-link" aria-label="Direct link to 6.2.6 课后作业" title="Direct link to 6.2.6 课后作业">​</a></h3>
+<p>修改lcd_put_ascii函数，可以指定字符颜色。实现lcd_put_str函数，输出字符串，可以换行。</p>
+<p>在show_ascii.c的基础上实现汉字的显示：要找到汉字字库、了解像素排列顺序、得到汉字编码。</p>
+<a id="_Toc197788638"></a>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="63-中文字符的点阵显示">6.3 中文字符的点阵显示<a href="#63-中文字符的点阵显示" class="hash-link" aria-label="Direct link to 6.3 中文字符的点阵显示" title="Direct link to 6.3 中文字符的点阵显示">​</a></h2>
+<p>使用GIT下载所有源码后，本节源码位于如下目录：</p>
+<p>01_all_series_quickstart\</p>
+<p>04_嵌入式Linux应用开发基础知识\source\09_show_chinese\</p>
+<p>test_charset_ansi.c</p>
+<p>test_charset_utf8.c</p>
+<p>show_chinese.c</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="631-指定编码格式">6.3.1 指定编码格式<a href="#631-指定编码格式" class="hash-link" aria-label="Direct link to 6.3.1 指定编码格式" title="Direct link to 6.3.1 指定编码格式">​</a></h3>
+<p>使用点阵字库时，中文字符的显示原理跟ASCII字符是一样的。要注意的地方在于中文的编码：在C源文件中它的编码方式是GB2312还是UTF-8？编译出的可执行程序，其中的汉字编码方式是GB2312还是UTF-8？</p>
+<p><strong>注意</strong>：一般不会使用UTF-16的编码方式，在这种方式下ASCII字符也是用2字节来表示，而其中一个字节是0，但是在C语言中0表示字符串的结束符，会引起误会。</p>
+<p>我们编写C程序时，可以使用ANSI编码，或是UTF-8编码；在编译程序时，可以使用以下的选项告诉编译器：</p>
+<div class="language-bash codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-bash codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">-finput-charset=GB2312</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">-finput-charset=UTF-8</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="Copy code to clipboard" title="Copy" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<p>如果不指定“-finput-charset”，GCC就会默认C程序的编码方式为UTF-8，即使你是以ANSI格式保存，也会被当作UTF-8来对待。</p>
+<p>对于编译出来的可执行程序，可以指定它里面的字符是以什么方式编码，可以使用以下的选项编译器：</p>
+<div class="language-bash codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-bash codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">-fexec-charset=GB2312</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">-fexec-charset=UTF-8</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="Copy code to clipboard" title="Copy" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<p>如果不指定“-fexec-charset”，GCC就会默认编译出的可执行程序中字符的编码方式为UTF-8。</p>
+<p>如果“-finput-charset”与“-fexec-charset”不一样，编译器会进行格式转换。</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="632-编码格式实验">6.3.2 编码格式实验<a href="#632-编码格式实验" class="hash-link" aria-label="Direct link to 6.3.2 编码格式实验" title="Direct link to 6.3.2 编码格式实验">​</a></h3>
+<p>下面做实验。</p>
+<p>test_charset_ansi.c、test_charset_utf8.c的编码格式分别为ANSI、UTF-8，它们的程序代码是一样的，如下：</p>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">01 #include &lt;stdio.h&gt;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">02 #include &lt;string.h&gt;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">03</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">04 int main(int argc, char **argv)</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">05 {</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">06      char *str = &quot;A中&quot;;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">07      int i;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">08</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">09      printf(&quot;str&#x27;s len = %d\n&quot;, (int)strlen(str));</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">10      printf(&quot;Hex code: &quot;);</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">11      for (i = 0; i &lt; strlen(str); i++)</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">12      {</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">13              printf(&quot;%02x &quot;, (unsigned char)str[i]);</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">14      }</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">15      printf(&quot;\n&quot;);</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">16      return 0;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">17 }</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="Copy code to clipboard" title="Copy" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ol>
+<li>默认编码</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>实验如下：</p>
+<div class="language-bash codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-bash codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">book@100ask:~/09_show_chinese$ gcc -o test_charset_ansi test_charset_ansi.c</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">book@100ask:~/09_show_chinese$ ./test_charset_ansi</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">str&#x27;s len = 3</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">Hex code: 41 d6 d0</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">book@100ask:~/09_show_chinese$ gcc -o test_charset_utf8 test_charset_utf8.c</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">book@100ask:~/09_show_chinese$ ./test_charset_utf8</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">str&#x27;s len = 4</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">Hex code: 41 e4 b8 ad</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="Copy code to clipboard" title="Copy" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<p>不指定“-finput-charset”与“-fexec-charset”时，input-charset和exec-charset默认都是UTF-8，不会进行编码转换。即使C文件是ANSI，也会被认为是UTF-8，所以不会导致编码转换。</p>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ol>
+<li>GB2312转为UTF-8</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>实验如下：</p>
+<div class="language-bash codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-bash codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">book@100ask:~/09_show_chinese$ gcc -finput-charset=GB2312 -fexec-charset=UTF-8 -o test_charset_ansi test_charset_ansi.c</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">book@100ask:~/09_show_chinese$ ./test_charset_ansi str&#x27;s len = 4 Hex code: 41 e4 b8 ad</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">book@100ask:~/09_show_chinese$ gcc -finput-charset=GB2312 -fexec-charset=UTF-8 -o test_charset_utf8 test_charset_utf8.c cc1: error: failure to convert GB2312 to UTF-8</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="Copy code to clipboard" title="Copy" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<p>从上面的输出信息可以看出来，GB2312的“0xd6 0xd0”可以转换为UTF-8的“0xe4 0xb8 0xad”。而如果把原本就是UTF-8格式的test_charset_utf8.c当作GB2312格式，会引起错误。</p>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ol>
+<li>UTF-8转为GB2312</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>实验如下：</p>
+<div class="language-bash codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-bash codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">book@100ask:~/09_show_chinese$ gcc -finput-charset=UTF-8 -fexec-charset=GB2312 -o test_charset_ansi test_charset_ansi.c</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">test_charset_ansi.c: In function ‘main’:</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">test_charset_ansi.c:6:14: error: converting to execution character set: Invalid or incomplete multibyte or wide character</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">  char *str = &quot;A▒▒&quot;;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">              ^~~~~</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">book@100ask:~/09_show_chinese$ gcc -finput-charset=UTF-8 -fexec-charset=GB2312 -o test_charset_utf8 test_charset_utf8.c</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">book@100ask:~/09_show_chinese$ ./test_charset_utf8</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">str&#x27;s len = 3</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">Hex code: 41 d6 d0</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="Copy code to clipboard" title="Copy" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<p>从上面的输出信息可以看出来，如果把原本就是GB2312格式的test_charset_ansi.c当作UTF-8格式，会引起错误。而UTF-8格式的“中”编码值为“0xe4 0xb8 0xad”，可以转换为GB2312的“0xd6 0xd0”。</p>
+<p>在代码中使用汉字这类非ASCII码时，要特别 留意编码格式。</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="633-汉字区位码">6.3.3 汉字区位码<a href="#633-汉字区位码" class="hash-link" aria-label="Direct link to 6.3.3 汉字区位码" title="Direct link to 6.3.3 汉字区位码">​</a></h3>
+<p>我们从网上搜到HZK16这个文件，它是常用汉字的16*16点阵字库。HZK16里每个汉字使用32字节来描述，如图 6.13所示：</p>
+<p><img loading="lazy" src="/en/assets/images/manual-248-0a38b599f7a6b184ec214498ccdbed12.png" width="597" height="523" class="img_ev3q"></p>
+<p><a id="_Ref108706218"></a><a id="_Ref108706210"></a>图 6.13 汉字区位码</p>
+<p>跟ASCII字库一样，每个字节中每一位用来表示一个像素，位值等于1时表示对应像素被点亮，位值等于0时表示对应像素被熄灭。</p>
+<p>HZK16中是以GB2312编码值来查找点阵的，以“中”字为例，它的编码值是“0xd6 0xd0”，其中的0xd6表示“区码”，表示在哪一个区：第“0xd6 - 0xa1”区；其中的0xd0表示“位码”，表示它是这个区里的哪一个字符：第“0xd0 - 0xa1”个。每一个区有94个汉字。区位码从0xa1而不是从0开始，是为了兼容ASCII码。</p>
+<p>所以，我们要显示的“中”字，它的GB2312编码是d6d0，它是HZK16里第“(0xd6-0xa1)*94+(0xd0-0xa1)”个字符。</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="634-汉字点阵显示实验">6.3.4 汉字点阵显示实验<a href="#634-汉字点阵显示实验" class="hash-link" aria-label="Direct link to 6.3.4 汉字点阵显示实验" title="Direct link to 6.3.4 汉字点阵显示实验">​</a></h3>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ol>
+<li>打开汉字库文件</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">4787    fd_hzk16 = open(&quot;HZK16&quot;, O_RDONLY);</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">4788    if (fd_hzk16 &lt; 0)</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">4789    {</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">4790            printf(&quot;can&#x27;t open HZK16\n&quot;);</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">4791            return -1;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">4792    }</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">4793    if(fstat(fd_hzk16, &amp;hzk_stat))</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">4794    {</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">4795            printf(&quot;can&#x27;t get fstat\n&quot;);</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">4796            return -1;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">4797    }</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">4798    hzkmem = (unsigned char *)mmap(NULL , hzk_stat.st_size, PROT_READ, MAP_SHARED, fd_hzk16, 0);</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">4799    if (hzkmem == (unsigned char *)-1)</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">4800    {</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">4801            printf(&quot;can&#x27;t mmap for hzk16\n&quot;);</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">4802            return -1;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">4803    }</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="Copy code to clipboard" title="Copy" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<p>第4787行打开当前目录的字库文件：HZK16。</p>
+<p>第4793行获得文件的状态信息，里面含有文件长度，这在后面的mmap中用到。</p>
+<p>第4798行使用mmap映射文件，以后就可以像访问内存一样读取文件内容；mmap的返回结果保存在hzkmem中，它将作为字库的基地址。</p>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ol>
+<li>编写显示汉字的函数</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>核心函数是void lcd_put_chinese(int x, int y, unsigned char *str)，它在LCD的(x,y)位置处显示汉字字符str，str[0]中保存区码、str[1]中保存位码。</p>
+<p>代码如下图所示：</p>
+<p><img loading="lazy" src="/en/assets/images/manual-249-e810c36550afcc92129016fb30b8a591.png" width="916" height="635" class="img_ev3q"></p>
+<p><a id="_Ref108706306"></a>图 6.14 显示汉字函数</p>
+<p>代码分解如下：</p>
+<p>第4734行确定该汉字属于哪个区；第4735行确实它是该区中哪一个汉字。</p>
+<p>第4736行确实它的字库地址：每个区中有94个汉字，每个汉字在字库中占据32字节。</p>
+<p>需要根据图 6.15来理解第4740行开始的循环：</p>
+<p><img loading="lazy" src="/en/assets/images/manual-250-dcc6de9c61c0e9a5d8903573cb6cbff5.png" width="907" height="795" class="img_ev3q"></p>
+<p><a id="_Ref108706312"></a>图 6.15 汉字点阵排布</p>
+<p>图 6.15是汉字点阵排布的示意图，总共有十六行，因此需要一个循环16次的大循环(第4740行)。</p>
+<p>考虑到一行有两个字节，在大循环中加入一个2次的循环用于区分是哪个字节(第4741行)。</p>
+<p>最后使用第3个循环来处理一个字节中的8位(第4744行)。对于每一位，它等于1时对应的像素被设置为白色，它等于0时对应的像素被设置为黑色。需要注意的是根据x、y、i、j、b来计算像素坐标。</p>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ol>
+<li>使用lcd_put_chinese函数</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>程序文件：show_font.c</p>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">4762    unsigned char str[] = &quot;中&quot;;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">……</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">4810    printf(&quot;chinese code: %02x %02x\n&quot;, str[0], str[1]);</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">4811    lcd_put_chinese(var.xres/2 + 8,  var.yres/2, str);</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="Copy code to clipboard" title="Copy" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ol>
+<li>编译程序</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>编译命令：</p>
+<div class="language-bash codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-bash codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">arm-buildroot-linux-gnueabihf-gcc -o  show_chinese  show_chinese.c</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="Copy code to clipboard" title="Copy" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<p><strong>注意</strong>：不同的板子，编译工具的前缀可能不一样。</p>
+<p><strong>注意</strong>：使用上述命令时show_chinese.c的编码格式必须是ANSI(GB2312)，否则编译时需要指定“-fexec-charset=GB2312”。</p>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ol>
+<li>上机实验</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>把show_chinese程序放到板子上，执行命令：./show_chinese。如果实验成功，我们将看到屏幕中间会显示出一个白色的字母“A”和“中”。</p>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ol>
+<li>  课后作业</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>修改lcd_put_chinese函数，可以指定字符颜色。</p>
+<p>实现lcd_put_str函数，可以输出混合的中英文字符，比如“中国china”，支持自动换行。</p>
+<a id="_Ref109640792"></a>
+<a id="_Ref109640794"></a>
+<a id="_Toc197788639"></a>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="64-交叉编译程序以freetype为例">6.4 交叉编译程序：以freetype为例<a href="#64-交叉编译程序以freetype为例" class="hash-link" aria-label="Direct link to 6.4 交叉编译程序：以freetype为例" title="Direct link to 6.4 交叉编译程序：以freetype为例">​</a></h2>
+<p>使用buildroot来给ARM板编译程序、编译库会很简单，以后系统讲解buildroot时再使用buildroot。</p>
+<p>现在我们还是手工交叉编译freetype，这种方法在编译、安装一些小程序时很有用。</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="641-程序运行的一些基础知识">6.4.1 程序运行的一些基础知识<a href="#641-程序运行的一些基础知识" class="hash-link" aria-label="Direct link to 6.4.1 程序运行的一些基础知识" title="Direct link to 6.4.1 程序运行的一些基础知识">​</a></h3>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ol>
+<li>编译程序时去哪找头文件？</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>系统目录：就是交叉编译工具链里的某个include目录；也可以自己指定：编译时用 “ -I dir ”选项指定。</p>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ol>
+<li>链接时去哪找库文件？</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>系统目录：就是交叉编译工具链里的某个lib目录；也可以自己指定：链接时用 “ -L dir ”选项指定。</p>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ol>
+<li>运行时去哪找库文件？</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>系统目录：就是板子上的/lib、/usr/lib目录；也可以自己指定：运行程序用环境变量LD_LIBRARY_PATH指定。</p>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ol>
+<li>运行时不需要头文件，所以头文件不用放到板子上</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="642-常见错误的解决方法">6.4.2 常见错误的解决方法<a href="#642-常见错误的解决方法" class="hash-link" aria-label="Direct link to 6.4.2 常见错误的解决方法" title="Direct link to 6.4.2 常见错误的解决方法">​</a></h3>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ol>
+<li>头文件问题</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>编译时找不到头文件。在程序中这样包含头文件：#include &lt;xxx.h&gt;</p>
+<p>对于尖括号里的头文件，去哪里找它？</p>
+<p>系统目录：就是交叉编译工具链里的某个include目录；</p>
+<p>也可以自己指定：编译时用 “ -I dir ”选项指定。</p>
+<p>怎么确定“系统目录”？</p>
+<p>执行下面命令确定目录：</p>
+<div class="language-bash codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-bash codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">echo &#x27;main(){}&#x27;| arm-buildroot-linux-gnueabihf-gcc -E -v -</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="Copy code to clipboard" title="Copy" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<p>它会列出头文件目录、库目录(LIBRARY_PATH)。</p>
+<p>你需要在头文件目录中确定有没有这个文件，或是自己指定头文件目录。</p>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ol>
+<li>库文件问题</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>链接程序时如果有这样的提示：undefined reference to `xxx&#x27;，它表示xxx函数未定义。</p>
+<p>那么解决方法有2：</p>
+<ol>
+<li>去写出这个函数</li>
+<li>或是使用库函数，那需要在链接时指定库</li>
+</ol>
+<p>怎么指定库？想链接libabc.so，那链接时加上：-labc。</p>
+<p>库在哪里？</p>
+<ul>
+<li>
+<ul>
+<li>系统目录：就是交叉编译工具链里的某个lib目录</li>
+<li>也可以自己指定：链接时用 “ -L dir ”选项指定</li>
+</ul>
+</li>
+</ul>
+<p>怎么确定“系统目录”？执行下面命令确定目录：</p>
+<div class="language-bash codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-bash codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">echo &#x27;main(){}&#x27;| arm-buildroot-linux-gnueabihf-gcc -E -v –</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="Copy code to clipboard" title="Copy" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<p>它会列出头文件目录、库目录(LIBRARY_PATH)，你编译出库文件时，可以把它放入系统库目录。</p>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ol>
+<li>运行问题</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>运行程序时找不到库：</p>
+<div class="language-bash codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-bash codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">error while loading shared libraries: libxxx.so:</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">cannot open shared object file: No such file or directory</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="Copy code to clipboard" title="Copy" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<p>找不到库，库在哪？</p>
+<ul>
+<li>
+<ul>
+<li>系统目录：就是板子上的/lib、/usr/lib目录</li>
+<li>也可以自己指定：</li>
+</ul>
+</li>
+</ul>
+<p>运行程序用环境变量LD_LIBRARY_PATH指定，执行以下的命令：</p>
+<div class="language-bash codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-bash codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">export  LD_LIBRARY_PATH=/xxx_dir  ;  ./test</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="Copy code to clipboard" title="Copy" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<p>或</p>
+<div class="language-bash codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-bash codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">LD_LIBRARY_PATH=/xxx_dir   ./test</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="Copy code to clipboard" title="Copy" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="643-交叉编译程序的万能命令">6.4.3 交叉编译程序的万能命令<a href="#643-交叉编译程序的万能命  令" class="hash-link" aria-label="Direct link to 6.4.3 交叉编译程序的万能命令" title="Direct link to 6.4.3 交叉编译程序的万能命令">​</a></h3>
+<p>如果交叉编辑工具链的前缀是arm-buildroot-linux-gnueabihf-，比如arm-buildroot-linux-gnueabihf-gcc，交叉编译开源软件时，如果它里面有configure，万能命令如下：</p>
+<div class="language-bash codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-bash codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">./configure  --host=arm-buildroot-linux-gnueabihf   --prefix=$PWD/tmp</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">make</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">make install</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="Copy code to clipboard" title="Copy" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<p>就可以在当前目录的tmp目录下看见bin, lib, include等目录，里面存有可执行程序、库、头文件。</p>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ol>
+<li>把头文件、库文件放到工具链目录里</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>如果你编译的是一个库，请把得到的头文件、库文件放入工具链的include、lib目录里。别的程序要使用这些头文件、库时，会很方便。</p>
+<p>工具链里可能有多个include、lib目录，放到哪里去？</p>
+<p>执行下面命令来确定目录：</p>
+<div class="language-bash codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-bash codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">echo &#x27;main(){}&#x27;| arm-buildroot-linux-gnueabihf-gcc -E -v –</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="Copy code to clipboard" title="Copy" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<p>它会列出头文件目录、库目录(LIBRARY_PATH)。</p>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ol>
+<li>把库文件放到板子上的/lib或/usr/lib目录里</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>程序在板子上运行时，需要用到板子上/lib或/usr/lib下的库文件；程序运行时不需要头文件。</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="644-给imx6ull交叉编译freetype">6.4.4 给IMX6ULL交叉编译freetype<a href="#644-给imx6ull交叉编译freetype" class="hash-link" aria-label="Direct link to 6.4.4 给IMX6ULL交叉编译freetype" title="Direct link to 6.4.4 给IMX6ULL交叉编译freetype">​</a></h3>
+<p>使用GIT下载所有源码后，本节源码位于如下目录：</p>
+<p>01_all_series_quickstart\</p>
+<p>04_嵌入式Linux应用开发基础知识\source\10_freetype\</p>
+<p>freetype-2.10.2.tar.xz</p>
+<p>libpng-1.6.37.tar.xz</p>
+<p>zlib-1.2.11.tar.gz</p>
+<p>freetype依赖于libpng，libpng又依赖于zlib，所以我们应该：先编译安装zlib，再编译安装libpng，最后编译安装freetype。但是，有些工具链里有zlib, 那就不用编译安装zlib，比如STM32MP157。</p>
+<p>本节文档以IMX6ULL开发板中arm-buildroot-linux-gnueabihf-gcc工具链为例，对于其他开发板：工具链可能不一样，请灵活变通。</p>
+<ol>
+<li>确定头文件、库文件在工具链中的目录</li>
+</ol>
+<p>先设置交叉编译工具链：</p>
+<div class="language-bash codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-bash codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">export ARCH=arm</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">export CROSS_COMPILE=arm-buildroot-linux-gnueabihf-</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">export PATH=$PATH:/home/book/100ask_imx6ull-sdk/ToolChain/arm-buildroot-linux-gnueabihf_sdk-buildroot/bin</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="Copy code to clipboard" title="Copy" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<p>它里面有zlib，跟着视频操作即可</p>
+<p>以IMX6ULL开发板为例，它的工具链是arm-buildroot-linux-gnueabihf-gcc，可以执行以下命令：</p>
+<div class="language-bash codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-bash codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">echo &#x27;main(){}&#x27;| arm-buildroot-linux-gnueabihf-gcc -E -v -</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="Copy code to clipboard" title="Copy" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<p>可以确定头文件的系统目录为：</p>
+<div class="language-bash codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-bash codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">/home/book/100ask_imx6ull-sdk/ToolChain/arm-buildroot-linux-gnueabihf_sdk-buildroot/bin/../lib/gcc/arm-buildroot-linux-gnueabihf/7.5.0/include</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="Copy code to clipboard" title="Copy" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<p>库文件的系统目录为：</p>
+<div class="language-bash codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-bash codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">/home/book/100ask_imx6ull-sdk/ToolChain/arm-buildroot-linux-gnueabihf_sdk-buildroot/bin/../lib/gcc/arm-buildroot-linux-gnueabihf/7.5.0/../../../../arm-buildroot-linux-gnueabihf/lib</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="Copy code to clipboard" title="Copy" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<ol>
+<li>交叉编译、安装libpng</li>
+</ol>
+<p>freetype依赖于libpng，所以需要先编译、安装libpng。命令如下：</p>
+<div class="language-bash codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-bash codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">book@100ask$ cp /home/book/01_all_series_quickstart/04_嵌入式Linux应用开发基础知识/source/10_freetype/libpng-1.6.37.tar.xz ./</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">book@100ask$ tar  xJf  libpng-1.6.37.tar.xz</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">book@100ask$ cd  libpng-1.6.37</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">book@100ask:~/libpng-1.6.37$ ./configure  --host=arm-buildroot-linux-gnueabihf  --prefix=$PWD/tmp</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">book@100ask:~/libpng-1.6.37$ make</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">book@100ask:~/libpng-1.6.37$ make install</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">book@100ask:~/libpng-1.6.37$ cd  tmp</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">book@100ask:~/libpng-1.6.37/tmp$ cp  include/*  -rf  /home/book/100ask_imx6ull-sdk/ToolChain/arm-buildroot-linux-gnueabihf_sdk-buildroot/bin/../lib/gcc/arm-buildroot-linux-gnueabihf/7.5.0/include</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">book@100ask:~/libpng-1.6.37/tmp$ cp  lib/*  -rfd   /home/book/100ask_imx6ull-sdk/ToolChain/arm-buildroot-linux-gnueabihf_sdk-buildroot/bin/../lib/gcc/arm-buildroot-linux-gnueabihf/7.5.0/../../../../arm-buildroot-linux-gnueabihf/lib</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="Copy code to clipboard" title="Copy" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<ol>
+<li>交叉编译、安装freetype</li>
+</ol>
+<p>命令如下：</p>
+<div class="language-bash codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-bash codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">book@100ask$ cp /home/book/01_all_series_quickstart/04_嵌入式Linux应用开发基础知识/source/10_freetype/freetype-2.10.2.tar.xz ./</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">book@100ask$ tar  xJf  freetype-2.10.2.tar.xz</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">book@100ask$ cd  freetype-2.10.2</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">book@100ask:~/freetype-2.10.2$  ./configure  --host=arm-buildroot-linux-gnueabihf   --prefix=$PWD/tmp</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">book@100ask:~/freetype-2.10.2$ make</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">book@100ask:~/freetype-2.10.2$ make install</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">book@100ask:~/freetype-2.10.2$ cd  tmp</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">book@100ask:~/freetype-2.10.2/tmp$ cp include/freetype2/* -rfd /home/book/100ask_imx6ull-sdk/ToolChain/arm-buildroot-linux-gnueabihf_sdk-buildroot/bin/../lib/gcc/arm-buildroot-linux-gnueabihf/7.5.0/include</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">book@100ask:~/freetype-2.10.2/tmp$ cp lib/* -rfd  /home/book/100ask_imx6ull-sdk/ToolChain/arm-buildroot-linux-gnueabihf_sdk-buildroot/bin/../lib/gcc/arm-buildroot-linux-gnueabihf/7.5.0/../../../../arm-buildroot-linux-gnueabihf/lib</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="Copy code to clipboard" title="Copy" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<a id="_Toc197788640"></a>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="65-使用freetype显示单个文字">6.5 使用freetype显示单个文字<a href="#65-使用freetype显示单个文字" class="hash-link" aria-label="Direct link to 6.5 使用freetype显示单个文字" title="Direct link to 6.5 使用freetype显示单个文字">​</a></h2>
+<p>使用GIT下载所有源码后，本节源码位于如下目录：</p>
+<p>01_all_series_quickstart\</p>
+<p>04_嵌入式Linux应用开发基础知识\source\10_freetype\</p>
+<p>01_wchar\test_wchar.c</p>
+<p>02_freetype_show_font\freetype_show_font.c</p>
+<p>03_freetype_show_font_angle\freetype_show_font_angle.c</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="651-矢量字体引入">6.5.1 矢量字体引入<a href="#651-矢量字体引入" class="hash-link" aria-label="Direct link to 6.5.1 矢量字体引入" title="Direct link to 6.5.1 矢量字体引入">​</a></h3>
+<p>使用点阵字库显示英文字母、汉字时，大小固定，如果放大缩小则会模糊甚至有锯齿出现，为了解决这个问题， 引用矢量字体。</p>
+<p>矢量字体形成分三步：</p>
+<ol>
+<li>确定关键点，</li>
+<li>使用数学曲线（贝塞尔曲线）连接头键点，</li>
+<li>填充闭合区线内部空间。</li>
+</ol>
+<p>什么是关键点？以字母“A”为例，它的的关键点如图 6.16中的黄色所示。</p>
+<p><img loading="lazy" src="/en/assets/images/manual-251-9690087c2782a87c06a7899ca1b2bf7e.png" width="816" height="1056" class="img_ev3q"></p>
+<p><a id="_Ref108706869"></a>图 6.16 字符A的关键点</p>
+<p>再用数学曲线(比如贝塞尔曲线)将关键点都连接起来，得到一系列的封闭的曲线，如图 6.17所示：</p>
+<p><img loading="lazy" src="/en/assets/images/manual-252-483938c8bd545ca6c50bc13cde8113a1.png" width="816" height="1056" class="img_ev3q"></p>
+<p><a id="_Ref108706889"></a>图 6.17 封闭关键点</p>
+<p>最后把封闭空间填满颜色，就显示出一个A字母，如图 6.18所示：</p>
+<p><img loading="lazy" src="/en/assets/images/manual-253-c5b78c40682e09e8f9b4b200968f7f12.png" width="264" height="292" class="img_ev3q"></p>
+<p><a id="_Ref108706971"></a>图 6.18 填充封闭曲线</p>
+<p>如果需要放大或者缩小字体，关键点的相对位置是不变的，只要数学曲线平滑，字体就不会变形。</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="652-freetype介绍">6.5.2 Freetype介绍<a href="#652-freetype介绍" class="hash-link" aria-label="Direct link to 6.5.2 Freetype介绍" title="Direct link to 6.5.2 Freetype介绍">​</a></h3>
+<p>Freetype是开源的字体引擎库，它提供统一的接口来访问多种字体格式文件，从而实现矢量字体显示。我们只需要移植这个字体引擎，调用对应的API接口，提供字体文件，就可以让freetype库帮我们取出关键点、实现闭合曲线，填充颜色，达到显示矢量字体的目的。</p>
+<p>关键点(glyph)存在字体文件中，Windows使用的字体文件在c:\Windows\Fonts目录下，扩展名为TTF的都是矢量字库，本次使用实验使用的是新宋字体simsun.ttc。</p>
+<p>给定一个字符，怎么在字体文件中找到它的关键点？</p>
+<p>首先要确定该字符的编码值：比如ASCII码、GB2312码、UNICODE码。如果字体文件支持某种编码格式(charset)，就可以使用这类编码值去找到该字符的关键点(glyph)。有些字体文件支持多种编码格式(charset)，这在文件中被称为charmaps(注意：这个单词是复数，意味着可能支持多种charset)。</p>
+<p>以simsun.ttc为例，该字体文件的格如下：头部含有charmaps，可以使用某种编码值去charmaps中找到它对应的关键点。下图中的“A、B、中、国、韦”等只是glyph的示意图，表示关键点。</p>
+<p><img loading="lazy" src="/en/assets/images/manual-254-55f544535288b2e940e0af87935f9b92.png" width="816" height="1056" class="img_ev3q"></p>
+<p>图 6.19 glyph</p>
+<p>Charmaps表示字符映射表，字体文件可能支持哪一些编码，GB2312、UNICODE、BIG5或其他。如果字体文件支持该编码，使用编码值通过charmap就可以找到对应的glyph，一般而言都支持UNICODE码。</p>
+<p>有了以上基础，一个文字的显示过程可以概括如下：</p>
+<ul>
+<li>给定一个字符可以确定它的编码值(ASCII、UNICODE、GB2312)；</li>
+<li>设置字体大小；</li>
+<li>根据编码值，从文件头部中通过charmap找到对应的关键点(glyph)，它会根据字体大小调整关键点；</li>
+<li>把关键点转换为位图点阵；</li>
+<li>在LCD上显示出来</li>
+</ul>
+<p>从<a href="https://www.freetype.org/" target="_blank" rel="noopener noreferrer">https://www.freetype.org/</a>可以下载到“freetype-doc-2.10.2.tar.xz”，下图中的文件就是官方文档：</p>
+<p><img loading="lazy" src="/en/assets/images/manual-255-79ea8c81d12073c167545884f52d194b.png" width="395" height="362" class="img_ev3q"></p>
+<p>图 6.20 freetype文件目录</p>
+<p>参照上图中step1，step2，step3里的内容，可以学习如何使用freetype库，总结出下列步骤：</p>
+<ol>
+<li>初始化：FT_InitFreetype</li>
+<li>加载(打开)字体Face：FT_New_Face</li>
+<li>设置字体大小：FT_Set_Char_Sizes 或 FT_Set_Pixel_Sizes</li>
+<li>选择charmap：FT_Select_Charmap</li>
+<li>根据编码值charcode找到glyph_index：glyph_index = FT_Get_Char_Index（face，charcode）</li>
+<li>根据glyph_index取出glyph：FT_Load_Glyph（face，glyph_index）</li>
+<li>转为位图：FT_Render_Glyph</li>
+<li>移动或旋转<!-- -->:FT<!-- -->_Set_Transform</li>
+<li>最后显示出来。</li>
+</ol>
+<p>上面的⑤⑥⑦可以使用一个函数代替：FT_Load_Char(face, charcode, FT_LOAD_RENDER)，它就可以得到位图。</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="653-在lcd上显示一个矢量字体">6.5.3 在LCD上显示一个矢量字体<a href="#653-在lcd上显示一个矢量字体" class="hash-link" aria-label="Direct link to 6.5.3 在LCD上显示一个矢量字体" title="Direct link to 6.5.3 在LCD上显示一个矢量字体">​</a></h3>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ol>
+<li>使用wchar_t获得字符的UNICODE值</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>要显示一个字符，首先要确定它的编码值。常用的是UNICODE编码，在程序里使用这样的语句定义字符串时，str中保存的要么是GB2312编码值，要么是UTF-8格式的编码值，即使编译时使用“-fexec-charset=UTF-8”，str中保存的也不是直接能使用的UNICODE值：</p>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">char  *str = “中”;</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="Copy code to clipboard" title="Copy" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<p>如果想在代码中能直接使用UNICODE值，需要使用wchar_t，宽字符，示例代码如下：</p>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">01 #include &lt;stdio.h&gt;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">02 #include &lt;string.h&gt;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">03 #include &lt;wchar.h&gt;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">04</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">05 int main( int argc, char** argv)</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">06 {</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">07      wchar_t *chinese_str = L&quot;中gif&quot;;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">08      unsigned int *p = (wchar_t *)chinese_str;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">09      int i;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">10</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">11      printf(&quot;sizeof(wchar_t) = %d, str&#x27;s Uniocde: \n&quot;, (int)sizeof(wchar_t));</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">12      for (i = 0; i &lt; wcslen(chinese_str); i++)</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">13      {</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">14              printf(&quot;0x%x &quot;, p[i]);</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">15      }</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">16      printf(&quot;\n&quot;);</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">17</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">18      return 0;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">19 }}</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="Copy code to clipboard" title="Copy" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<p>UTF-8格式保存test_wchar.c，编译、测试命令如下：</p>
+<div class="language-bash codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-bash codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">book@100ask:~/10_freetype/01_wchar$ gcc -o test_wchar test_wchar.c</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">book@100ask:~/10_freetype/01_wchar$ ./test_wchar</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">sizeof(wchar_t) = 4, str&#x27;s Uniocde:</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">0x4e2d 0x67 0x69 0x66</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="Copy code to clipboard" title="Copy" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<p>每个wchar_t占据4字节，可执行程序里wchar_t中保存的就是字符的UNICODE值。</p>
+<p><strong>注意</strong>：如果test_wchar.c是以ANSI(GB2312)格式保存，那么需要使用以下命令来编译：</p>
+<div class="language-bash codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-bash codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">gcc -finput-charset=GB2312  -fexec-charset=UTF-8  -o test_wchar test_wchar.c</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="Copy code to clipboard" title="Copy" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ol>
+<li>使用freetype得到位图</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>参考</p>
+<p>freetype-doc-2.10.2\freetype-2.10.2\docs\tutorial\image.c</p>
+<p>使用freetype显示一个字符并不难。</p>
+<p>使用GIT下载所有源码后，本节源码位于如下目录：</p>
+<p>01_all_series_quickstart\</p>
+<p>04_嵌入式Linux应用开发基础知识\</p>
+<p>source\10_freetype\02_freetype_show_font\freetype_show_font.c</p>
+<p>要使用freetype得到一个字符的位图，只需要4个步骤，代码先贴出来再分析：</p>
+<p><img loading="lazy" src="/en/assets/images/manual-256-2037d34a11cae16dc7778e33138b0e21.png" width="1025" height="557" class="img_ev3q"></p>
+<p>图 6.21 使用freetype获取字符位图</p>
+<ol>
+<li>初始化freetype库</li>
+</ol>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">158  error = FT_Init_FreeType( &amp;library ); /* initialize library */</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="Copy code to clipboard" title="Copy" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<ol>
+<li>加载字体文件，保存在&amp;face中：</li>
+</ol>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">161 error = FT_New_Face( library, argv[1], 0, &amp;face ); /* create face object */</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">162 /* error handling omitted */</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">163 slot = face-&gt;glyph;</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="Copy code to clipboard" title="Copy" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<p>第163行是从face中获得FT_GlyphSlot，后面的代码中文字的位图就是保存在FT_GlyphSlot里。</p>
+<ol>
+<li>设置字体大小</li>
+</ol>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">165     FT_Set_Pixel_Sizes(face, font_size, 0);</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="Copy code to clipboard" title="Copy" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<ol>
+<li>根据编码值得到位图</li>
+</ol>
+<p>使用FT_Load_Char函数，就可以实现这3个功能：</p>
+<ul>
+<li>根据编码值获得glyph_index：FT_Get_Char_Index</li>
+<li>根据glyph_idex取出glyph：FT_Load_Glyph</li>
+<li>渲染出位图：FT_Render_Glyph</li>
+</ul>
+<p>代码如下：</p>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">175     /* load glyph image into the slot (erase previous one) */</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">176     error = FT_Load_Char( face, chinese_str[0], FT_LOAD_RENDER );</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="Copy code to clipboard" title="Copy" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<p>执行FT_Load_Char之后，字符的位图被存在slot-&gt;bitmap里，即face-&gt;glyph-&gt;bitmap。</p>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ol>
+<li>在屏幕上显示位图</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>位图里的数据格式是怎样的？参考example1.c的代码，可以得到图 6.22：</p>
+<p><img loading="lazy" src="/en/assets/images/manual-257-eb5e2b171d7a6fea208e831438e30151.png" width="1121" height="554" class="img_ev3q"></p>
+<p><a id="_Ref108707453"></a>图 6.22 位图数据格式</p>
+<p>要在屏幕上显示出这些位图，并不复杂：</p>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">183     draw_bitmap( &amp;slot-&gt;bitmap,</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">184                  var.xres/2,</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">185                  var.yres/2);</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="Copy code to clipboard" title="Copy" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<p>draw_bitmap函数代码如下，由于位图中每一个像素用一个字节来表示，在0x00RRGGBB的颜色格式中它只能表示蓝色，所以在LCD上显示出来的文字是蓝色的：</p>
+<p><img loading="lazy" src="/en/assets/images/manual-258-e0a3acac8a22ec8ca375a783647b8dca.png" width="917" height="544" class="img_ev3q"></p>
+<p>图 6.23 LCD 显示位图函数</p>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ol>
+<li>编译</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>编译命令(如果你使用的交叉编译链前缀不是arm-buildroot-linux-gnueabihf，请自行修改命令)：</p>
+<div class="language-bash codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-bash codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">arm-buildroot-linux-gnueabihf-gcc -o freetype_show_font freetype_show_font.c  -lfreetype</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="Copy code to clipboard" title="Copy" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<p>它会提示如下错误：</p>
+<div class="language-bash codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-bash codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">freetype_show_font.c:12:10: fatal error: ft2build.h: No such file or directory</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain"> #include &lt;ft2build.h&gt;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">          ^~~~~~~~~~~~</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">compilation terminated.</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="Copy code to clipboard" title="Copy" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<p>我们不是已经编译过freetype并且把头文件复制进工具链里了吗？怎么还有这个错误？</p>
+<p>我们编译出freetype后，得到的ft2build.h是位于freetype2目录里，我们把整个freetype2目录复制进了工具链里。</p>
+<p>但是包括头文件时，用的是“#include &lt;ft2build.h&gt;”，要么改成：</p>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">#include &lt;freetype2/ft2build.h&gt;</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="Copy code to clipboard" title="Copy" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<p>要么把工具链里incldue/freetype2/*.h 复制到上一级目录，我们使用这种方法：跟freetype文档保持一致。执行以下命令：</p>
+<div class="language-bash codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-bash codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">book@100ask$ cd   /home/book/100ask_imx6ull-sdk/ToolChain/arm-buildroot-linux-gnueabihf_sdk-buildroot/bin/../lib/gcc/arm-buildroot-linux-gnueabihf/7.5.0/include</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">book@100ask$ mv  freetype2/*   ./</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="Copy code to clipboard" title="Copy" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<p>然后再次执行以下命令：</p>
+<div class="language-bash codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-bash codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">arm-buildroot-linux-gnueabihf-gcc -o freetype_show_font freetype_show_font.c  -lfreetype</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="Copy code to clipboard" title="Copy" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ol>
+<li>上机</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>将编译好的freetype_show_font文件与simsun.ttc字体文件拷贝至开发板，这2个文件放在同一个目录下，然后执行以下命令。</p>
+<div class="language-bash codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-bash codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">[root@100ask:~]# ./freetype_show_font  ./simsun.ttc</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="Copy code to clipboard" title="Copy" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<p>或</p>
+<div class="language-bash codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-bash codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">[root@100ask:~]# ./freetype_show_font  ./simsun.ttc   300</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="Copy code to clipboard" title="Copy" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<p>如果实验成功，我们将在屏幕中间看到一个蓝色的“繁”字。</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="654-在lcd上令矢量字体旋转某个角度">6.5.4 在LCD上令矢量字体旋转某个角度<a href="#654-在lcd上令矢量字体旋转某个角度" class="hash-link" aria-label="Direct link to 6.5.4 在LCD上 令矢量字体旋转某个角度" title="Direct link to 6.5.4 在LCD上令矢量字体旋转某个角度">​</a></h3>
+<p>使用GIT下载所有源码后，本节源码位于如下目录：</p>
+<p>01_all_series_quickstart\</p>
+<p>04_嵌入式Linux应用开发基础知识\</p>
+<p>source\10_freetype\03_freetype_show_font_angle\freetype_show_font_angle.c</p>
+<p>在实现显示一个矢量字体后，我们可以添加让该字旋转某个角度的功能，主要代码还是参照example1.c。</p>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ol>
+<li>关键代码</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<ol>
+<li>定义2个变量：角度、矩阵，如图 6.24：</li>
+</ol>
+<p><img loading="lazy" src="data:image/png;base64,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" width="971" height="72" class="img_ev3q"></p>
+<p><a id="_Ref108707662"></a>图 6.24 定义角度、矩阵变量</p>
+<ol>
+<li>设置角度值：</li>
+</ol>
+<p><img loading="lazy" src="data:image/png;base64,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" width="1362" height="30" class="img_ev3q"></p>
+<p>图 6.25 设置角度值</p>
+<ol>
+<li>设置矩阵、变形、加载位图：</li>
+</ol>
+<p><img loading="lazy" src="/en/assets/images/manual-261-3e65583c8d1cdcf13ec7bfe5ea3ebd5a.png" width="920" height="439" class="img_ev3q"></p>
+<p>图 6.26 设置矩阵、变形、加载位图</p>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ol>
+<li>编译</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>编译命令(如果你使用的交叉编译链前缀不是arm-buildroot-linux-gnueabihf，请自行修改命令)：</p>
+<div class="language-bash codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-bash codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">arm-buildroot-linux-gnueabihf-gcc -o freetype_show_font_angle freetype_show_font_angle.c  -lfreetype -lm</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="Copy code to clipboard" title="Copy" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ol>
+<li>上机</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>将编译好的freetype_show_font_angle文件与simsun.ttc字体文件拷贝至开发板，这2个文件放在同一个目录下，然后执行以下命令。</p>
+<div class="language-bash codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-bash codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">[root@100ask:~]# ./freetype_show_font_angle  ./simsun.ttc   90  200</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="Copy code to clipboard" title="Copy" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<p>如果实验成功，我们将在屏幕中间看到一个蓝色的、旋转了90度的“繁”字。</p>
+<a id="_Toc197788641"></a>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="66-使用freetype显示一行文字">6.6 使用freetype显示一行文字<a href="#66-使用freetype显示一行文字" class="hash-link" aria-label="Direct link to 6.6 使用freetype显示一行文字" title="Direct link to 6.6 使用freetype显示一行文字">​</a></h2>
+<p>使用GIT下载所有源码后，本节源码位于如下目录：</p>
+<p>01_all_series_quickstart\</p>
+<p>04_嵌入式Linux应用开发基础知识\</p>
+<p>source\10_freetype\04_show_line\show_line.c</p>
+<p>本节的目的：在LCD上指定一个左上角坐标(x, y)，把一行文字显示出来。下图中，文字的外框用虚线表示，外框的左上角坐标就是(x, y)。</p>
+<p><img loading="lazy" src="/en/assets/images/manual-262-4f325e9862d1f50bffcc27632408f2a7.png" width="653" height="321" class="img_ev3q"></p>
+<p>图 6.27 显示一行文字</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="661-笛卡尔坐标系">6.6.1 笛卡尔坐标系<a href="#661-笛卡尔坐标系" class="hash-link" aria-label="Direct link to 6.6.1 笛卡尔坐标系" title="Direct link to 6.6.1 笛卡尔坐标系">​</a></h3>
+<p>在LCD的坐标系中，原点在屏幕的左上角。对于笛卡尔坐标系，原点在左下角。freetype使用笛卡尔坐标系，在显示时需要转换为LCD坐标系。</p>
+<p>从图 6.28可知，X方向坐标值是一样的。</p>
+<p>在Y方向坐标值需要换算，假设LCD的高度是V。</p>
+<p>在LCD坐标系中坐标是(x, y)，那么它在笛卡尔坐标系中的坐标值为(x, V-y)。</p>
+<p>反过来也是一样的，在笛卡尔坐标系中坐标是(x, y)，那么它在LCD坐标系中坐标值为(x, V-y)。</p>
+<p><img loading="lazy" src="/en/assets/images/manual-263-8f8240dc30030ea7b01cbd90cfaf2900.png" width="816" height="1056" class="img_ev3q"></p>
+<p><a id="_Ref108707833"></a>图 6.28 LCD坐标体系与笛卡尔坐标体系</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="662-每个字符的大小可能不同">6.6.2 每个字符的大小可能不同<a href="#662-每个字符的大小可能不同" class="hash-link" aria-label="Direct link to 6.6.2 每个字符的大小可能不同" title="Direct link to 6.6.2 每个字符的大小可能不同">​</a></h3>
+<p>在使用FT_Set_Pixel_Sizes函数设置字体大小时，这只是“期望值”。比如“百问网www.100ask.net”，如果把“.”显示得跟其他汉字一样大，不好看。</p>
+<p>所以在显示一行文字时，后面文字的位置会受到前面文字的影响。</p>
+<p>幸好，freetype帮我们考虑到了这些影响。</p>
+<p>对于freetype字体的尺寸(freetype Metrics)，需要参考图 6.29这个文档：</p>
+<p><img loading="lazy" src="/en/assets/images/manual-264-49ec20247af6075342bc526cb5e0d1a1.png" width="371" height="345" class="img_ev3q"></p>
+<p><a id="_Ref108707892"></a>图 6.29 freetype参考文档</p>
+<p>上述文档中列出了一个图，摘录如下：</p>
+<p><img loading="lazy" src="/en/assets/images/manual-265-7c8dfe2c79655036027194aeae6df4b4.png" width="603" height="382" class="img_ev3q"></p>
+<p>图 6.30 字符大小示意图</p>
+<p>在显示一行文字时，这些文字会基于同一个基线来绘制位图：baseline。</p>
+<p>在baseline上，每一个字符都有它的原点(origin)，比如上图中baseline左边的黑色圆点就是字母“g”的原点。当前origin加上advance就可以得到下一个字符的origin，比如上图中baseline右边的黑色圆点。在显示一行中多个文件字时，后一个文字的原点依赖于前一个文字的原点及advance。</p>
+<p>字符的位图是有可能越过baseline的，比如上图中字母“g”在baseline下方还有图像。</p>
+<p>上图中红色方框内就是字母“g”所点据的位图，它的四个角落不一定与原点重合。</p>
+<p>上图中那些xMin、xMax、yMin、yMax如何获得？可以使用FT_Glyph_Get_CBox函数获得一个字体的这些参数，将会保存在一个FT_BBox结构体中，以后想计算一行文字的外框时要用到图 6.31这些信息：</p>
+<p><img loading="lazy" src="data:image/png;base64,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" width="348" height="164" class="img_ev3q"></p>
+<p><a id="_Ref108707970"></a>图 6.31 字符外框信息</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="663-怎么在指定位置显示一行文字">6.6.3 怎么在指定位置显示一行文字<a href="#663-怎么在指定位置显示一行文字" class="hash-link" aria-label="Direct link to 6.6.3 怎么在指定位置显示一行文字" title="Direct link to 6.6.3 怎么在指定位置显示一行文字">​</a></h3>
+<p>要显示一行文字时，每一个字符都有自己外框：xMin、xMax、yMin、yMax。把这些字符的xMin、yMin中的最小值取出来，把这些字符的xMax、yMax中的最大值取出来，就可以确定这行文字的外框了。</p>
+<p>要想在指定位置(x, y)显示一行文字，步骤如图 6.32所示：</p>
+<p><img loading="lazy" src="/en/assets/images/manual-267-93b1ccdcc74da0d579d5fee2e7ecf83c.png" width="1170" height="574" class="img_ev3q"></p>
+<p><a id="_Ref108708017"></a>图 6.32 显示一行文字步骤</p>
+<ol>
+<li>先指定第1个字符的原点pen坐标为(0, 0)，计算出它的外框</li>
+<li>再计算右边字符的原点，也计算出它的外框</li>
+</ol>
+<p>把所有字符都处理完后就可以得到一行文字的整体外框：假设外框左上角坐标为(x&#x27;, y&#x27;)。</p>
+<ol>
+<li>想在(x, y)处显示这行文字，调整一下pen坐标即可。怎么调整？</li>
+</ol>
+<p>pen为(0, 0)时对应左上角(x&#x27;, y&#x27;)；那么左上角为(x, y)时就可以算出pen为(x-x&#x27;, y-y&#x27;)。</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="664-freetype的几个重要数据结构">6.6.4 freetype的几个重要数据结构<a href="#664-freetype的几个重要数据结构" class="hash-link" aria-label="Direct link to 6.6.4 freetype的几个重要数据结构" title="Direct link to 6.6.4 freetype的几个重要数据结构">​</a></h3>
+<p>要想形象地理解程序，需要先介绍一下freetype中几个数据结构：</p>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ol>
+<li>FT_Library</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>对应freetype库，使用freetype之前要先调用以下代码：</p>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">FT_Library  library; /* 对应freetype库 */</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">error = FT_Init_FreeType( &amp;library ); /* 初始化freetype库 */</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="Copy code to clipboard" title="Copy" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ol>
+<li>FT_Face</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>它对应一个矢量字体文件，在源码中使用FT_New_Face函数打开字体文件后，就可以得到一个face。</p>
+<p>为什么称之为face？</p>
+<p>估计是文字都是写在二维平面上的吧，正对着人脸？不用管原因了，总之认为它对应一个字体文件就可以。</p>
+<p>代码如下：</p>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">error = FT_New_Face(library, font_file, 0, &amp;face ); /* 加载字体文件 */</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="Copy code to clipboard" title="Copy" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ol>
+<li>FT_GlyphSlot</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>插槽？用来保存字符的处理结果：比如转换后的glyph、位图，如图 6.33：</p>
+<p><img loading="lazy" src="/en/assets/images/manual-268-f0fdbf9d64fba88e2df158d001756d10.png" width="1251" height="395" class="img_ev3q"></p>
+<p><a id="_Ref108708118"></a>图 6.33 转换后的字符</p>
+<p>一个face中有很多字符，生成一个字符的点阵位图时，位图保存在哪里？保存在插槽中：face-&gt;glyph。</p>
+<p>生成第1个字符位图时，它保存在face-&gt;glyph中；生成第2个字符位图时，也会保存在face-&gt;glyph中，会覆盖第1个字符的位图。</p>
+<p>代码如下：</p>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">FT_GlyphSlot  slot = face-&gt;glyph; /* 插槽: 字体的 处理结果保存在这里 */</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="Copy code to clipboard" title="Copy" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ol>
+<li>FT_Glyph</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>字体文件中保存有字符的原始关键点信息，使用freetype的函数可以放大、缩小、旋转，这些新的关键点保存在插槽中(注意：位图也是保存在插槽中)。</p>
+<p>新的关键点使用FT_Glyph来表示，可以使用这样的代码从slot中获得glyph：</p>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">error = FT_Get_Glyph(slot , &amp;glyph);</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="Copy code to clipboard" title="Copy" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ol>
+<li>FT_BBox</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>FT_BBox结构体定义如下，它表示一个字符的外框，即新glyph的外框：</p>
+<p><img loading="lazy" src="data:image/png;base64,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" width="348" height="164" class="img_ev3q"></p>
+<p>图 6.34 新的glyph外框</p>
+<p>可以使用以下代码从glyph中获得这些信息：</p>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">FT_Glyph_Get_CBox(glyph, FT_GLYPH_BBOX_TRUNCATE, &amp;bbox );</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="Copy code to clipboard" title="Copy" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<p>针对上述流程，示例代码如下：</p>
+<p><img loading="lazy" src="/en/assets/images/manual-270-009bba9209bd6e7e0125bbd9fe882c1e.png" width="1033" height="648" class="img_ev3q"></p>
+<p>图 6.35 流程代码</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="665-计算一行文字的外框">6.6.5 计算一行文字的外框<a href="#665-计算一行文字的外框" class="hash-link" aria-label="Direct link to 6.6.5 计算一行文字的外框" title="Direct link to 6.6.5 计算一行文字的外框">​</a></h3>
+<p>前面提到过，一行文字中：后一个字符的原点=前一个字符的原点+advance。所以要计算一行文字的外框，需要按照排列顺序处理其中的每一个字符。</p>
+<p>代码如下，注释写得很清楚了：</p>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">102 int compute_string_bbox(FT_Face       face, wchar_t *wstr, FT_BBox  *abbox)</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">103 {</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">104     int i;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">105     int error;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">106     FT_BBox bbox;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">107     FT_BBox glyph_bbox;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">108     FT_Vector pen;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">109     FT_Glyph  glyph;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">110     FT_GlyphSlot slot = face-&gt;glyph;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">111</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">112     /* 初始化 */</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">113     bbox.xMin = bbox.yMin = 32000;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">114     bbox.xMax = bbox.yMax = -32000;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">115</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">116     /* 指定原点为(0, 0) */</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">117     pen.x = 0;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">118     pen.y = 0;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">119</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">120     /* 计算每个字符的bounding box */</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">121     /* 先translate, 再load char, 就可以得到它的外框了 */</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">122     for (i = 0; i &lt; wcslen(wstr); i++)</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">123     {</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">124         /* 转换：transformation */</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">125         FT_Set_Transform(face, 0, &amp;pen);</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">126</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">127         /* 加载位图: load glyph image into the slot (erase previous one) */</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">128         error = FT_Load_Char(face, wstr[i], FT_LOAD_RENDER);</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">129         if (error)</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">130         {</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">131             printf(&quot;FT_Load_Char error\n&quot;);</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">132             return -1;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">133         }</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">134</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">135         /* 取出glyph */</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">136         error = FT_Get_Glyph(face-&gt;glyph, &amp;glyph);</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">137         if (error)</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">138         {</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">139             printf(&quot;FT_Get_Glyph error!\n&quot;);</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">140             return -1;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">141         }</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">142</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">143         /* 从glyph得到外框: bbox */</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">144         FT_Glyph_Get_CBox(glyph, FT_GLYPH_BBOX_TRUNCATE, &amp;glyph_bbox);</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">145</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">146         /* 更新外框 */</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">147         if ( glyph_bbox.xMin &lt; bbox.xMin )</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">148             bbox.xMin = glyph_bbox.xMin;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">149</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">150         if ( glyph_bbox.yMin &lt; bbox.yMin )</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">151             bbox.yMin = glyph_bbox.yMin;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">152</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">153         if ( glyph_bbox.xMax &gt; bbox.xMax )</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">154             bbox.xMax = glyph_bbox.xMax;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">155</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">156         if ( glyph_bbox.yMax &gt; bbox.yMax )</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">157             bbox.yMax = glyph_bbox.yMax;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">158</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">159         /* 计算下一个字符的原点: increment pen position */</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">160         pen.x += slot-&gt;advance.x;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">161         pen.y += slot-&gt;advance.y;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">162     }</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">163</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">164     /* return string bbox */</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">165     *abbox = bbox;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">166 }</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="Copy code to clipboard" title="Copy" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="666-调整原点并绘制">6.6.6 调整原点并绘制<a href="#666-调整原点并绘制" class="hash-link" aria-label="Direct link to 6.6.6 调整原点并绘制" title="Direct link to 6.6.6 调整原点并绘制">​</a></h3>
+<p>代码如下，也不复杂：</p>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">169 int display_string(FT_Face     face, wchar_t *wstr, int lcd_x, int lcd_y)</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">170 {</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">171     int i;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">172     int error;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">173     FT_BBox bbox;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">174     FT_Vector pen;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">175     FT_Glyph  glyph;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">176     FT_GlyphSlot slot = face-&gt;glyph;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">177</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">178     /* 把LCD坐标转换为笛卡尔坐标 */</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">179     int x = lcd_x;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">180     int y = var.yres - lcd_y;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">181</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">182     /* 计算外框 */</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">183     compute_string_bbox(face, wstr, &amp;bbox);</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">184</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">185     /* 反推原点 */</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">186     pen.x = (x - bbox.xMin) * 64; /* 单位: 1/64像素 */</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">187     pen.y = (y - bbox.yMax) * 64; /* 单位: 1/64像素 */</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">188</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">189     /* 处理每个字符 */</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">190     for (i = 0; i &lt; wcslen(wstr); i++)</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">191     {</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">192         /* 转换：transformation */</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">193         FT_Set_Transform(face, 0, &amp;pen);</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">194</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">195         /* 加载位图: load glyph image into the slot (erase previous one) */</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">196         error = FT_Load_Char(face, wstr[i], FT_LOAD_RENDER);</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">197         if (error)</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">198         {</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">199             printf(&quot;FT_Load_Char error\n&quot;);</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">200             return -1;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">201         }</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">202</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">203         /* 在LCD上绘制: 使用LCD坐标 */</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">204         draw_bitmap( &amp;slot-&gt;bitmap,</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">205                         slot-&gt;bitmap_left,</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">206                         var.yres - slot-&gt;bitmap_top);</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">207</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">208         /* 计算下一个字符的原点: increment pen position */</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">209         pen.x += slot-&gt;advance.x;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">210         pen.y += slot-&gt;advance.y;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">211     }</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">212</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">213     return 0;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">214 }</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="Copy code to clipboard" title="Copy" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="667-上机实验">6.6.7 上机实验<a href="#667-上机实验" class="hash-link" aria-label="Direct link to 6.6.7 上机实验" title="Direct link to 6.6.7 上机实验">​</a></h3>
+<p>编译命令(如果你使用的交叉编译链前缀不是arm-buildroot-linux-gnueabihf，请自行修改命令)：</p>
+<div class="language-bash codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-bash codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">arm-buildroot-linux-gnueabihf-gcc  -o  show_line  show_line.c   -lfreetype</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="Copy code to clipboard" title="Copy" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<p>将编译好的show_line文件与simsun.ttc字体文件拷贝至开发板，这2个文件放在同一个目录下，然后执行以下命令(其中的3个数字分别表示LCD的X坐标、Y坐标、字体大小)：</p>
+<div class="language-bash codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-bash codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">[root@100ask:~]# ./show_line ./simsun.ttc 10 200 80</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="Copy code to clipboard" title="Copy" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<p>如果实验成功，可以在LCD上看到一行文字“百问网<a href="http://www.100ask.net" target="_blank" rel="noopener noreferrer">www.100ask.net</a>”。</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="668-课后作业">6.6.8 课后作业<a href="#668-课后作业" class="hash-link" aria-label="Direct link to 6.6.8 课后作业" title="Direct link to 6.6.8 课后作业">​</a></h3>
+<ol>
+<li>修改程序，支持倾斜角度显示一行文字。</li>
+<li>修改程序，支持显示多行文字。</li>
+</ol></div><footer class="theme-doc-footer docusaurus-mt-lg"><div class="theme-doc-footer-edit-meta-row row"><div class="col"><a href="https://github.com/100askTeam/linux-docs/tree/main/docs/Linux-Application-Development-Manual/part-4/chapter-17.md" target="_blank" rel="noopener noreferrer" class="theme-edit-this-page"><svg fill="currentColor" height="20" width="20" viewBox="0 0 40 40" class="iconEdit_Z9Sw" aria-hidden="true"><g><path d="m34.5 11.7l-3 3.1-6.3-6.3 3.1-3q0.5-0.5 1.2-0.5t1.1 0.5l3.9 3.9q0.5 0.4 0.5 1.1t-0.5 1.2z m-29.5 17.1l18.4-18.5 6.3 6.3-18.4 18.4h-6.3v-6.2z"></path></g></svg>Edit this page</a></div><div class="col lastUpdated_vwxv"></div></div></footer></article><nav class="pagination-nav docusaurus-mt-lg" aria-label="Docs pages"><a class="pagination-nav__link pagination-nav__link--prev" href="/en/docs/Linux-Application-Development-Manual/part-4/chapter-16"><div class="pagination-nav__sublabel">Previous</div><div class="pagination-nav__label">第5章 Framebuffer应用编程</div></a><a class="pagination-nav__link pagination-nav__link--next" href="/en/docs/Linux-Application-Development-Manual/part-4/chapter-18"><div class="pagination-nav__sublabel">Next</div><div class="pagination-nav__label">第7章 输入系统应用编程</div></a></nav></div></div><div class="col col--3"><div class="tableOfContents_bqdL thin-scrollbar theme-doc-toc-desktop"><ul class="table-of-contents table-of-contents__left-border"><li><a href="#61-字符的编码方式" class="table-of-contents__link toc-highlight">6.1 字符的编码方式</a><ul><li><a href="#611-编码与字体" class="table-of-contents__link toc-highlight">6.1.1 编码与字体</a></li><li><a href="#612-unicode编码实现" class="table-of-contents__link toc-highlight">6.1.2 UNICODE编码实现</a></li></ul></li><li><a href="#62-ascii字符的点阵显示" class="table-of-contents__link toc-highlight">6.2 ASCII字符的点阵显示</a><ul><li><a href="#621-获取点阵" class="table-of-contents__link toc-highlight">6.2.1 获取点阵</a></li><li><a href="#622-描点" class="table-of-contents__link toc-highlight">6.2.2 描点</a></li><li><a href="#623-main函数" class="table-of-contents__link toc-highlight">6.2.3 main函数</a></li><li><a href="#624-编译c文件show_asciic" class="table-of-contents__link toc-highlight">6.2.4 编译c文件show_ascii.c</a></li><li><a href="#625-机实验" class="table-of-contents__link toc-highlight">6.2.5 机实验</a></li><li><a href="#626-课后作业" class="table-of-contents__link toc-highlight">6.2.6 课后作业</a></li></ul></li><li><a href="#63-中文字符的点阵显示" class="table-of-contents__link toc-highlight">6.3 中文字符的点阵显示</a><ul><li><a href="#631-指定编码格式" class="table-of-contents__link toc-highlight">6.3.1 指定编码格式</a></li><li><a href="#632-编码格式实验" class="table-of-contents__link toc-highlight">6.3.2 编码格式实验</a></li><li><a href="#633-汉字区位码" class="table-of-contents__link toc-highlight">6.3.3 汉字区位码</a></li><li><a href="#634-汉字点阵显示实验" class="table-of-contents__link toc-highlight">6.3.4 汉字点阵显示实验</a></li></ul></li><li><a href="#64-交叉编译程序以freetype为例" class="table-of-contents__link toc-highlight">6.4 交叉编译程序：以freetype为例</a><ul><li><a href="#641-程序运行的一些基础知识" class="table-of-contents__link toc-highlight">6.4.1 程序运行的一些基础知识</a></li><li><a href="#642-常见错误的解决方法" class="table-of-contents__link toc-highlight">6.4.2 常见错误的解决方法</a></li><li><a href="#643-交叉编译程序的万能命令" class="table-of-contents__link toc-highlight">6.4.3 交叉编译程序的万能命令</a></li><li><a href="#644-给imx6ull交叉编译freetype" class="table-of-contents__link toc-highlight">6.4.4 给IMX6ULL交叉编译freetype</a></li></ul></li><li><a href="#65-使用freetype显示单个文字" class="table-of-contents__link toc-highlight">6.5 使用freetype显示单个文字</a><ul><li><a href="#651-矢量字体引入" class="table-of-contents__link toc-highlight">6.5.1 矢量字体引入</a></li><li><a href="#652-freetype介绍" class="table-of-contents__link toc-highlight">6.5.2 Freetype介绍</a></li><li><a href="#653-在lcd上显示一个矢量字体" class="table-of-contents__link toc-highlight">6.5.3 在LCD上显示一个矢量字体</a></li><li><a href="#654-在lcd上令矢量字体旋转某个角度" class="table-of-contents__link toc-highlight">6.5.4 在LCD上令矢量字体旋转某个角度</a></li></ul></li><li><a href="#66-使用freetype显示一行文字" class="table-of-contents__link toc-highlight">6.6 使用freetype显示一行文字</a><ul><li><a href="#661-笛卡尔坐标系" class="table-of-contents__link toc-highlight">6.6.1 笛卡尔坐标系</a></li><li><a href="#662-每个字符的大小可能不同" class="table-of-contents__link toc-highlight">6.6.2 每个字符的大小可能不同</a></li><li><a href="#663-怎么在指定位置显示一行文字" class="table-of-contents__link toc-highlight">6.6.3 怎么在指定位置显示一行文字</a></li><li><a href="#664-freetype的几个重要数据结构" class="table-of-contents__link toc-highlight">6.6.4 freetype的几个重要数据结构</a></li><li><a href="#665-计算一行文字的外框" class="table-of-contents__link toc-highlight">6.6.5 计算一行文字的外框</a></li><li><a href="#666-调整原点并绘制" class="table-of-contents__link toc-highlight">6.6.6 调整原点并绘制</a></li><li><a href="#667-上机实  验" class="table-of-contents__link toc-highlight">6.6.7 上机实验</a></li><li><a href="#668-课后作业" class="table-of-contents__link toc-highlight">6.6.8 课后作业</a></li></ul></li></ul></div></div></div></div></main></div></div></div><footer class="footer footer--dark"><div class="container container-fluid"><div class="row footer__links"><div class="col footer__col"><div class="footer__title">Docs</div><ul class="footer__items clean-list"><li class="footer__item"><a href="https://dongshanpi.com" target="_blank" rel="noopener noreferrer" class="footer__link-item">DongshanPI<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a></li><li class="footer__item"><a href="https://canaan-docs.100ask.net/" target="_blank" rel="noopener noreferrer" class="footer__link-item">Canaan-Docs<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a></li><li class="footer__item"><a href="https://renesas-docs.100ask.net/" target="_blank" rel="noopener noreferrer" class="footer__link-item">Renesas-Docs<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a></li><li class="footer__item"><a href="https://rtos.100ask.net/" target="_blank" rel="noopener noreferrer" class="footer__link-item">RTOS<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a></li><li class="footer__item"><a href="https://tina.100ask.net/" target="_blank" rel="noopener noreferrer" class="footer__link-item">TinaSDK-Docs<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a></li><li class="footer__item"><a href="https://allwinner-docs.100ask.net/" target="_blank" rel="noopener noreferrer" class="footer__link-item">Allwinner-Docs<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a></li><li class="footer__item"><a href="https://aw-r128.100ask.net/" target="_blank" rel="noopener noreferrer" class="footer__link-item">R128-Docs<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a></li></ul></div><div class="col footer__col"><div class="footer__title">Community</div><ul class="footer__items clean-list"><li class="footer__item"><a href="https://space.bilibili.com/275908810" target="_blank" rel="noopener noreferrer" class="footer__link-item">BiliBili<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a></li><li class="footer__item"><a href="https://forums.100ask.net" target="_blank" rel="noopener noreferrer" class="footer__link-item">Stack Overflow<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a></li><li class="footer__item"><a href="https://video.100ask.net/" target="_blank" rel="noopener noreferrer" class="footer__link-item">VideoCenter<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a></li><li class="footer__item"><a href="https://twitter.com/dongshanpi" target="_blank" rel="noopener noreferrer" class="footer__link-item">Twitter<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a></li></ul></div><div class="col footer__col"><div class="footer__title">More</div><ul class="footer__items clean-list"><li class="footer__item"><a href="https://weidongshan.coding.net/public/" target="_blank" rel="noopener noreferrer" class="footer__link-item">Coding<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a></li><li class="footer__item"><a href="https://github.com/100askTeam" target="_blank" rel="noopener noreferrer" class="footer__link-item">GitHub<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a></li><li class="footer__item"><a href="https://gitee.com/weidongshan" target="_blank" rel="noopener noreferrer" class="footer__link-item">Gitee<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a></li></ul></div></div><div class="footer__bottom text--center"><div class="footer__copyright">Copyright © 2026 100askTeam, Inc. Built with Docusaurus.</div></div></div></footer></div>
+</body>
+</html>

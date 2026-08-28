@@ -1,0 +1,746 @@
+<!doctype html>
+<html lang="en" dir="ltr" class="docs-wrapper plugin-docs plugin-id-default docs-version-current docs-doc-page docs-doc-id-Linux-Application-Development-Manual/part-5/chapter-40" data-has-hydrated="false">
+<head>
+<meta charset="UTF-8">
+<meta name="generator" content="Docusaurus v3.0.1">
+<title data-rh="true">第18章 Linux系统对中断的处理 | 韦东山Linux</title><meta data-rh="true" name="viewport" content="width=device-width,initial-scale=1"><meta data-rh="true" name="twitter:card" content="summary_large_image"><meta data-rh="true" property="og:image" content="https://linux.100ask.net/en/img/docusaurus-social-card.jpg"><meta data-rh="true" name="twitter:image" content="https://linux.100ask.net/en/img/docusaurus-social-card.jpg"><meta data-rh="true" property="og:url" content="https://linux.100ask.net/en/docs/Linux-Application-Development-Manual/part-5/chapter-40"><meta data-rh="true" property="og:locale" content="en"><meta data-rh="true" property="og:locale:alternate" content="zh_Hans"><meta data-rh="true" name="docusaurus_locale" content="en"><meta data-rh="true" name="docsearch:language" content="en"><meta data-rh="true" name="docusaurus_version" content="current"><meta data-rh="true" name="docusaurus_tag" content="docs-default-current"><meta data-rh="true" name="docsearch:version" content="current"><meta data-rh="true" name="docsearch:docusaurus_tag" content="docs-default-current"><meta data-rh="true" property="og:title" content="第18章 Linux系统对中断的处理 | 韦东山Linux"><meta data-rh="true" name="description" content="18.1 进程、线程、中断的核心：栈"><meta data-rh="true" property="og:description" content="18.1 进程、线程、中断的核心：栈"><link data-rh="true" rel="icon" href="/en/img/favicon.ico"><link data-rh="true" rel="canonical" href="https://linux.100ask.net/en/docs/Linux-Application-Development-Manual/part-5/chapter-40"><link data-rh="true" rel="alternate" href="https://linux.100ask.net/docs/Linux-Application-Development-Manual/part-5/chapter-40" hreflang="zh-Hans"><link data-rh="true" rel="alternate" href="https://linux.100ask.net/en/docs/Linux-Application-Development-Manual/part-5/chapter-40" hreflang="en"><link data-rh="true" rel="alternate" href="https://linux.100ask.net/docs/Linux-Application-Development-Manual/part-5/chapter-40" hreflang="x-default"><link rel="stylesheet" href="/en/assets/css/styles.f22fa3d1.css">
+<script src="/en/assets/js/runtime~main.5483192b.js" defer="defer"></script>
+<script src="/en/assets/js/main.42c7fc72.js" defer="defer"></script>
+</head>
+<body class="navigation-with-keyboard">
+<script>!function(){function t(t){document.documentElement.setAttribute("data-theme",t)}var e=function(){try{return new URLSearchParams(window.location.search).get("docusaurus-theme")}catch(t){}}()||function(){try{return localStorage.getItem("theme")}catch(t){}}();t(null!==e?e:"light")}(),function(){try{const c=new URLSearchParams(window.location.search).entries();for(var[t,e]of c)if(t.startsWith("docusaurus-data-")){var a=t.replace("docusaurus-data-","data-");document.documentElement.setAttribute(a,e)}}catch(t){}}()</script><div id="__docusaurus"><div role="region" aria-label="Skip to main content"><a class="skipToContent_fXgn" href="#__docusaurus_skipToContent_fallback">Skip to main content</a></div><nav aria-label="Main" class="navbar navbar--fixed-top"><div class="navbar__inner"><div class="navbar__items"><button aria-label="Toggle navigation bar" aria-expanded="false" class="navbar__toggle clean-btn" type="button"><svg width="30" height="30" viewBox="0 0 30 30" aria-hidden="true"><path stroke="currentColor" stroke-linecap="round" stroke-miterlimit="10" stroke-width="2" d="M4 7h22M4 15h22M4 23h22"></path></svg></button><a class="navbar__brand" href="/en/"><div class="navbar__logo"><img src="/en/img/logo.svg" alt="东山PI" class="themedComponent_mlkZ themedComponent--light_NVdE"><img src="/en/img/logo.svg" alt="东山PI" class="themedComponent_mlkZ themedComponent--dark_xIcU"></div><b class="navbar__title text--truncate">韦东山Linux</b></a><a class="navbar__item navbar__link" href="/en/docs/Learn-Linux/LearnStudyPath">嵌入式Linux学习指南</a><a aria-current="page" class="navbar__item navbar__link navbar__link--active" href="/en/docs/Linux-Application-Development-Manual">嵌入式Linux应用开发完全手册</a><a class="navbar__item navbar__link" href="/en/docs/Linux-CourseList/Introduction">嵌入式Linux课程列表</a><a class="navbar__item navbar__link" href="/en/docs/Knowledge-Notes/InputSystem">官方笔记知识库</a><a class="navbar__item navbar__link" href="/en/docs/Study-Notes/intro">学员笔记</a></div><div class="navbar__items navbar__items--right"><a href="https://github.com/100askTeam/linux-docs" target="_blank" rel="noopener noreferrer" class="navbar__item navbar__link">GitHub<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a><div class="toggle_vylO colorModeToggle_DEke"><button class="clean-btn toggleButton_gllP toggleButtonDisabled_aARS" type="button" disabled="" title="Switch between dark and light mode (currently light mode)" aria-label="Switch between dark and light mode (currently light mode)" aria-live="polite"><svg viewBox="0 0 24 24" width="24" height="24" class="lightToggleIcon_pyhR"><path fill="currentColor" d="M12,9c1.65,0,3,1.35,3,3s-1.35,3-3,3s-3-1.35-3-3S10.35,9,12,9 M12,7c-2.76,0-5,2.24-5,5s2.24,5,5,5s5-2.24,5-5 S14.76,7,12,7L12,7z M2,13l2,0c0.55,0,1-0.45,1-1s-0.45-1-1-1l-2,0c-0.55,0-1,0.45-1,1S1.45,13,2,13z M20,13l2,0c0.55,0,1-0.45,1-1 s-0.45-1-1-1l-2,0c-0.55,0-1,0.45-1,1S19.45,13,20,13z M11,2v2c0,0.55,0.45,1,1,1s1-0.45,1-1V2c0-0.55-0.45-1-1-1S11,1.45,11,2z M11,20v2c0,0.55,0.45,1,1,1s1-0.45,1-1v-2c0-0.55-0.45-1-1-1C11.45,19,11,19.45,11,20z M5.99,4.58c-0.39-0.39-1.03-0.39-1.41,0 c-0.39,0.39-0.39,1.03,0,1.41l1.06,1.06c0.39,0.39,1.03,0.39,1.41,0s0.39-1.03,0-1.41L5.99,4.58z M18.36,16.95 c-0.39-0.39-1.03-0.39-1.41,0c-0.39,0.39-0.39,1.03,0,1.41l1.06,1.06c0.39,0.39,1.03,0.39,1.41,0c0.39-0.39,0.39-1.03,0-1.41 L18.36,16.95z M19.42,5.99c0.39-0.39,0.39-1.03,0-1.41c-0.39-0.39-1.03-0.39-1.41,0l-1.06,1.06c-0.39,0.39-0.39,1.03,0,1.41 s1.03,0.39,1.41,0L19.42,5.99z M7.05,18.36c0.39-0.39,0.39-1.03,0-1.41c-0.39-0.39-1.03-0.39-1.41,0l-1.06,1.06 c-0.39,0.39-0.39,1.03,0,1.41s1.03,0.39,1.41,0L7.05,18.36z"></path></svg><svg viewBox="0 0 24 24" width="24" height="24" class="darkToggleIcon_wfgR"><path fill="currentColor" d="M9.37,5.51C9.19,6.15,9.1,6.82,9.1,7.5c0,4.08,3.32,7.4,7.4,7.4c0.68,0,1.35-0.09,1.99-0.27C17.45,17.19,14.93,19,12,19 c-3.86,0-7-3.14-7-7C5,9.07,6.81,6.55,9.37,5.51z M12,3c-4.97,0-9,4.03-9,9s4.03,9,9,9s9-4.03,9-9c0-0.46-0.04-0.92-0.1-1.36 c-0.98,1.37-2.58,2.26-4.4,2.26c-2.98,0-5.4-2.42-5.4-5.4c0-1.81,0.89-3.42,2.26-4.4C12.92,3.04,12.46,3,12,3L12,3z"></path></svg></button></div><div class="navbarSearchContainer_Bca1"></div></div></div><div role="presentation" class="navbar-sidebar__backdrop"></div></nav><div id="__docusaurus_skipToContent_fallback" class="main-wrapper mainWrapper_z2l0"><div class="docsWrapper_hBAB"><button aria-label="Scroll back to top" class="clean-btn theme-back-to-top-button backToTopButton_sjWU" type="button"></button><div class="docRoot_UBD9"><aside class="theme-doc-sidebar-container docSidebarContainer_YfHR"><div class="sidebarViewport_aRkj"><div class="sidebar_njMd"><nav aria-label="Docs sidebar" class="menu thin-scrollbar menu_SIkG"><ul class="theme-doc-sidebar-menu menu__list"><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class="menu__link" href="/en/docs/Linux-Application-Development-Manual">手册首页</a></li><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item menu__list-item--collapsed"><div class="menu__list-item-collapsible"><a class="menu__link menu__link--sublist" aria-expanded="false" href="/en/docs/category/第一篇-学习路线教程介绍资料下载">第一篇 学习路线、教程介绍、资料下载</a><button aria-label="Expand sidebar category &#x27;第一篇 学习路线、教程介绍、资料下载&#x27;" type="button" class="clean-btn menu__caret"></button></div></li><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item menu__list-item--collapsed"><div class="menu__list-item-collapsible"><a class="menu__link menu__link--sublist" aria-expanded="false" href="/en/docs/category/第二篇-ubuntu-基本操作">第二篇 Ubuntu 基本操作</a><button aria-label="Expand sidebar category &#x27;第二篇 Ubuntu 基本操作&#x27;" type="button" class="clean-btn menu__caret"></button></div></li><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item menu__list-item--collapsed"><div class="menu__list-item-collapsible"><a class="menu__link menu__link--sublist" aria-expanded="false" href="/en/docs/category/第三篇-环境搭建与开发板操作">第三篇 环境搭建与开发板操作</a><button aria-label="Expand sidebar category &#x27;第三篇 环境搭建与开发板操作&#x27;" type="button" class="clean-btn menu__caret"></button></div></li><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item menu__list-item--collapsed"><div class="menu__list-item-collapsible"><a class="menu__link menu__link--sublist" aria-expanded="false" href="/en/docs/category/第四篇-嵌入式-linux-应用开发基础知识">第四篇 嵌入式 Linux 应用开发基础知识</a><button aria-label="Expand sidebar category &#x27;第四篇 嵌入式 Linux 应用开发基础知识&#x27;" type="button" class="clean-btn menu__caret"></button></div></li><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item"><div class="menu__list-item-collapsible"><a class="menu__link menu__link--sublist menu__link--active" aria-expanded="true" href="/en/docs/category/第五篇-嵌入式-linux-驱动开发基础知识">第五篇 嵌入式 Linux 驱动开发基础知识</a><button aria-label="Collapse sidebar category &#x27;第五篇 嵌入式 Linux 驱动开发基础知识&#x27;" type="button" class="clean-btn menu__caret"></button></div><ul style="display:block;overflow:visible;height:auto" class="menu__list"><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/en/docs/Linux-Application-Development-Manual/part-5/chapter-23">第1章 Hello驱动(不涉及硬件操作)</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/en/docs/Linux-Application-Development-Manual/part-5/chapter-24">第2章 硬件知识_LED原理图</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/en/docs/Linux-Application-Development-Manual/part-5/chapter-25">第3章 普适的GPIO引脚操作方法</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/en/docs/Linux-Application-Development-Manual/part-5/chapter-26">第4章 具体单板的GPIO操作方法</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/en/docs/Linux-Application-Development-Manual/part-5/chapter-27">第5章 最简单的LED驱动程序</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/en/docs/Linux-Application-Development-Manual/part-5/chapter-28">第6章 LED驱动程序框架</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/en/docs/Linux-Application-Development-Manual/part-5/chapter-29">第7章 具体单板的LED驱动程序</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/en/docs/Linux-Application-Development-Manual/part-5/chapter-30">第8章 驱动设计的思想</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/en/docs/Linux-Application-Development-Manual/part-5/chapter-31">第9章 驱动进化之路：总线设备  驱动模型</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/en/docs/Linux-Application-Development-Manual/part-5/chapter-32">第10章 LED模板驱动程序的改造：总线设备驱动模型</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/en/docs/Linux-Application-Development-Manual/part-5/chapter-33">第11章 驱动进化之路：设备树的引入及简明教程</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/en/docs/Linux-Application-Development-Manual/part-5/chapter-34">第12章 LED模板驱动程序的改造：设备树</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/en/docs/Linux-Application-Development-Manual/part-5/chapter-35">第13章 APP怎么读取按键值</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/en/docs/Linux-Application-Development-Manual/part-5/chapter-36">第14章 查询方式的按键驱动程序_编写框架</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/en/docs/Linux-Application-Development-Manual/part-5/chapter-37">第15章 具体单板的按键驱动程序(查询方式)</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/en/docs/Linux-Application-Development-Manual/part-5/chapter-38">第16章 GPIO和Pinctrl子系统的使用</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/en/docs/Linux-Application-Development-Manual/part-5/chapter-39">第17章 异常与中断的概念及处理流程</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link menu__link--active" aria-current="page" tabindex="0" href="/en/docs/Linux-Application-Development-Manual/part-5/chapter-40">第18章 Linux系统对中断的处理</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/en/docs/Linux-Application-Development-Manual/part-5/chapter-41">第19章 驱动程序基石</a></li></ul></li><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item menu__list-item--collapsed"><div class="menu__list-item-collapsible"><a class="menu__link menu__link--sublist" aria-expanded="false" href="/en/docs/category/第八篇-其他应用">第八篇 其他应用</a><button aria-label="Expand sidebar category &#x27;第八篇 其他应用&#x27;" type="button" class="clean-btn menu__caret"></button></div></li></ul></nav></div></div></aside><main class="docMainContainer_TBSr"><div class="container padding-top--md padding-bottom--lg"><div class="row"><div class="col docItemCol_VOVn"><div class="docItemContainer_Djhp"><article><nav class="theme-doc-breadcrumbs breadcrumbsContainer_Z_bl" aria-label="Breadcrumbs"><ul class="breadcrumbs" itemscope="" itemtype="https://schema.org/BreadcrumbList"><li class="breadcrumbs__item"><a aria-label="Home page" class="breadcrumbs__link" href="/en/"><svg viewBox="0 0 24 24" class="breadcrumbHomeIcon_YNFT"><path d="M10 19v-5h4v5c0 .55.45 1 1 1h3c.55 0 1-.45 1-1v-7h1.7c.46 0 .68-.57.33-.87L12.67 3.6c-.38-.34-.96-.34-1.34 0l-8.36 7.53c-.34.3-.13.87.33.87H5v7c0 .55.45 1 1 1h3c.55 0 1-.45 1-1z" fill="currentColor"></path></svg></a></li><li itemscope="" itemprop="itemListElement" itemtype="https://schema.org/ListItem" class="breadcrumbs__item"><a class="breadcrumbs__link" itemprop="item" href="/en/docs/category/第五篇-嵌入式-linux-驱动开发基础知识"><span itemprop="name">第五  篇 嵌入式 Linux 驱动开发基础知识</span></a><meta itemprop="position" content="1"></li><li itemscope="" itemprop="itemListElement" itemtype="https://schema.org/ListItem" class="breadcrumbs__item breadcrumbs__item--active"><span class="breadcrumbs__link" itemprop="name">第18章 Linux系统对中断的处理</span><meta itemprop="position" content="2"></li></ul></nav><div class="tocCollapsible_ETCw theme-doc-toc-mobile tocMobile_ITEo"><button type="button" class="clean-btn tocCollapsibleButton_TO0P">On this page</button></div><div class="theme-doc-markdown markdown"><header><h1>第18章 Linux系统对中断的处理</h1></header><a id="_Toc197788749"></a>
+<a id="_Toc197788750"></a>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="181-进程线程中断的核心栈">18.1 进程、线程、中断的核心：栈<a href="#181-进程线程中断的核心栈" class="hash-link" aria-label="Direct link to 18.1 进程、线程、中断的核心：栈" title="Direct link to 18.1 进程、线程、中断的核心：栈">​</a></h2>
+<p>中断中断，中断谁？</p>
+<p>中断当前正在运行的进程、线程。</p>
+<p>进程、线程是什么？内核如何切换进程、线程、中断？</p>
+<p>要理解这些概念，必须理解栈的作用。</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="1811-1811-arm处理器程序运行的过程">18.1.1 18.1.1 ARM处理器程序运行的过程<a href="#1811-1811-arm处理器程序运行的过程" class="hash-link" aria-label="Direct link to 18.1.1 18.1.1 ARM处理器程序运行的过程" title="Direct link to 18.1.1 18.1.1 ARM处理器程序运行的过程">​</a></h3>
+<p>ARM芯片属于精简指令集计算机(RISC：Reduced Instruction Set Computing)，它所用的指令比较简单，有如下特点：</p>
+<ol>
+<li>对内存只有读、写指令</li>
+<li>对于数据的运算是在CPU内部实现</li>
+<li>使用RISC指令的CPU复杂度小一点，易于设计</li>
+</ol>
+<p>比如对于a=a+b这样的算式，需要经过下面4个步骤才可以实现 ：</p>
+<p><img loading="lazy" src="/en/assets/images/manual-483-cb0993a66bf63b1fbc4a86e81a54d3ab.png" width="816" height="1056" class="img_ev3q"></p>
+<p>细看这几个步骤，有些疑问：</p>
+<ol>
+<li>读a，那么a的值读出来后保存在CPU里面哪里？</li>
+<li>读b，那么b的值读出来后保存在CPU里面哪里？</li>
+<li>a+b的结果又保存在哪里？</li>
+</ol>
+<p>我们需要深入ARM处理器的内部。简单概括如下，我们先忽略各种CPU模式(系统模式、用户模式等等)。</p>
+<p><strong>注意</strong>：如果想入理解ARM处理器架构，应该从裸机开始学习。我们即将写好近30个裸机程序的文档，估计还3月底发布。</p>
+<p><strong>注意</strong>：为了加快学习速度，建议先不看裸机。</p>
+<p><img loading="lazy" src="/en/assets/images/manual-484-a70610014d6bd7ccdb9898312898e85c.png" width="816" height="1056" class="img_ev3q"></p>
+<p>CPU运行时，先去取得指令，再执行指令：</p>
+<ol>
+<li>把内存a的值读入CPU寄存器R0</li>
+<li>把内存b的值读入CPU寄存器R1</li>
+<li>把R0、R1累加，存入R0</li>
+<li>把R0的值写入内存a</li>
+</ol>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="1812-程序被中断时怎么保存现场">18.1.2 程序被中断时，怎么保存现场<a href="#1812-程序被中断时怎么保存现场" class="hash-link" aria-label="Direct link to 18.1.2 程序被中断时，怎么保存现场" title="Direct link to 18.1.2 程序被中断时，怎么保存现场">​</a></h3>
+<p>从上图可知，CPU内部的寄存器很重要，如果要暂停一个程序，中断一个程序，就需要把这些寄存器的值保存下来：这就称为保存现场。</p>
+<p>保存在哪里？内存，这块内存就称之为栈。</p>
+<p>程序要继续执行，就先从栈中恢复那些CPU内部寄存器的值。</p>
+<p>这个场景并不局限于中断，下图可以概括程序A、B的切换过程，其他情况是类似的：</p>
+<p><img loading="lazy" src="/en/assets/images/manual-485-f23aee8417bb9703d0feaaf49b455b11.png" width="816" height="1056" class="img_ev3q"></p>
+<ol>
+<li>函数调用：<!-- -->
+<ol>
+<li>在函数A里调用函数B，实际就是中断函数A的执行。</li>
+<li>那么需要把函数A调用B之前瞬间的CPU寄存器的值，保存到栈里；</li>
+<li>再去执行函数B；</li>
+<li>函数B返回之后，就从栈中恢复函数A对应的CPU寄存器值，继续执行。</li>
+</ol>
+</li>
+<li>中断处理<!-- -->
+<ol>
+<li>进程A正在执行，这时候发生了中断。</li>
+<li>CPU强制跳到中断异常向量地址去执行，</li>
+<li>这时就需要保存进程A被中断瞬间的CPU寄存器值，</li>
+<li>可以保存在进程A的内核态栈，也可以保存在进程A的内核结构体中。</li>
+<li>中断处理完毕，要继续运行进程A之前，恢复这些值。</li>
+</ol>
+</li>
+<li>进程切换<!-- -->
+<ol>
+<li>在所谓的多任务操作系统中，我们以为多个程序是同时运行的。</li>
+<li>如果我们能感知微秒、纳秒级的事件，可以发现操作系统时让这些程序依次执行一小段时间，进程A的时间用完了，就切换到进程B。</li>
+<li>怎么切换？</li>
+<li>切换过程是发生在内核态里的，跟中断的处理类似。</li>
+<li>进程A的被切换瞬间的CPU寄存器值保存在某个地方；</li>
+<li>恢复进程B之前保存的CPU寄存器值，这样就可以运行进程B了。</li>
+</ol>
+</li>
+</ol>
+<p>所以，在中断处理的过程中，伴存着进程的保存现场、恢复现场。进程的调度也是使用栈来保存、恢复现场：</p>
+<p><img loading="lazy" src="/en/assets/images/manual-486-ce89a4015b2c53ab4e90dfa472f33fb9.png" width="816" height="1056" class="img_ev3q"></p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="1813-进程线程的概念">18.1.3 进程、线程的概念<a href="#1813-进程线程的概念" class="hash-link" aria-label="Direct link to 18.1.3 进程、线程的概念" title="Direct link to 18.1.3 进程、线程的概念">​</a></h3>
+<p>  假设我们写一个音乐播放器，在播放音乐的同时会根据按键选择下一首歌。把事情简化为2件事：发送音频数据、读取按键。那可以这样写程序：</p>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">int main(int argc, char **argv)</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">{</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">	int key;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain" style="display:inline-block"></span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">	while (1)</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">	{</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">		key = read_key();</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain" style="display:inline-block"></span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">		if (key != -1)</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">		{</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">			switch (key)</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">			{</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">				case NEXT:</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">					select_next_music(); // 在GUI选中下一首歌</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">					break;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">			}</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">		}</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">		else</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">		{</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">			send_music();</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">		}</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">	}</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain" style="display:inline-block"></span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">	return 0;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">}</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="Copy code to clipboard" title="Copy" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<p>这个程序只有一条主线，读按键、播放音乐都是顺序执行。</p>
+<p>无论按键是否被按下，read_key函数必须马上返回，否则会使得后续的send_music受到阻滞导致音乐播放不流畅。</p>
+<p>读取按键、播放音乐能否分为两个程序进行？可以，但是开销太大：读按键的程序，要把按键通 知播放音乐的程序，进程间通信的效率没那么高。</p>
+<p>这时可以用多线程之编程，读取按键是一个线程，播放音乐是另一个线程，它们之间可以通过全局变量传递数据，示意代码如下：</p>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">int g_key;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">void key_thread_fn()</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">{</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">	while (1)</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">	{</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">		g_key = read_key();</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">		if (g_key != -1)</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">		{</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">			switch (g_key)</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">			{</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">				case NEXT:</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">					select_next_music(); // 在GUI选中下一首歌</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">					break;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">			}</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">		}</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">	}</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">}</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">void music_fn()</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">{</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">	while (1)</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">	{</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">		if (g_key == STOP)</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">			stop_music();</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">		else</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">		{</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">	       send_music();</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">		}</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">	}</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">}</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">int main(int argc, char **argv)</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">{</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">	int key;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain" style="display:inline-block"></span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">	create_thread(key_thread_fn);</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">	create_thread(music_fn);</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">	while (1)</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">	{</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">		sleep(10);</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">	}</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">	return 0;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">}</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="Copy code to clipboard" title="Copy" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<p>这样，按键的读取及GUI显示、音乐的播放，可以分开来，不必混杂在一起。</p>
+<p>按键线程可以使用阻塞方式读取按键，无按键时是休眠的，这可以节省CPU资源。</p>
+<p>音乐线程专注于音乐的播放和控制，不用理会按键的具体读取工作。并且这2个线程通过全局变量g_key传递数据，高效而简单。</p>
+<p>在Linux中：资源分配的单位是进程，调度的单位是线程。</p>
+<p>也就是说，在一个进程里，可能有多个线程，这些线程共用打开的文件句柄、全局变量等等。</p>
+<p>而这些线程，之间是互相独立的，“同时运行”，也就是说：每一个线程，都有自己的栈。如下图示：</p>
+<p><img loading="lazy" src="/en/assets/images/manual-487-78124bc65a1055c727dfc7b7d1c9b414.png" width="816" height="1056" class="img_ev3q"></p>
+<a id="_Toc197788751"></a>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="182-182-linux系统对中断处理的演进">18.2 18.2 Linux系统对中断处理的演进<a href="#182-182-linux系统对中断处理的演进" class="hash-link" aria-label="Direct link to 18.2 18.2 Linux系统对中断处理的演进" title="Direct link to 18.2 18.2 Linux系统对中断处理的演进">​</a></h2>
+<p>从2005年我接触Linux到现在15年了，Linux中断系统的变化并不大。比较重要的就是引入了threaded irq：使用内核线程来处理中断。</p>
+<p>Linux系统中有硬件中断，也有软件中断。对硬件中断的处理有2个原则：不能嵌套，越快越好。</p>
+<p>参考资料：</p>
+<p><a href="https://blog.csdn.net/myarrow/article/details/9287169" target="_blank" rel="noopener noreferrer">https://blog.csdn.net/myarrow/article/details/9287169</a></p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="1821-linux对中断的扩展硬件中断软件中断">18.2.1 Linux对中断的扩展：硬件中断、软件中断<a href="#1821-linux对中断的扩展硬件中断软件中断" class="hash-link" aria-label="Direct link to 18.2.1 Linux对中断的扩展：硬件中断、软件中断" title="Direct link to 18.2.1 Linux对中断的扩展：硬件中断、软件中断">​</a></h3>
+<p>Linux系统把中断的意义扩展了，对于按键中断等硬件产生的中断，称之为“硬件中断”(hard irq)。每个硬件中断都有对应的处理函数，比如按键中断、网卡中断的处理函数肯定不一样。</p>
+<p>为方便理解，你可以先认为对硬件中断的处理是用数组来实现的，数组里存放的是函数指针：</p>
+<p><img loading="lazy" src="/en/assets/images/manual-488-b53e2295722c49d83a936b8588425536.png" width="816" height="1056" class="img_ev3q"></p>
+<p><strong>注意</strong>：上图是简化的，Linux中 这个数组复杂多了。</p>
+<p>当发生A中断时，对应的irq_function_A函数被调用。硬件导致该函数被调用。</p>
+<p>相对的，还可以人为地制造中断：软件中断(soft irq)，如下图所示：</p>
+<p><img loading="lazy" src="/en/assets/images/manual-489-f84072b0dd43d80da6eaaa998e40ca88.png" width="816" height="1056" class="img_ev3q"></p>
+<p><strong>注意</strong>：上图是简化的，Linux中这个数组复杂多了。</p>
+<p>问题来了：</p>
+<ol>
+<li>软件中断何时生产？</li>
+</ol>
+<p>由软件决定，对于X号软件中断，只需要把它的flag设置为1就表示发生了该中断。</p>
+<ol>
+<li>软件中断何时处理？</li>
+</ol>
+<p>软件中断嘛，并不是那么十万火急，有空再处理它好了。</p>
+<p>什么时候有空？不能让它一直等吧？</p>
+<p>Linux系统中，各种硬件中断频繁发生，至少定时器中断每10ms发生一次，那取个巧？</p>
+<p>在处理完硬件中断后，再去处理软件中断？就这么办！</p>
+<ol>
+<li>有哪些软件中断？</li>
+</ol>
+<p>查内核源码include/linux/interrupt.h</p>
+<p><img loading="lazy" src="/en/assets/images/manual-490-f1dfccb81436623cc8e162e983ed20ae.png" width="921" height="354" class="img_ev3q"></p>
+<p>怎么触发软件中断？最核心的函数是raise_softirq，简单地理解就是设置softirq_veq[nr]的标记位：</p>
+<p><img loading="lazy" src="/en/assets/images/manual-491-48d7e11d35207ee456b297eb556e0428.png" width="584" height="80" class="img_ev3q"></p>
+<p>怎么设置软件中断的处理函数：</p>
+<p>extern void open_softirq(int nr, void (*action) (struct soft_action*));</p>
+<p><img loading="lazy" src="/en/assets/images/manual-492-ca3df590e7e763f87629f4b6c68e4741.png" width="951" height="80" class="img_ev3q"></p>
+<p>后面讲到的中断下半部tasklet就是使用软件中断实现的。</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="1822-中断处理原则1不能嵌套">18.2.2 中断处理原则1：不能嵌套<a href="#1822-中断处  理原则1不能嵌套" class="hash-link" aria-label="Direct link to 18.2.2 中断处理原则1：不能嵌套" title="Direct link to 18.2.2 中断处理原则1：不能嵌套">​</a></h3>
+<p>官方资料：中断处理不能嵌套</p>
+<p><a href="https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=e58aa3d2d0cc" target="_blank" rel="noopener noreferrer">https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=e58aa3d2d0cc</a></p>
+<p>中断处理函数需要调用C函数，这就需要用到栈。</p>
+<ul>
+<li>中断A正在处理的过程中，假设又发生了中断B，那么在栈里要保存A的现场，然后处理B。</li>
+<li>在处理B的过程中又发生了中断C，那么在栈里要保存B的现场，然后处理C。</li>
+</ul>
+<p>如果中断嵌套突然暴发，那么栈将越来越大，栈终将耗尽。</p>
+<p>所以，为了防止这种情况发生，也是为了简单化中断的处理，在Linux系统上中断无法嵌套：即当前中断A没处理完之前，不会响应另一个中断B(即使它的优先级更高)。</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="1823-中断处理原则2越快越好">18.2.3 中断处理原则2：越快越好<a href="#1823-中断处理原则2越快越好" class="hash-link" aria-label="Direct link to 18.2.3 中断处理原则2：越快越好" title="Direct link to 18.2.3 中断处理原则2：越快越好">​</a></h3>
+<p>妈妈在家中照顾小孩时，门铃响起，她开门取快递：这就是中断的处理。她取个快递敢花上半天吗？不怕小孩出意外吗？</p>
+<p>同理，在Linux系统中，中断的处理也是越快越好。</p>
+<p>在单芯片系统中，假设中断处理很慢，那应用程序在这段时间内就无法执行：系统显得很迟顿。</p>
+<p>在SMP系统中，假设中断处理很慢，那么正在处理这个中断的CPU上的其他线程也无法执行。</p>
+<p>在中断的处理过程中，该CPU是不能进行进程调度的，所以中断的处理要  越快越好，尽早让其他中断能被处理──进程调度靠定时器中断来实现。</p>
+<p>在Linux系统中使用中断是挺简单的，为某个中断irq注册中断处理函数handler，可以使用request_irq函数：</p>
+<p><img loading="lazy" src="/en/assets/images/manual-493-cf72ed61b9497247954487f42aab1e62.png" width="944" height="84" class="img_ev3q"></p>
+<p>在handler函数中，代码尽可能高效。</p>
+<p>但是，处理某个中断要做的事情就是很多，没办法加快。比如对于按键中断，我们需要等待几十毫秒消除机械抖动。难道要在handler中等待吗？对于计算机来说，这可是一个段很长的时间。</p>
+<p>怎么办？</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="1824-要处理的事情实在太多拆分为上半部下半部">18.2.4 要处理的事情实在太多，拆分为：上半部、下半部<a href="#1824-要处理的事情实在太多拆分为上半部下半部" class="hash-link" aria-label="Direct link to 18.2.4 要处理的事情实在太多，拆分为：上半部、下半部" title="Direct link to 18.2.4 要处理的事情实在太多，拆分为：上半部、下半部">​</a></h3>
+<p>当一个中断要耗费很多时间来处理时，它的坏处是：在这段时间内，其他中断无法被处理。换句话说，在这段时间内，系统是关中断的。</p>
+<p>如果某个中断就是要做那么多事，我们能不能把它拆分成两部分：紧急的、不紧急的？</p>
+<p>在handler函数里只做紧急的事，然后就重新开中断，让系统得以正常运行；那些不紧急的事，以后再处理，处理时是开中断的。</p>
+<p><img loading="lazy" src="/en/assets/images/manual-494-224ce65fd0cda58d12d0c7dfc4eaa3b8.png" width="816" height="1056" class="img_ev3q"></p>
+<p>中断下半部的实现有很多种方法，讲2种主要的：tasklet(小任务)、work queue(工作队列)。</p>
+<a id="_Ref109028920"></a>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="1825-下半部要  做的事情耗时不是太长tasklet">18.2.5 下半部要做的事情耗时不是太长：tasklet<a href="#1825-下半部要做的事情耗时不是太长tasklet" class="hash-link" aria-label="Direct link to 18.2.5 下半部要做的事情耗时不是太长：tasklet" title="Direct link to 18.2.5 下半部要做的事情耗时不是太长：tasklet">​</a></h3>
+<p>假设我们把中断分为上半部、下半部。发生中断时，上半部下半部的代码何时、如何被调用？</p>
+<p>当下半部比较耗时但是能忍受，并且它的处理比较简单时，可以用tasklet来处理下半部。tasklet是使用软件中断来实现。</p>
+<p><img loading="lazy" src="/en/assets/images/manual-495-4685f29a0a01b69a0c5792ffdf56738f.png" width="920" height="362" class="img_ev3q"></p>
+<p>写字太多，不如贴代码，代码一目了然：</p>
+<p><img loading="lazy" src="/en/assets/images/manual-496-40c0d01e70e4110faf2ab69a2be4afed.png" width="1025" height="368" class="img_ev3q"></p>
+<p>使用流程图简化一下：</p>
+<p><img loading="lazy" src="/en/assets/images/manual-497-e214ded85eb69bda4e8bc93be145d915.png" width="816" height="1056" class="img_ev3q"></p>
+<p>假设硬件中断A的上半部函数为irq_top_half_A，下半部为irq_bottom_half_A。</p>
+<p>使用情景化的分析，才能理解上述代码的精华。</p>
+<ul>
+<li>硬件中断A处理过程中，没有其他中断发生：</li>
+</ul>
+<p>一开始，preempt_count = 0；</p>
+<p>上述流程图①～⑨依次执行，上半部、下半部的代码各执行一次。</p>
+<ul>
+<li>硬件中断A处理过程中，又再次发生了中断A：</li>
+</ul>
+<p>一开始，preempt_count = 0；</p>
+<p>执行到第⑥时，一开中断后，中断A又再次使得CPU跳到中断向量表。</p>
+<p><strong>注意</strong>：这时preempt_count等于1，并且中断下半部的代码并未执行。</p>
+<p>CPU又从①开始再次执行中断A的上半部代码：</p>
+<p>在第①步preempt_count等于2；</p>
+<p>在第③步preempt_count等于1；</p>
+<p>在第④步发现preempt_count等于1，所以直接结束当前第2次中断的处理；</p>
+<p><strong>注意</strong>：重点来了，第2次中断发生后，打断了第一次中断的第⑦步处理。当第2次中断处理完毕，CPU会继续去执行第⑦步。</p>
+<p>可以看到，发生2次硬件中断A时，它的上半部代码执行了2次，但是下半部代码只执行了一次。</p>
+<p>所以，同一个中断的上半部、下半部，在执行时是多对一的关系。</p>
+<ul>
+<li>硬件中断A处理过程中，又再次发生了中断B：</li>
+</ul>
+<p>一开始，preempt_count = 0；</p>
+<p>执行到第⑥时，一开中断后，中断B又再次使得CPU跳到中断向量表。</p>
+<p><strong>注意</strong>：这时preempt_count等于1，并且中断A下半部的代码并未执行。</p>
+<p>CPU又从①开始再次执行中断B的上半部代码：</p>
+<p>在第①步preempt_count等于2；</p>
+<p>在第③步preempt_count等于1；</p>
+<p>在第④步发现preempt_count等于1，所以直接结束当前第2次中断的处理；</p>
+<p><strong>注意</strong>：重点来了，第2次中断发生后，打断了第一次中断A的第⑦步处理。当第2次中断B处理完毕，CPU会继续去执行第⑦步。</p>
+<p>在第⑦步里，它会去执行中断A的下半部，也会去执行中断B的下半部。</p>
+<p>所以，多个中断的下半部，是汇集在一起处理的。</p>
+<p><strong>总结</strong>：</p>
+<ol>
+<li>中断的处理可以分为上半部，下半部</li>
+<li>中断上半部，用来处理紧急的事，它是在关中断的状态下执行的</li>
+<li>中断下半部，用来处理耗时的、不那么紧急的事，它是在开中断的状态下执行的</li>
+<li>中断下半部执行时，有可能会被多次打断，有可能会再次发生同一个中断</li>
+<li>中断上半部执行完后，触发中断下半部的处理</li>
+<li>中断上半部、下半部的执行过程中，不能休眠：中断休眠的话，以后谁来调度进程啊？</li>
+</ol>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="1826-下半部要做的事情太多并且很复杂工作队列">18.2.6 下半部要做的事情太多并且很复杂：工作队列<a href="#1826-下半部要做的事情太多并且很复杂工作队列" class="hash-link" aria-label="Direct link to 18.2.6 下半部要做的事情太多并且很复杂：工作队列" title="Direct link to 18.2.6 下半部要做的事情太多并且很复杂：工作队列">​</a></h3>
+<p>在中断下半部的执行过程中，虽然是开中断的，期间可以处理各类中断。但是毕竟整个中断的处理还没走完，这期间APP是无法执行的。</p>
+<p>假设下半部要执行1、2分钟，在这1、2分钟里APP都是无法响应的。</p>
+<p>这谁受得了？所以，如果中断要做的事情实在太耗时，那就不能用软件中断来做，而应该用内核线程来做：在中断上半部唤醒内核线程。内核线程和APP都一样竞争执行，APP有机会执行，系统不会卡顿。</p>
+<p>这个内核线程是系统帮我们创建的，一般是kworker线程，内核中有很多这样的线程：</p>
+<p><img loading="lazy" src="/en/assets/images/manual-498-6a59234ed728a7c51f354ae77cc7d9c5.png" width="678" height="195" class="img_ev3q"></p>
+<p>kworker线程要去“工作队列”(work queue)上取出一个一个“工作”(work)，来执行它里面的函数。</p>
+<p>那我们怎么使用work、work queue呢？</p>
+<ol>
+<li>创建work：</li>
+</ol>
+<p>你得先写出一个函数，然后用这个函数填充一个work结构体。比如：</p>
+<p><img loading="lazy" src="/en/assets/images/manual-499-6924ca2fc9f1a4655ad04ca1325bc0a9.png" width="793" height="80" class="img_ev3q"></p>
+<ol>
+<li>要执行这个函数时，把work提交给work queue就可以了：</li>
+</ol>
+<p><img loading="lazy" src="data:image/png;base64,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" width="408" height="80" class="img_ev3q"></p>
+<p>上述函数会把work提供给系统默认的work queue：system_wq，它是一个队列。</p>
+<ol>
+<li>谁来执行work中的函数？</li>
+</ol>
+<p>不用我们管，schedule_work函数不仅仅是把work放入队列，还会把kworker线程唤醒。此线程抢到时间运行时，它就会从队列中取出work，执行里面的函数。</p>
+<ol>
+<li>谁把work提交给work queue？</li>
+</ol>
+<p>在中断场景中，可以在中断上半部调用schedule_work函数。</p>
+<p><strong>总结</strong>：</p>
+<ul>
+<li>很耗时的中断处理，应该放到线程里去</li>
+<li>可以使用work、work queue</li>
+<li>在中断上半部调用schedule_work函数，触发work的处理</li>
+<li>既然是在线程中运行，那对应的函数可以休眠。</li>
+</ul>
+<a id="_Ref109028884"></a>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="1827-新技术threaded-irq">18.2.7 新技术：threaded irq<a href="#1827-新技术threaded-irq" class="hash-link" aria-label="Direct link to 18.2.7 新技术：threaded irq" title="Direct link to 18.2.7 新技术：threaded irq">​</a></h3>
+<p>使用线程来处理中断，并不是什么新鲜事。使用work就可以实现，但是需要定义work、调用schedule_work，好麻烦啊。</p>
+<p>太懒了太懒了，就这2步你们都不愿意做。</p>
+<p>好，内核是为懒人服务的，再杀出一个函数：</p>
+<p><img loading="lazy" src="/en/assets/images/manual-501-423441a8b8bca7841911b2cbc7ecbb86.png" width="1021" height="156" class="img_ev3q"></p>
+<p>你可以只提供thread_fn，系统会为这个函数创建一个内核线程。发生中断时，内核线程就会执行这个函数。</p>
+<p>说你懒是开玩笑，内核开发者也不会那么在乎懒人。</p>
+<p>以前用work来线程化地处理中断，一个worker线程只能由一个CPU执行，多个中断的work都由同一个worker线程来处理，在单CPU系统中也只能忍着了。但是在SMP系统中，明明有那么多CPU空着，你偏偏让多个中断挤在这个CPU上？</p>
+<p>新技术threaded irq，为每一个中断都创建一个内核线程；多个中断的内核线程可以分配到多个CPU上执行，这提高了效率。</p>
+<a id="_Toc197788752"></a>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="183-linux中断系统中的重要数据结构">18.3 Linux中断系统中的重要数据结构<a href="#183-linux中断系统中的重要数据结构" class="hash-link" aria-label="Direct link to 18.3 Linux中断系统中的重要数据结构" title="Direct link to 18.3 Linux中断系统中的重要数据结构">​</a></h2>
+<p>本节内容，可以从request_irq(include/linux/interrupt.h)函数一路分析得到。</p>
+<p>能弄清楚下面这个图，对Linux中断系统的掌握也基本到位了。</p>
+<p><img loading="lazy" src="/en/assets/images/manual-502-4ce6a4010eea9df3c95333e2e5cef580.png" width="816" height="1056" class="img_ev3q"></p>
+<p>最核心的结构体是irq_desc，之前为了易于理解，我们说在Linux内核中有一个中断数组，对于每一个硬件中断，都有一个数组项，这个数组就是irq_desc数组。</p>
+<p><strong>注意</strong>：如果内核配置了CONFIG_SPARSE_IRQ，那么它就会用基数树(radix tree)来代替irq_desc数组。SPARSE的意思是“稀疏”，假设大小为1000的数组中只用到2个数组项，那不是浪费嘛？所以在中断比较“稀疏”的情况下可以用基数树来代替数组。</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="1831-irq_desc数组">18.3.1 irq_desc数组<a href="#1831-irq_desc数组" class="hash-link" aria-label="Direct link to 18.3.1 irq_desc数组" title="Direct link to 18.3.1 irq_desc数组">​</a></h3>
+<p>irq_desc结构体在include/linux/irqdesc.h中定义，主要内容如下图：</p>
+<p><img loading="lazy" src="/en/assets/images/manual-503-8fb2af9f9fa58c17f67616a59bc3a08f.png" width="816" height="1056" class="img_ev3q"></p>
+<p>每一个irq_desc数组项中都有一个函数：handle_irq，还有一个action链表。要理解它们，需要先看中断结构图：</p>
+<p><img loading="lazy" src="/en/assets/images/manual-504-b0172ce70ee69c09ba43a79f5d012c6e.png" width="816" height="1056" class="img_ev3q"></p>
+<p>外部设备1、外部设备n共享一个GPIO中断B，多个GPIO中断汇聚到GIC(通用中断控制器)的A号中断，GIC再去中断CPU。那么软件处理时就是反过来，先读取GIC获得中断号A，再细分出GPIO中断B，最后判断是哪一个外部芯片发生了中断。</p>
+<p>所以，中断的处理函数来源有三：</p>
+<ol>
+<li>GIC的处理函数：</li>
+</ol>
+<p>假设irq_desc[A].handle_irq是XXX_gpio_irq_handler(XXX指厂家)，这个函数需要读取芯片的GPIO控制器，细分发生的是哪一个GPIO中断(假设是B)，再去调用irq_desc[B]. handle_irq。</p>
+<p><strong>注意</strong>：irq_desc[A].handle_irq细分出中断后B，调用对应的irq_desc[B].handle_irq。</p>
+<p>显然中断A是CPU感受到的顶层的中断，GIC中断CPU时，CPU读取GIC状态得到中断A。</p>
+<ol>
+<li>模块的中断处理函数：</li>
+</ol>
+<p>比如对于GPIO模块向GIC发出的中断B，它的处理函数是irq_desc[B].handle_irq。</p>
+<p>BSP开发人员会设置对应的处理函数，一般是handle_level_irq或handle_edge_irq，从名字上看是用来处理电平触发的中断、边沿触发的中断。</p>
+<p><strong>注意</strong>：导致GPIO中断B发生的原因很多，可能是外部设备1，可能是外部设备n，可能只是某一个设备，也可能是多个设备。所以irq_desc[B].handle_irq会调用某个链表里的函数，这些函数由外部设备提供。这些函数自行判断该中断是否自己产生，若是则处理。</p>
+<ol>
+<li>外部设备提供的处理函数：</li>
+</ol>
+<p>这里说的“外部设备”可能是芯片，也可能总是简单的按键。它们的处理函数由自己驱动程序提供，这是最熟悉这个设备的“人”：它知道如何判断设备是否发生了中断，如何处理中断。</p>
+<p>对于共享中断，比如GPIO中断B，它的中断来源可能有多个，每个中断源对应一个中断处理函数。所以irq_desc[B]中应该有一个链表，存放着多个中断源的处理函数。</p>
+<p>一旦程序确定发生了GPIO中断B，那么就会从链表里把那些函数取出来，一一执行。这个链表就是action链表。</p>
+<p>对于我们举的这个例子来说，irq_desc数组如下：</p>
+<p><img loading="lazy" src="/en/assets/images/manual-505-d37a5fb5d166c1e7bc90fa797273ddd4.png" width="816" height="1056" class="img_ev3q"></p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="1832-irqaction结构体">18.3.2 irqaction结构体<a href="#1832-irqaction结构体" class="hash-link" aria-label="Direct link to 18.3.2 irqaction结构体" title="Direct link to 18.3.2 irqaction结构体">​</a></h3>
+<p>irqaction结构体在include/linux/interrupt.h中定义，主要内容如下图：</p>
+<p><img loading="lazy" src="/en/assets/images/manual-506-26f2a10a2fa2c85fc6f9f6c5773c0e57.png" width="816" height="1056" class="img_ev3q"></p>
+<p>当调用request_irq、request_threaded_irq注册中断处理函数时，内核就会构造一个irqaction结构体。在里面保存name、dev_id等，最重要的是handler、thread_fn、thread。</p>
+<p>handler是中断处理的上半部函数，用来处理紧急的事情。</p>
+<p>thread_fn对应一个内核线程thread，当handler执行完毕，Linux内核会唤醒对应的内核线程。在内核线程里，会调用thread_fn函数。</p>
+<ul>
+<li>可以提供handler而不提供thread_fn，就退化为一般的request_irq函数。</li>
+<li>可以不提供handler只提供thread_fn，完全由内核线程来处理中断。</li>
+<li>也可以既提供handler也提供thread_fn，这就是中断上半部、下半部。</li>
+</ul>
+<p>里面还有一个名为sedondary的irqaction结构体，它的作用以后再分析。</p>
+<p>在reqeust_irq时可以传入dev_id，为何需要dev_id？作用有2：</p>
+<ol>
+<li>中断处理函数执行时，可以使用dev_id</li>
+<li>卸载中断时要传入dev_id，这样才能在action链表中根据dev_id找到对应项</li>
+</ol>
+<p>所以在共享中断中必须提供dev_id，非共享中断可以不提供。</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="1833-irq_data结构体">18.3.3 irq_data结构体<a href="#1833-irq_data结构体" class="hash-link" aria-label="Direct link to 18.3.3 irq_data结构体" title="Direct link to 18.3.3 irq_data结构体">​</a></h3>
+<p>irq_data结构体在include/linux/irq.h中定义，主要内容如下图：</p>
+<p><img loading="lazy" src="/en/assets/images/manual-507-4dec687925fc27457c5513cc415a760c.png" width="816" height="1056" class="img_ev3q"></p>
+<p>它就是个中转站，里面有irq_chip指针 irq_domain指针，都是指向别的结构体。</p>
+<p>比较有意思的是irq、hwirq，irq是软件中断号，hwirq是硬件中断号。比如上面我们举的例子，在GPIO中断B是软件中断号，可以找到irq_desc[B]这个数组项；GPIO里的第x号中断，这就是hwirq。</p>
+<p>谁来建立irq、hwirq之间的联系呢？由irq_domain来建立。irq_domain会把本地的hwirq映射为全局的irq，什么意思？比如GPIO控制器里有第1号中断，UART模块里也有第1号中断，这两个“第1号中断”是不一样的，它们属于不同的“域”──irq_domain。</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="1834-irq_domain结构体">18.3.4 irq_domain结构体<a href="#1834-irq_domain结构体" class="hash-link" aria-label="Direct link to 18.3.4 irq_domain结构体" title="Direct link to 18.3.4 irq_domain结构体">​</a></h3>
+<p>irq_domain结构体在include/linux/irqdomain.h中定义，主要内容如下图：</p>
+<p><img loading="lazy" src="/en/assets/images/manual-508-9b94e4b454b871b3c731e3a608960613.png" width="816" height="1056" class="img_ev3q"></p>
+<p>当我们后面从设备树讲起，如何在设备树中指定中断，设备树的中断如何被转换为irq时，irq_domain将会起到极大的作为。</p>
+<p>这 里基于入门的解度简单讲讲，在设备树中你会看到这样的属性：</p>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">interrupt-parent = &lt;&amp;gpio1&gt;;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">interrupts = &lt;5 IRQ_TYPE_EDGE_RISING&gt;;</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="Copy code to clipboard" title="Copy" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<p>它表示要使用gpio1里的第5号中断，hwirq就是5。</p>
+<p>但是我们在驱动中会使用request_irq(irq, handler)这样的函数来注册中断，irq是什么？它是软件中断号，它应该从“gpio1的第5号中断”转换得来。</p>
+<p>谁把hwirq转换为irq？由gpio1的相关数据结构，就是gpio1对应的irq_domain结构体。</p>
+<p>irq_domain结构体中有一个irq_domain_ops结构体，里面有各种操作函数，主要是：</p>
+<ul>
+<li>xlate</li>
+</ul>
+<p>用来解析设备树的中断属性，提取出hwirq、type等信息。</p>
+<ul>
+<li>map</li>
+</ul>
+<p>把hwirq转换为irq。</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="1835-irq_chip结构体">18.3.5 irq_chip结构体<a href="#1835-irq_chip结构体" class="hash-link" aria-label="Direct link to 18.3.5 irq_chip结构体" title="Direct link to 18.3.5 irq_chip结构体">​</a></h3>
+<p>irq_chip结构体在include/linux/irq.h中定义，主要内容如下图：</p>
+<p><img loading="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAzAAAAQgCAYAAAA5ebkOAAAkJUlEQVR4nO3d6ZNddZ3H8V9nobPQ2fcEJBNI2GQTRMYFEEF03B7oaJVYpQ+s0pknWvNwfDj8B84Dq3woDyzH0tLSBxZVOCglKsgIEdkEQlhC9hCyNNnmnkO669ybvqGX2933A68XRfVN9znnnnOk2vPOvfd75p1pKQAAAAHmzfYOAAAAjJeAAQAAYggYAAAghoABAABiCBgAACCGgAEAAGIIGAAAIIaAAQAAYggYAAAghoABAABiCBgAACCGgAEAAGIIGAAAIIaAAQAAYggYAAAghoABAABiCBgAACCGgAEAAGIIGAAAIIaAAQAAYggYAAAghoABAABiCBgAACCGgAEAAGIIGAAAIIaAAQAAYggYAAAghoABAABiCBgAACCGgAEAAGIIGAAAIIaAAQAAYggYAAAghoABAABiCBgAACCGgAEAAGIIGAAAIIaAAQAAYggYAAAghoABAABiCBgAACCGgAEAAGIIGAAAIIaAAQAAYggYAAAghoABAABiCBgAACCGgAEAAGIIGAAAIIaAAQAAYggYAAAghoABAABiCBgAACCGgAEAAGIIGAAAIIaAAQAAYggYAAAghoABAABiCBgAACCGgAEAAGIIGAAAIIaAAQAAYggYAAAghoABAABiCBgAACCGgAEAAGIIGAAAIIaAAQAAYggYAAAghoABAABiCBgAACCGgAEAAGIIGAAAIIaAAQAAYggYAAAghoABAABiCBgAACCGgAEAAGIIGAAAIIaAAQAAYggYAAAghoABAABiCBgAACCGgAEAAGIIGAAAIIaAAQAAYggYAAAghoABAABiCBgAACCGgAEAAGIIGAAAIIaAAQAAYggYAAAghoABAABiCBgAACCGgAEAAGIIGAAAIIaAAQAAYggYAAAghoABAABiCBgAACCGgAEAAGIIGAAAIIaAAQAAYggYAAAghoABAABiCBgAACCGgAEAAGIIGAAAIIaAAQAAYggYAAAghoABAABiCBgAACCGgAEAAGIIGAAAIIaAAQAAYggYAAAghoABAABiCBgAACCGgAEAAGIIGAAAIIaAAQAAYggYAAAghoABAABiCBgAACCGgAEAAGIIGAAAIIaAAQAAYggYAAAghoABAABiCBgAACCGgAEAAGIIGAAAIIaAAQAAYggYAAAghoABAABiCBgAACCGgAEAAGIIGAAAIIaAAQAAYggYAAAghoABAABiCBgAACCGgAEAAGIIGAAAIIaAAQAAYggYAAAghoABAABiCBgAACCGgAEAAGIIGAAAIIaAAQAAYggYAAAghoABAABiCBgAACCGgAEAAGIIGAAAIIaAAQAAYggYAAAghoABAABiCBgAACCGgAEAAGIIGAAAIIaAAQAAYggYAAAghoABAABiCBgAACCGgAEAAGIIGAAAIIaAAQAAYggYAAAghoABAABiCBgAACCGgAEAAGIIGAAAIIaAAQAAYggYAAAghoABAABiCBgAACCGgAEAAGIIGAAAIIaAAQAAYggYAAAghoABAABiCBgAACCGgAEAAGIIGAAAIIaAAQAAYggYAAAghoABAABiCBgAACCGgAEAAGIIGAAAIIaAAQAAYggYAAAghoABAABiCBgAACCGgAEAAGIIGAAAIIaAAQAAYggYAAAghoABAABiCBgAACCGgAEAAGIIGAAAIIaAAQAAYggYAAAghoABAABiCBgAACCGgAEAAGIIGAAAIIaAAQAAYggYAAAghoABAABiCBgAACCGgAEAAGIIGAAAIIaAAQAAYggYAAAghoABAABiCBgAACCGgAEAAGIIGAAAIIaAAQAAYggYAAAghoABAABiCBgAACCGgAEAAGIIGAAAIIaAAQAAYggYAAAghoABAABiCBgAACCGgAEAAGIIGAAAIIaAAQAAYggYAAAghoABAABiCBgAACCGgAEAAGIIGAAAIIaAAQAAYggYAAAghoABAABiCBgAACCGgAEAAGIIGAAAIIaAAQAAYggYAAAghoABAABiCBgAACCGgAEAAGIIGAAAIIaAAQAAYggYAAAghoABAABiCBgAACCGgAEAAGIIGAAAIIaAAQAAYggYAAAghoABAABiCBgAACCGgAEAAGIIGAAAIIaAAQAAYggYAAAghoABAABiCBgAACCGgAEAAGIIGAAAIIaAAQAAYggYAAAghoABAABiCBgAACCGgAEAAGIIGAAAIIaAAQAAYggYAAAghoABAABiCBgAACCGgAEAAGIIGAAAIIaAAQAAYggYAAAghoABAABiCBgAACCGgAEAAGIIGAAAIIaAAQAAYggYAAAghoABAABiCBgAACCGgAEAAGIIGAAAIIaAAQAAYggYAAAghoABAABiCBgAACCGgAEAAGIIGAAAIIaAAQAAYggYAAAghoABAABiCBgAACCGgAEAAGIIGAAAIIaAAQAAYggYAAAghoABAABiCBgAACCGgAEAAGIIGAAAIIaAAQAAYggYAAAghoABAABiCBgAACCGgAEAAGIIGAAAIIaAAQAAYggYAAAghoABAABiCBgAACCGgAEAAGIIGAAAIIaAAQAAYggYAAAghoABAABiCBgAACCGgAEAAGIIGAAAIIaAAQAAYggYAAAghoABAABiCBgAACCGgAEAAGIIGAAAIIaAAQAAYggYAAAghoABAABiCBgAACCGgAEAAGIIGAAAIIaAAQAAYggYAAAghoABAABiCBgAACCGgAEAAGIIGAAAIIaAAQAAYggYAAAghoABAABiCBgAACCGgAEAAGIIGAAAIIaAAQAAYggYAAAghoABAABiCBgAACCGgAEAAGIIGAAAIIaAAQAAYggYAAAghoABAABiCBgAACCGgAEAAGIIGAAAIIaAAQAAYggYAAAghoABAABiCBgAACCGgAEAAGIIGAAAIIaAAQAAYggYAAAghoABAABiCBgAACCGgAEAAGIIGAAAIIaAAQAAYggYAAAghoABAABiCBgAACCGgAEAAGIIGAAAIIaAAQAAYggYAAAghoABAABiCBgAACCGgAEAAGIIGAAAIIaAAQAAYggYAAAghoABAABiCBgAACCGgAEAAGIIGAAAIIaAAQAAYggYAAAghoABAABiCBgAACCGgAEAAGIIGAAAIIaAAQAAYggYAAAghoABAABiCBgAACCGgAEAAGIIGAAAIIaAAQAAYggYAAAghoABAABiCBgAACCGgAEAAGIIGAAAIIaAAQAAYggYAAAghoABAABiCBgAACCGgAEAAGIIGAAAIIaAAQAAYggYAAAghoABAABiCBgAACCGgAEAAGIIGAAAIIaAAQAAYggYAAAghoABAABiCBgAACCGgAEAAGIIGAAAIIaAAQAAYggYAAAghoABAABiCBgAACCGgAEAAGIIGAAAIIaAAQAAYggYAAAghoABAABiCBgAACCGgAEAAGIIGAAAIIaAAQAAYggYAAAghoABAABiCBgAACCGgAEAAGIIGAAAIIaAAQAAYggYAAAghoABAABiCBgAACCGgAEAAGIIGAAAIIaAAQAAYggYAAAghoABAABiCBgAACCG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AADEEDAAAEAMAQMAAMQQMAAAQAwBAwAAxBAwAABADAEDAADEEDAAAEAMAQMAAMQQMAAAQAwBAwAAxBAwAABADAEDAADEEDAAAEAMAQMAAMQQMAAAQAwBAwAAxBAwAABADAEDAADEEDAAAEAMAQMAAMQQMAAAQAwBAwAAxBAwAABADAEDAADEEDAAAEAMAQMAAMQQMAAAQAwBAwAAxBAwAABADAEDAADEEDAAAEAMAQMAAMQQMAAAQAwBAwAAxBAwAABADAEDAADEEDAAAEAMAQMAAMQQMAAAQAwBAwAAxBAwAABADAEDAADEEDAAAEAMAQMAAMQQMAAAQAwBAwAAxBAwAABADAEDAADEEDAAAEAMAQMAAMQQMAAAQAwBAwAAxBAwAABADAEDAADEEDAAAEAMAQMAAMQQMAAAQAwBAwAAxBAwAABADAEDAADEEDAAAEAMAQMAAMQQMAAAQAwBAwAAxBAwAABADAEDAADEEDAAAEAMAQMAAMQQMAAAQAwBAwAAxBAwAABADAEDAADEEDAAAEAMAQMAAMQQMAAAQAwBAwAAxBAwAABADAEDAADEEDAAAEAMAQMAAMQQMAAAQAwBAwAAxBAwAABADAEDAADEEDAAAEAMAQMAAMQQMAAAQAwBAwAAxBAwAABADAEDAADEEDAAAEAMAQMAAMQQMAAAQAwBAwAAxBAwAABADAEDAADEEDAAAEAMAQMAAMQQMAAAQAwBAwAAxBAwAABADAEDAADEEDAAAEAMAQMAAMQQMAAAQAwBAwAAxBAwAABADAEDAADEEDAAAEAMAQMAAMQQMAAAQAwBAwAAxBAwAABADAEDAADEEDAAAEAMAQMAAMQQMAAAQAwBAwAAxBAwAABADAEDAADEEDAAAEAMAQMAAMQQMAAAQAwBAwAAxBAwAABADAEDAADEEDAAAEAMAQMAAMQQMAAAQAwBAwAAxBAwAABADAEDAADEEDAAAEAMAQMAAMQQMAAAQAwBAwAAxBAwAABADAEDAADEEDAAAEAMAQMAAMQQMAAAQAwBAwAAxBAwAABADAEDAADEEDAAAEAMAQMAAMQQMAAAQAwBAwAAxBAwAABADAEDAADEEDAAAEAMAQMAAMQQMAAAQAwBAwAAxBAwAABADAEDAADEEDAAAEAMAQMAAMQQMAAAQAwBAwAAxBAwAABADAEDAADEEDAAAEAMAQMAAMQQMAAAQAwBAwAAxBAwAABADAEDAADEEDAAAEAMAQMAAMQQMAAAQAwBAwAAxBAwAABADAEDAADEEDAAAEAMAQMAAMQQMAAAQAwBAwAAxBAwAABADAEDAADEEDAAAEAMAQMAAMQQMAAAQAwBAwAAxBAwAABADAEDAADEEDAAAEAMAQMAAMQQMAAAQAwBAwAAxBAwAABADAEDAADEEDAAAEAMAQMAAMQQMAAAQAwBAwAAxBAwAABADAEDAADEEDAAAEAMAQMAAMQQMAAAQAwBAwAAxBAwAABADAEDAADEEDAAAEAMAQMAAMQQMAAAQAwBAwAAxBAwAABADAEDAADEEDAAAEAMAQMAAMQQMAAAQAwBAwAAxBAwAABADAEDAADEEDAAAEAMAQMAAMQQMAAAQAwBAwAAxBAwAABADAEDAADEEDAAAEAMAQMAAMQQMAAAQAwBAwAAxBAwAABADAEDAADEEDAAAEAMAQMAAMQQMAAAQAwBAwAAxBAwAABADAEDAADEEDAAAEAMAQMAAMQQMAAAQAwBAwAAxBAwAABADAEDAADEEDAAAEAMAQMAAMQQMAAAQAwBAwAAxBAwAABADAEDAADEEDAAAEAMAQMAAMQQMAAAQAwBAwAAxBAwAABADAEDAADEEDAAAEAMAQMAAMQQMAAAQAwBAwAAxBAwAABADAEDAADEEDAAAEAMAQMAAMQQMAAAQAwBAwAAxBAwAABADAEDAADEEDAAAEAMAQMAAMQQMAAAQAwBAwAAxBAwAABADAEDAADEEDAAAEAMAQMAAMQQMAAAQAwBAwAAxBAwAABADAEDAADEEDAAAEAMAQMAAMQQMAAAQAwBAwAAxBAwAABADAEDAADEEDAAAEAMAQMAAMQQMAAAQAwBAwAAxBAwAABADAEDAADEEDAAAEAMAQMAAMQQMAAAQAwBAwAAxBAwAABADAEDAADEEDAAAEAMAQMAAMQQMAAAQAwBAwAAxBAwAABADAEDAADEEDAAAEAMAQMAAMQQMAAAQAwBAwAAxBAwAABADAEDAADEEDAAAEAMAQMAAMQQMAAAQAwBAwAAxBAwAABADAEDAADEEDAAAEAMAQMAAMQQMAAAQAwBAwAAxBAwAABADAEDAADEEDAAAEAMAQMAAMQQMAAAQAwBAwAAxBAwAABADAEDAADEEDAAAEAMAQMAAMQQMAAAQAwBAwAAxBAwAABADAEDAADEEDAAAEAMAQMAAMQQMAAAQAwBAwAAxBAwAABADAEDAADEEDAAAEAMAQMAAMQQMAAAQAwBAwAAxBAwAABADAEDAADEEDAAAEAMAQMAAMQQMAAAQAwBAwAAxBAwAABADAEDAADEEDAAAEAMAQMAAMQQMAAAQAwBAwAAxBAwAABADAEDAADEEDAAAEAMAQMAAMQQMAAAQAwBAwAAxBAwAABADAEDAADEEDAAAEAMAQMAAMQQMAAAQAwBAwAAxBAwAABADAEDAADEEDAAAEAMAQMAAMQQMAAAQAwBAwAAxBAwAABADAEDAADEEDAAAEAMAQMAAMQQMAAAQAwBAwAAxBAwAABADAEDAADEEDAAAECM/weoRaf23JNvMgAAAABJRU5ErkJggg==" width="816" height="1056" class="img_ev3q"></p>
+<p>这个结构体跟“chip”即芯片相关，里面各成员的作用在头文件中也列得很清楚，摘录部分如下：</p>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">* @irq_startup:	start up the interrupt (defaults to -&gt;enable if NULL)</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">* @irq_shutdown:	shut down the interrupt (defaults to -&gt;disable if NULL)</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">* @irq_enable:		enable the interrupt (defaults to chip-&gt;unmask if NULL)</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">* @irq_disable:	disable the interrupt</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">* @irq_ack:		start of a new interrupt</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">* @irq_mask:		mask an interrupt source</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">* @irq_mask_ack:	ack and mask an interrupt source</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">* @irq_unmask:		unmask an interrupt source</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">* @irq_eoi:		end of interrupt</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="Copy code to clipboard" title="Copy" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<p>我们在request_irq后，并不需要手工去使能中断，原因就是系统调用对应的irq_chip里的函数帮我们使能了中断。</p>
+<p>我们提供的中断处理函数中，也不需要执行主芯片相关的清中断操作，也是系统帮我们调用irq_chip中的相关函数。</p>
+<p>但是对于外部设备相关的清中断操作，还是需要我们自己做的。</p>
+<p>就像上面图里的“外部设备1“、“外部设备n”，外设备千变万化，内核里可没有对应的清除中断操作。</p>
+<a id="_Toc197788753"></a>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="184-在设备树中指定中断_在代码中获得中断">18.4 在设备树中指定中断_在代码中获得中断<a href="#184-在设备树中指定中断_在代码中获得中断" class="hash-link" aria-label="Direct link to 18.4 在设备树中指定中断_在代码中获得中断" title="Direct link to 18.4 在设备树中指定中断_在代码中获得中断">​</a></h2>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="1841-设备树里中断节点的语法">18.4.1 设备树里中断节点的语法<a href="#1841-设备树里中断节点的语法" class="hash-link" aria-label="Direct link to 18.4.1 设备树里中断节点的语法" title="Direct link to 18.4.1 设备树里中断节点的语法">​</a></h3>
+<p>参考文档：</p>
+<p>内核Documentation\devicetree\bindings\interrupt-controller\interrupts.txt</p>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ol>
+<li>设备树里的中断控制器</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>中断的硬件框图如下：</p>
+<p><img loading="lazy" src="/en/assets/images/manual-510-b0172ce70ee69c09ba43a79f5d012c6e.png" width="816" height="1056" class="img_ev3q"></p>
+<p>在硬件上，“中断控制器”只有GIC这一个，但是我们在软件上也可以把上图中的“GPIO”称为“中断控制器”。很多芯片有多个GPIO模块，比如GPIO1、GPIO2等等。所以软件上的“中断控制器”就有很多个：GIC、GPIO1、GPIO2等等。</p>
+<p>GPIO1连接到GIC，GPIO2连接到GIC，所以GPIO1的父亲是GIC，GPIO2的父亲是GIC。</p>
+<p>假设GPIO1有32个中断源，但是它把其中的16个汇聚起来向GIC发出一个中断，把另外16个汇聚起来向GIC发出另一个中断。这就意味着GPIO1会用到GIC的两个中断，会涉及GIC里的2个hwirq。</p>
+<p>这些层级关系、中断号(hwirq)，都会在设备树中有所体现。</p>
+<p>在设备树中，中断控制器节点中必须有一个属性：interrupt-controller，表明它是“中断控制器”。</p>
+<p>还必须有一个属性：#interrupt-cells，表明引用这个中断控制器的话需要多少个cell。</p>
+<p>#interrupt-cells的值一般有如下取值：</p>
+<ul>
+<li>#interrupt-cells=&lt;1&gt;</li>
+</ul>
+<p>别的节点要使用这个中断控制器时，只需要一个cell来表明使用“哪一个中断”。</p>
+<ul>
+<li>#interrupt-cells=&lt;2&gt;</li>
+</ul>
+<p>别的节点要使用这个中断控制器时，需要一个cell来表明使用“哪一个中断”；</p>
+<p>还需要另一个cell来描述中断，一般是表明触发类型：</p>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">第2个cell的bits[3:0] 用来表示中断触发类型(trigger type and level flags)：</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">1 = low-to-high edge triggered，上升沿触发</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">2 = high-to-low edge triggered，下降沿触发</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">4 = active high level-sensitive，高电平触发</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">8 = active low level-sensitive，低电平触发</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="Copy code to clipboard" title="Copy" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<p>示例如下：</p>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">vic: intc@10140000 {</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">	compatible = &quot;arm,versatile-vic&quot;;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">	interrupt-controller;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">	#interrupt-cells = &lt;1&gt;;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">	reg = &lt;0x10140000 0x1000&gt;;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">};</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="Copy code to clipboard" title="Copy" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<p>如果中断控制器有级联关系，下级的中断控制器还需要表明它的“interrupt-parent”是谁，用了interrupt-parent”中的哪一个“interrupts”，请看下一小节。</p>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ol>
+<li>设备树里使用中断</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>一个外设，它的中断信号接到哪个“中断控制器”的哪个“中断引脚”，这个中断的触发方式是怎样的？</p>
+<p>这3个问题，在设备树里使用中断时，都要有所体现。</p>
+<ul>
+<li>interrupt-parent=&lt;&amp;XXXX&gt;</li>
+</ul>
+<p>你要用哪一个中断控制器里的中断？</p>
+<ul>
+<li>interrupts</li>
+</ul>
+<p>你要用哪一个中断？</p>
+<p>Interrupts里要用几个cell，由interrupt-parent对应的中断控制器决定。在中断控制器里有“#interrupt-cells”属性，它指明了要用几个cell来描述中断。</p>
+<p>比如：</p>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">i2c@7000c000 {</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">	gpioext: gpio-adnp@41 {</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">		compatible = &quot;ad,gpio-adnp&quot;;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">		interrupt-parent = &lt;&amp;gpio&gt;;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">		interrupts = &lt;160 1&gt;;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">		gpio-controller;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">		#gpio-cells = &lt;1&gt;;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">		interrupt-controller;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">		#interrupt-cells = &lt;2&gt;;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">	};</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">......</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">};</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="Copy code to clipboard" title="Copy" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<ul>
+<li>新写法：interrupts-extended</li>
+</ul>
+<p>一个“interrupts-extended”属性就可以既指定“interrupt-parent”，也指定“interrupts”，比如：</p>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">interrupts-extended = &lt;&amp;intc1 5 1&gt;, &lt;&amp;intc2 1 0&gt;;</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="Copy code to clipboard" title="Copy" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="1842-设备树里中断节点的示例">18.4.2 设备树里中断节点的示例<a href="#1842-设备树里中断节点的示例" class="hash-link" aria-label="Direct link to 18.4.2 设备树里中断节点的示例" title="Direct link to 18.4.2 设备树里中断节点的示例">​</a></h3>
+<p>以100ASK_IMX6ULL开发板为例，在arch/arm/boot/dts目录下可以看到2个文件：imx6ull.dtsi、100ask_imx6ull-14x14.dts，把里面有关中断的部分内容抽取出来。</p>
+<p><img loading="lazy" src="/en/assets/images/manual-511-2518d369660223f5d31a4550a1ff51e4.png" width="1197" height="839" class="img_ev3q"></p>
+<p>从设备树反推IMX6ULL的中断体系，如下，比之前的框图多了一个“GPC INTC”：</p>
+<p><img loading="lazy" src="/en/assets/images/manual-512-d9dad1793606c30e18c2418e0aba3f41.png" width="816" height="1056" class="img_ev3q"></p>
+<p>GPC INTC的英文是：General Power Controller, Interrupt Controller。它提供中断屏蔽、中断状态查询功能，实际上这些功能在GIC里也实现了，个人觉得有点多余。除此之外，它还提供唤醒功能，这才是保留它的原因。</p>
+<a id="_在代码中获得中断"></a>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="1843-在代码中获得中断">18.4.3 在代码中获得中断<a href="#1843-在代码中获得中断" class="hash-link" aria-label="Direct link to 18.4.3 在代码中获得中断" title="Direct link to 18.4.3 在代码中获得中断">​</a></h3>
+<p>之前我们提到过，设备树中的节点有些能被转换为内核里的platform_device，有些不能，回顾如下：</p>
+<ol>
+<li>根节点下含有compatile属性的子节点，会转换为platform_device</li>
+<li>含有特定compatile属性的节点的子节点，会转换为platform_device</li>
+</ol>
+<p>如果一个节点的compatile属性，它的值是这4者之一：&quot;simple-bus&quot;,&quot;simple-mfd&quot;,&quot;isa&quot;,&quot;arm,amba-bus&quot;,</p>
+<p>那么它的子结点(需含compatile属性)也可以转换为platform_device。</p>
+<ol>
+<li>总线I2C、SPI节点下的子节点：不转换为platform_device</li>
+</ol>
+<p>某个总线下到子节点，应该交给对应的总线驱动程序来处理, 它们不应该被转换为platform_device。</p>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ol>
+<li>对于platform_device</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>一个节点能被转换为platform_device，如果它的设备树里指定了中断属性，那么可以从platform_device中获得“中断资源”，函数如下，可以使用下列函数获得IORESOURCE_IRQ资源，即中断号：</p>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">/**</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain"> * platform_get_resource - get a resource for a device</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain"> * @dev: platform device</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain"> * @type: resource type   // 取哪类资源？IORESOURCE_MEM、IORESOURCE_REG</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">*                      // IORESOURCE_IRQ等</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain"> * @num: resource index  // 这类资源中的哪一个？</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain"> */</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">struct resource *platform_get_resource(struct platform_device *dev,</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">unsigned int type,</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">unsigned int num);</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="Copy code to clipboard" title="Copy" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ol>
+<li>对于I2C设备、SPI设备</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>对于I2C设备节点，I2C总线驱动在处理设备树里的I2C子节点时，也会处理其中的中断信息。一个I2C设备会被转换为一个i2c_client结构体，中断号会保存在i2c_client的irq成员里，代码如下(drivers/i2c/i2c-core.c)：</p>
+<p><img loading="lazy" src="/en/assets/images/manual-513-f523b30e29d1d0afe2e125ea620631ab.png" width="799" height="540" class="img_ev3q"></p>
+<p>对于SPI设备节点，SPI总线驱动在处理设备树里的SPI子节点时，也会处理其中的中断信息。一个SPI设备会被转换为一个spi_device结构体，中断号会保存在spi_device的irq成员里，代码如下(drivers/spi/spi.c)：</p>
+<p><img loading="lazy" src="/en/assets/images/manual-514-2dcae2320a9704a3d25f9fb5037fd22b.png" width="829" height="403" class="img_ev3q"></p>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ol>
+<li>调用of_irq_get获得中断号</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>如果你的设备节点既不能转换为platform_device，它也不是I2C设备，不是SPI设备，那么在驱动程序中可以自行调用of_irq_get函数去解析设备树，得到中断号。</p>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ol>
+<li>对于GPIO</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>参考：drivers/input/keyboard/gpio_keys.c</p>
+<p>可以使用gpio_to_irq或gpiod_to_irq获得中断号。</p>
+<p>举例，假设在设备树中有如下节点：</p>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">gpio-keys {</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">		compatible = &quot;gpio-keys&quot;;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">		pinctrl-names = &quot;default&quot;;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">		user {</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">				label = &quot;User Button&quot;;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">				gpios = &lt;&amp;gpio5 1 GPIO_ACTIVE_HIGH&gt;;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">				gpio-key,wakeup;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">				linux,code = &lt;KEY_1&gt;;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">		};</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">};</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="Copy code to clipboard" title="Copy" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<p>那么可以使用下面的函数获得引脚和flag：</p>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">button-&gt;gpio = of_get_gpio_flags(pp, 0, &amp;flags);</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">bdata-&gt;gpiod = gpio_to_desc(button-&gt;gpio);</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="Copy code to clipboard" title="Copy" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<p>再去使用gpiod_to_irq获得中断号：</p>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">irq = gpiod_to_irq(bdata-&gt;gpiod);</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="Copy code to clipboard" title="Copy" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<a id="_Toc197788754"></a>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="185-编写使用中断的按键驱动程序">18.5 编写使用中断的按键驱动程序<a href="#185-编写使用中断的按键驱动程序" class="hash-link" aria-label="Direct link to 18.5 编写使用中断的按键驱动程序" title="Direct link to 18.5 编写使用中断的按键驱动程序">​</a></h2>
+<p>写在前面的话：对于GPIO按键，我们并不需要去写驱动程序，使用内核自带的驱动程序drivers/input/keyboard/gpio_keys.c就可以，然后你需要做的只是修改设备树指定引脚及键值。</p>
+<p>但是我还是要教你怎么从头写按键驱动，特别是如何使用中断。因为中断是引入其他基础知识的前提，后面要讲的这些内容都离不开中断：休眠-唤醒、POLL机制、异步通知、定时器、中断的线程化处理。</p>
+<p>这些基础知识是更复杂的驱动程序的基础要素，以后的复杂驱动也就是对硬件操作的封装彼此不同，但是用到的基础编程知识是一样的。</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="1851-编程思路">18.5.1 编程思路<a href="#1851-编程思路" class="hash-link" aria-label="Direct link to 18.5.1 编程思路" title="Direct link to 18.5.1 编程思路">​</a></h3>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ol>
+<li>设备树相关</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>查看原理图确定按键使用的引脚，再在设备树中添加节点，在节点里指定中断信息。</p>
+<p>例子：</p>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">gpio_keys_100ask {</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">	compatible = &quot;100ask,gpio_key&quot;;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">	gpios = &lt;&amp;gpio5 1 GPIO_ACTIVE_HIGH</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">			 &amp;gpio4 14 GPIO_ACTIVE_HIGH&gt;;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">	pinctrl-names = &quot;default&quot;;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">	pinctrl-0 = &lt;&amp;key1_pinctrl</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">				 &amp;key2_pinctrl&gt;;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">};</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="Copy code to clipboard" title="Copy" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ol>
+<li>驱动代码相关</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>首先要获得中断号，参考上面<a href="/en/docs/Linux-Application-Development-Manual/part-5/chapter-40#_%E5%9C%A8%E4%BB%A3%E7%A0%81%E4%B8%AD%E8%8E%B7%E5%BE%97%E4%B8%AD%E6%96%AD">《18.4.3 在代码中获得中断》</a>；</li>
+<li>然后编写中断处理函数；</li>
+<li>最后request_irq。</li>
+</ul>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="1852-先编写驱动程序">18.5.2 先编写驱动程序<a href="#1852-先编写驱动程序" class="hash-link" aria-label="Direct link to 18.5.2 先编写驱动程序" title="Direct link to 18.5.2 先编写驱动程序">​</a></h3>
+<p>参考：内核源码drivers/input/keyboard/gpio_keys.c</p>
+<p>使用GIT命令载后，源码gpio_key_drv.c位于这个目录下：</p>
+<p>01_all_series_quickstart\</p>
+<p>05_嵌入式Linux驱动开  发基础知识\source\06_gpio_irq\01_simple</p>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ol>
+<li>从设备树获得GPIO</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">count = of_gpio_count(node);</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">for (i = 0; i &lt; count; i++)</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">    gpio_keys_100ask[i].gpio = of_get_gpio_flags(node, i, &amp;flag);</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="Copy code to clipboard" title="Copy" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ol>
+<li>从GPIO获得中断号</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">gpio_keys_100ask[i].irq = gpio_to_irq(gpio_keys_100ask[i].gpio);</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="Copy code to clipboard" title="Copy" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ol>
+<li>申请中断</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">err = request_irq(gpio_keys_100ask[i].irq, gpio_key_isr, \</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">IRQF_TRIGGER_RISING | IRQF_TRIGGER_FALLING, &quot;100ask_gpio_key&quot;, &amp;gpio_keys_100ask[i]);</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="Copy code to clipboard" title="Copy" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ol>
+<li>中断函数</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">static irqreturn_t gpio_key_isr(int irq, void *dev_id)</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">{</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">	struct gpio_key *gpio_key = dev_id;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">	int val;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">	val = gpiod_get_value(gpio_key-&gt;gpiod);</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain" style="display:inline-block"></span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">	printk(&quot;key %d %d\n&quot;, gpio_key-&gt;gpio, val);</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain" style="display:inline-block"></span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">	return IRQ_HANDLED;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">}</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="Copy code to clipboard" title="Copy" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<a id="_Toc197788755"></a>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="186-imx6ull设备树修改及上机实验">18.6 IMX6ULL设备树修改及上机实验<a href="#186-imx6ull设备树修改及上机实验" class="hash-link" aria-label="Direct link to 18.6 IMX6ULL设备树修改及上机实验" title="Direct link to 18.6 IMX6ULL设备树修改及上机实验">​</a></h2>
+<p>本实验的内核版本：</p>
+<p><a href="https://e.coding.net/weidongshan/imx-linux4.9.88%20commit%206020a20c1277c6b511e5673eecd8523e376031c8" target="_blank" rel="noopener noreferrer">https://e.coding.net/weidongshan/imx-linux4.9.88 commit 6020a20c1277c6b511e5673eecd8523e376031c8</a></p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="1861-查看原理图确定按键引脚">18.6.1 查看原理图确定按键引脚<a href="#1861-查看原理图确定按键引脚" class="hash-link" aria-label="Direct link to 18.6.1 查看原理图确定按键引脚" title="Direct link to 18.6.1 查看原理图确定按键引脚">​</a></h3>
+<p><img loading="lazy" src="/en/assets/images/manual-515-08e517f199763529a72fc43fc16bce63.png" width="1028" height="411" class="img_ev3q"></p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="1862-修改设备树">18.6.2 修改设备树<a href="#1862-修改设备树" class="hash-link" aria-label="Direct link to 18.6.2 修改设备树" title="Direct link to 18.6.2 修改设备树">​</a></h3>
+<p>对于一个引脚要用作中断时：</p>
+<ul>
+<li>
+<ol>
+<li>要通过PinCtrl把它设置为GPIO功能；</li>
+<li>表明自身：是哪一个GPIO模块里的哪一个引脚</li>
+</ol>
+</li>
+</ul>
+<p>运行NXP提供的图形化设备树配置工具“i.MX Pins Tool v6”，点击左侧选中GPIO5_IO01、GPIO4_IO14，如下图所示：</p>
+<p><img loading="lazy" src="/en/assets/images/manual-516-d46562c0f930dfda9bd9c525c036fcd7.png" width="1195" height="678" class="img_ev3q"></p>
+<p>按上图右侧去修改设备树arch/arm/boot/dts/100ask_imx6ull-14x14.dts，修改结果放GIT中。</p>
+<p>使用GIT命令载后，源码“修改后100ask_imx6ull-14x14.dts” 位于这个目录下(使用之前要改名为“100ask_imx6ull-14x14.dts”并上传到内核的arch/arm/boot/dts目录)：</p>
+<p>01_all_series_quickstart\</p>
+<p>05_嵌入式Linux驱动开发基础知识\source\06_gpio_irq\01_simple\device_tree\</p>
+<p>主要内容摘录如下：</p>
+<ul>
+<li>GPIO5_IO01的pinctrl定义：</li>
+</ul>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">&amp;iomuxc_snvs {</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">    pinctrl-names = &quot;default_snvs&quot;;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">    pinctrl-0 = &lt;&amp;pinctrl_hog_2&gt;;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">    imx6ul-evk {</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">        key1_100ask: key1_100ask{    /*!&lt; Function assigned for the core: Cortex-A7[ca7] */</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">            fsl,pins = &lt;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">                MX6ULL_PAD_SNVS_TAMPER1__GPIO5_IO01        0x000110A0</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">            &gt;;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">        };</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="Copy code to clipboard" title="Copy" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<ul>
+<li>GPIO4_IO14的pinctrl定义：</li>
+</ul>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">&amp;iomuxc {</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">    pinctrl-names = &quot;default&quot;;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">    pinctrl-0 = &lt;&amp;pinctrl_hog_1&gt;;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">    imx6ul-evk {</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">        key2_100ask: key2_100ask{  /*!&lt; Function assigned for the core: Cortex-A7[ca7] */</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">            fsl,pins = &lt;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">                MX6UL_PAD_NAND_CE1_B__GPIO4_IO14           0x000010B0</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">            &gt;;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">        };</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="Copy code to clipboard" title="Copy" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<p>定义这2个按键的节点：</p>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">gpio_keys_100ask {</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">    compatible = &quot;100ask,gpio_key&quot;;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">    gpios = &lt;&amp;gpio5 1 GPIO_ACTIVE_HIGH</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">             &amp;gpio4 14 GPIO_ACTIVE_LOW&gt;;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">    pinctrl-names = &quot;default&quot;;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">    pinctrl-0 = &lt;&amp;key1_100ask &amp;key2_100ask&gt;;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">};</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="Copy code to clipboard" title="Copy" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<p>把原来的GPIO按键节点禁止掉：</p>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">gpio-keys {</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">	compatible = &quot;gpio-keys&quot;;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">	pinctrl-names = &quot;default&quot;;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">	status = &quot;disabled&quot;;    // 这句是新加的</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="Copy code to clipboard" title="Copy" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="1863-上机实验">18.6.3 上机实验<a href="#1863-上机实验" class="hash-link" aria-label="Direct link to 18.6.3 上机实验" title="Direct link to 18.6.3 上机实验">​</a></h3>
+<p>实验步骤如下：</p>
+<ol>
+<li>编译设备树，把100ask_imx6ull-14x14.dtb放到板子的/boot目录，重启开发板。</li>
+<li>编译驱动程序，安装驱动程序，操作按键。</li>
+</ol>
+<p>大概命令列出如下：</p>
+<ul>
+<li>1. 在电脑上设置工具链</li>
+</ul>
+<div class="language-bash codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-bash codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">export ARCH=arm</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">export CROSS_COMPILE=arm-buildroot-linux-gnueabihf-</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">export PATH=$PATH:/home/book/100ask_imx6ull-sdk/ToolChain/arm-buildroot-linux-gnueabihf_sdk-buildroot/bin</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="Copy code to clipboard" title="Copy" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<ul>
+<li>2. 进入内核目录后执行：</li>
+</ul>
+<div class="language-bash codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-bash codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">make dtbs   // 生成 arch/arm/boot/dts/100ask_imx6ull-14x14.dtb，请把它放到板子的/boot目录</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="Copy code to clipboard" title="Copy" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<ul>
+<li>3. 编译驱动: 先进入驱动程序目录，执行make即可，把生成的gpio_key_drv.ko放到开发板上</li>
+<li>4. 重启开发板后，在板子上执行：</li>
+</ul>
+<div class="language-bash codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-bash codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">[root@100ask:~]# echo &quot;7 4 1 7&quot; &gt; /proc/sys/kernel/printk</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">[root@100ask:~]# insmod gpio_key_drv.ko</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="Copy code to clipboard" title="Copy" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<ul>
+<li>5. 按下、松开按键，可以看到输出信息：</li>
+</ul>
+<div class="language-bash codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-bash codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">[   48.396584] key 110 0</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">[   48.569403] key 110 1</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">[   49.321805] key 129 0</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">[   49.498734] key 129 1</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="Copy code to clipboard" title="Copy" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<p>参考资料</p>
+<ul>
+<li>中断处理不能嵌套：</li>
+</ul>
+<p><a href="https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=e58aa3d2d0cc" target="_blank" rel="noopener noreferrer">https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=e58aa3d2d0cc</a></p>
+<ul>
+<li>genirq: add threaded interrupt handler support</li>
+</ul>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=3aa551c9b4c40018f0e261a178e3d25478dc04a9</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="Copy code to clipboard" title="Copy" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<ul>
+<li>Linux RT(2)－硬实时Linux(RT-Preempt Patch)的中断线程化</li>
+</ul>
+<p><a href="https://www.veryarm.com/110619.html" target="_blank" rel="noopener noreferrer">https://www.veryarm.com/110619.html</a></p>
+<ul>
+<li>Linux中断管理 (1)Linux中断管理机制</li>
+</ul>
+<p><a href="https://www.cnblogs.com/arnoldlu/p/8659981.html" target="_blank" rel="noopener noreferrer">https://www.cnblogs.com/arnoldlu/p/8659981.html</a></p>
+<div class="language-bash codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-bash codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">Breakpoint 1, gpio_keys_gpio_isr (irq=200, dev_id=0x863e6930) at drivers/input/keyboard/gpio_keys.c:393</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">393	{</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">(gdb) bt</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">#0  gpio_keys_gpio_isr (irq=200, dev_id=0x863e6930) at drivers/input/keyboard/gpio_keys.c:393</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">#1  0x80270528 in __handle_irq_event_percpu (desc=0x8616e300, flags=0x86517edc) at kernel/irq/handle.c:145</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">#2  0x802705cc in handle_irq_event_percpu (desc=0x8616e300) at kernel/irq/handle.c:185</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">#3  0x80270640 in handle_irq_event (desc=0x8616e300) at kernel/irq/handle.c:202</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">#4  0x802738e8 in handle_level_irq (desc=0x8616e300) at kernel/irq/chip.c:518</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">#5  0x8026f7f8 in generic_handle_irq_desc (desc=&lt;optimized out&gt;) at ./include/linux/irqdesc.h:150</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">#6  generic_handle_irq (irq=&lt;optimized out&gt;) at kernel/irq/irqdesc.c:590</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">#7  0x805005e0 in mxc_gpio_irq_handler (port=0xc8, irq_stat=2252237104) at drivers/gpio/gpio-mxc.c:274</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">#8  0x805006fc in mx3_gpio_irq_handler (desc=&lt;optimized out&gt;) at drivers/gpio/gpio-mxc.c:291</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">#9  0x8026f7f8 in generic_handle_irq_desc (desc=&lt;optimized out&gt;) at ./include/linux/irqdesc.h:150</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">#10 generic_handle_irq (irq=&lt;optimized out&gt;) at kernel/irq/irqdesc.c:590</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">#11 0x8026fd0c in __handle_domain_irq (domain=0x86006000, hwirq=32, lookup=true, regs=0x86517fb0) at kernel/irq/irqdesc.c:627</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">#12 0x80201484 in handle_domain_irq (regs=&lt;optimized out&gt;, hwirq=&lt;optimized out&gt;, domain=&lt;optimized out&gt;) at ./include/linux/irqdesc.h:168</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">#13 gic_handle_irq (regs=0xc8) at drivers/irqchip/irq-gic.c:364</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">#14 0x8020b704 in __irq_usr () at arch/arm/kernel/entry-armv.S:464</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="Copy code to clipboard" title="Copy" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div></div><footer class="theme-doc-footer docusaurus-mt-lg"><div class="theme-doc-footer-edit-meta-row row"><div class="col"><a href="https://github.com/100askTeam/linux-docs/tree/main/docs/Linux-Application-Development-Manual/part-5/chapter-40.md" target="_blank" rel="noopener noreferrer" class="theme-edit-this-page"><svg fill="currentColor" height="20" width="20" viewBox="0 0 40 40" class="iconEdit_Z9Sw" aria-hidden="true"><g><path d="m34.5 11.7l-3 3.1-6.3-6.3 3.1-3q0.5-0.5 1.2-0.5t1.1 0.5l3.9 3.9q0.5 0.4 0.5 1.1t-0.5 1.2z m-29.5 17.1l18.4-18.5 6.3 6.3-18.4 18.4h-6.3v-6.2z"></path></g></svg>Edit this page</a></div><div class="col lastUpdated_vwxv"></div></div></footer></article><nav class="pagination-nav docusaurus-mt-lg" aria-label="Docs pages"><a class="pagination-nav__link pagination-nav__link--prev" href="/en/docs/Linux-Application-Development-Manual/part-5/chapter-39"><div class="pagination-nav__sublabel">Previous</div><div class="pagination-nav__label">第17章 异常与中断的概念及处理流程</div></a><a class="pagination-nav__link pagination-nav__link--next" href="/en/docs/Linux-Application-Development-Manual/part-5/chapter-41"><div class="pagination-nav__sublabel">Next</div><div class="pagination-nav__label">第19章 驱动程序基石</div></a></nav></div></div><div class="col col--3"><div class="tableOfContents_bqdL thin-scrollbar theme-doc-toc-desktop"><ul class="table-of-contents table-of-contents__left-border"><li><a href="#181-进程线程中断的核心栈" class="table-of-contents__link toc-highlight">18.1 进程、线程、中断的核心：栈</a><ul><li><a href="#1811-1811-arm处理器程序运行的过程" class="table-of-contents__link toc-highlight">18.1.1 18.1.1 ARM处理器程序运行的过程</a></li><li><a href="#1812-程序被中断时怎么保存现场" class="table-of-contents__link toc-highlight">18.1.2 程序被中断时，怎么保存现场</a></li><li><a href="#1813-进程线程的概念" class="table-of-contents__link toc-highlight">18.1.3 进程、线程的概念</a></li></ul></li><li><a href="#182-182-linux系统对中断处理的演进" class="table-of-contents__link toc-highlight">18.2 18.2 Linux系统对中断处理的演进</a><ul><li><a href="#1821-linux对中断的扩展硬件中断软件中断" class="table-of-contents__link toc-highlight">18.2.1 Linux对中断的扩展：硬件中断、软件中断</a></li><li><a href="#1822-中断处理原则1不能嵌  套" class="table-of-contents__link toc-highlight">18.2.2 中断处理原则1：不能嵌套</a></li><li><a href="#1823-中断处理原则2越快越好" class="table-of-contents__link toc-highlight">18.2.3 中断处理原则2：越快越好</a></li><li><a href="#1824-要处理的事情实在太多拆分为上半部下半部" class="table-of-contents__link toc-highlight">18.2.4 要处理的事情实在太多，拆分为：上半部、下半部</a></li><li><a href="#1825-下半部要做的事情耗时不是太长tasklet" class="table-of-contents__link toc-highlight">18.2.5 下半部要做的事情耗时不是太长：tasklet</a></li><li><a href="#1826-下半部要做的事情太多并且很复杂工作队列" class="table-of-contents__link toc-highlight">18.2.6 下半部要做的事情太多并且很复杂：工作队列</a></li><li><a href="#1827-新技术threaded-irq" class="table-of-contents__link toc-highlight">18.2.7 新技术：threaded irq</a></li></ul></li><li><a href="#183-linux中断系统中的重要数据结构" class="table-of-contents__link toc-highlight">18.3 Linux中断系统中的重要数据结构</a><ul><li><a href="#1831-irq_desc数组" class="table-of-contents__link toc-highlight">18.3.1 irq_desc数组</a></li><li><a href="#1832-irqaction结构体" class="table-of-contents__link toc-highlight">18.3.2 irqaction结构体</a></li><li><a href="#1833-irq_data结构体" class="table-of-contents__link toc-highlight">18.3.3 irq_data结构体</a></li><li><a href="#1834-irq_domain结构体" class="table-of-contents__link toc-highlight">18.3.4 irq_domain结构体</a></li><li><a href="#1835-irq_chip结构体" class="table-of-contents__link toc-highlight">18.3.5 irq_chip结构体</a></li></ul></li><li><a href="#184-在设备树中指定中断_在代码中获得中断" class="table-of-contents__link toc-highlight">18.4 在设备树中指定中断_在代码中获得中断</a><ul><li><a href="#1841-设备树里中断节点的语法" class="table-of-contents__link toc-highlight">18.4.1 设备树里中断节点 的语法</a></li><li><a href="#1842-设备树里中断节点的示例" class="table-of-contents__link toc-highlight">18.4.2 设备树里中断节点的示例</a></li><li><a href="#1843-在代码中获得中断" class="table-of-contents__link toc-highlight">18.4.3 在代码中获得中断</a></li></ul></li><li><a href="#185-编写使用中断的按键驱动程序" class="table-of-contents__link toc-highlight">18.5 编写使用中断的按键驱动程序</a><ul><li><a href="#1851-编程思路" class="table-of-contents__link toc-highlight">18.5.1 编程思路</a></li><li><a href="#1852-先编写驱动程序" class="table-of-contents__link toc-highlight">18.5.2 先编写驱动程序</a></li></ul></li><li><a href="#186-imx6ull设备树修改及上机实验" class="table-of-contents__link toc-highlight">18.6 IMX6ULL设备树修改及上机实验</a><ul><li><a href="#1861-查看原理图确定按键引脚" class="table-of-contents__link toc-highlight">18.6.1 查看原理图确定按键引脚</a></li><li><a href="#1862-修改设备树" class="table-of-contents__link toc-highlight">18.6.2 修改设备树</a></li><li><a href="#1863-上机实验" class="table-of-contents__link toc-highlight">18.6.3 上机实验</a></li></ul></li></ul></div></div></div></div></main></div></div></div><footer class="footer footer--dark"><div class="container container-fluid"><div class="row footer__links"><div class="col footer__col"><div class="footer__title">Docs</div><ul class="footer__items clean-list"><li class="footer__item"><a href="https://dongshanpi.com" target="_blank" rel="noopener noreferrer" class="footer__link-item">DongshanPI<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a></li><li class="footer__item"><a href="https://canaan-docs.100ask.net/" target="_blank" rel="noopener noreferrer" class="footer__link-item">Canaan-Docs<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a></li><li class="footer__item"><a href="https://renesas-docs.100ask.net/" target="_blank" rel="noopener noreferrer" class="footer__link-item">Renesas-Docs<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a></li><li class="footer__item"><a href="https://rtos.100ask.net/" target="_blank" rel="noopener noreferrer" class="footer__link-item">RTOS<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a></li><li class="footer__item"><a href="https://tina.100ask.net/" target="_blank" rel="noopener noreferrer" class="footer__link-item">TinaSDK-Docs<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a></li><li class="footer__item"><a href="https://allwinner-docs.100ask.net/" target="_blank" rel="noopener noreferrer" class="footer__link-item">Allwinner-Docs<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a></li><li class="footer__item"><a href="https://aw-r128.100ask.net/" target="_blank" rel="noopener noreferrer" class="footer__link-item">R128-Docs<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a></li></ul></div><div class="col footer__col"><div class="footer__title">Community</div><ul class="footer__items clean-list"><li class="footer__item"><a href="https://space.bilibili.com/275908810" target="_blank" rel="noopener noreferrer" class="footer__link-item">BiliBili<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a></li><li class="footer__item"><a href="https://forums.100ask.net" target="_blank" rel="noopener noreferrer" class="footer__link-item">Stack Overflow<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a></li><li class="footer__item"><a href="https://video.100ask.net/" target="_blank" rel="noopener noreferrer" class="footer__link-item">VideoCenter<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a></li><li class="footer__item"><a href="https://twitter.com/dongshanpi" target="_blank" rel="noopener noreferrer" class="footer__link-item">Twitter<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a></li></ul></div><div class="col footer__col"><div class="footer__title">More</div><ul class="footer__items clean-list"><li class="footer__item"><a href="https://weidongshan.coding.net/public/" target="_blank" rel="noopener noreferrer" class="footer__link-item">Coding<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a></li><li class="footer__item"><a href="https://github.com/100askTeam" target="_blank" rel="noopener noreferrer" class="footer__link-item">GitHub<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a></li><li class="footer__item"><a href="https://gitee.com/weidongshan" target="_blank" rel="noopener noreferrer" class="footer__link-item">Gitee<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a></li></ul></div></div><div class="footer__bottom text--center"><div class="footer__copyright">Copyright © 2026 100askTeam, Inc. Built with Docusaurus.</div></div></div></footer></div>
+</body>
+</html>

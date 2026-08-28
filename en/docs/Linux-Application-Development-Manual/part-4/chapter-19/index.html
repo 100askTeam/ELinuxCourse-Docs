@@ -1,0 +1,274 @@
+<!doctype html>
+<html lang="en" dir="ltr" class="docs-wrapper plugin-docs plugin-id-default docs-version-current docs-doc-page docs-doc-id-Linux-Application-Development-Manual/part-4/chapter-19" data-has-hydrated="false">
+<head>
+<meta charset="UTF-8">
+<meta name="generator" content="Docusaurus v3.0.1">
+<title data-rh="true">第8章 网络通信 | 韦东山Linux</title><meta data-rh="true" name="viewport" content="width=device-width,initial-scale=1"><meta data-rh="true" name="twitter:card" content="summary_large_image"><meta data-rh="true" property="og:image" content="https://linux.100ask.net/en/img/docusaurus-social-card.jpg"><meta data-rh="true" name="twitter:image" content="https://linux.100ask.net/en/img/docusaurus-social-card.jpg"><meta data-rh="true" property="og:url" content="https://linux.100ask.net/en/docs/Linux-Application-Development-Manual/part-4/chapter-19"><meta data-rh="true" property="og:locale" content="en"><meta data-rh="true" property="og:locale:alternate" content="zh_Hans"><meta data-rh="true" name="docusaurus_locale" content="en"><meta data-rh="true" name="docsearch:language" content="en"><meta data-rh="true" name="docusaurus_version" content="current"><meta data-rh="true" name="docusaurus_tag" content="docs-default-current"><meta data-rh="true" name="docsearch:version" content="current"><meta data-rh="true" name="docsearch:docusaurus_tag" content="docs-default-current"><meta data-rh="true" property="og:title" content="第8章 网络通信 | 韦东山Linux"><meta data-rh="true" name="description" content="8.1 网络通信概述"><meta data-rh="true" property="og:description" content="8.1 网络通信概述"><link data-rh="true" rel="icon" href="/en/img/favicon.ico"><link data-rh="true" rel="canonical" href="https://linux.100ask.net/en/docs/Linux-Application-Development-Manual/part-4/chapter-19"><link data-rh="true" rel="alternate" href="https://linux.100ask.net/docs/Linux-Application-Development-Manual/part-4/chapter-19" hreflang="zh-Hans"><link data-rh="true" rel="alternate" href="https://linux.100ask.net/en/docs/Linux-Application-Development-Manual/part-4/chapter-19" hreflang="en"><link data-rh="true" rel="alternate" href="https://linux.100ask.net/docs/Linux-Application-Development-Manual/part-4/chapter-19" hreflang="x-default"><link rel="stylesheet" href="/en/assets/css/styles.f22fa3d1.css">
+<script src="/en/assets/js/runtime~main.5483192b.js" defer="defer"></script>
+<script src="/en/assets/js/main.42c7fc72.js" defer="defer"></script>
+</head>
+<body class="navigation-with-keyboard">
+<script>!function(){function t(t){document.documentElement.setAttribute("data-theme",t)}var e=function(){try{return new URLSearchParams(window.location.search).get("docusaurus-theme")}catch(t){}}()||function(){try{return localStorage.getItem("theme")}catch(t){}}();t(null!==e?e:"light")}(),function(){try{const c=new URLSearchParams(window.location.search).entries();for(var[t,e]of c)if(t.startsWith("docusaurus-data-")){var a=t.replace("docusaurus-data-","data-");document.documentElement.setAttribute(a,e)}}catch(t){}}()</script><div id="__docusaurus"><div role="region" aria-label="Skip to main content"><a class="skipToContent_fXgn" href="#__docusaurus_skipToContent_fallback">Skip to main content</a></div><nav aria-label="Main" class="navbar navbar--fixed-top"><div class="navbar__inner"><div class="navbar__items"><button aria-label="Toggle navigation bar" aria-expanded="false" class="navbar__toggle clean-btn" type="button"><svg width="30" height="30" viewBox="0 0 30 30" aria-hidden="true"><path stroke="currentColor" stroke-linecap="round" stroke-miterlimit="10" stroke-width="2" d="M4 7h22M4 15h22M4 23h22"></path></svg></button><a class="navbar__brand" href="/en/"><div class="navbar__logo"><img src="/en/img/logo.svg" alt="东山PI" class="themedComponent_mlkZ themedComponent--light_NVdE"><img src="/en/img/logo.svg" alt="东山PI" class="themedComponent_mlkZ themedComponent--dark_xIcU"></div><b class="navbar__title text--truncate">韦东山Linux</b></a><a class="navbar__item navbar__link" href="/en/docs/Learn-Linux/LearnStudyPath">嵌入式Linux学习指南</a><a aria-current="page" class="navbar__item navbar__link navbar__link--active" href="/en/docs/Linux-Application-Development-Manual">嵌入式Linux应用开发完全手册</a><a class="navbar__item navbar__link" href="/en/docs/Linux-CourseList/Introduction">嵌入式Linux课程列表</a><a class="navbar__item navbar__link" href="/en/docs/Knowledge-Notes/InputSystem">官方笔记知识库</a><a class="navbar__item navbar__link" href="/en/docs/Study-Notes/intro">学员笔记</a></div><div class="navbar__items navbar__items--right"><a href="https://github.com/100askTeam/linux-docs" target="_blank" rel="noopener noreferrer" class="navbar__item navbar__link">GitHub<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a><div class="toggle_vylO colorModeToggle_DEke"><button class="clean-btn toggleButton_gllP toggleButtonDisabled_aARS" type="button" disabled="" title="Switch between dark and light mode (currently light mode)" aria-label="Switch between dark and light mode (currently light mode)" aria-live="polite"><svg viewBox="0 0 24 24" width="24" height="24" class="lightToggleIcon_pyhR"><path fill="currentColor" d="M12,9c1.65,0,3,1.35,3,3s-1.35,3-3,3s-3-1.35-3-3S10.35,9,12,9 M12,7c-2.76,0-5,2.24-5,5s2.24,5,5,5s5-2.24,5-5 S14.76,7,12,7L12,7z M2,13l2,0c0.55,0,1-0.45,1-1s-0.45-1-1-1l-2,0c-0.55,0-1,0.45-1,1S1.45,13,2,13z M20,13l2,0c0.55,0,1-0.45,1-1 s-0.45-1-1-1l-2,0c-0.55,0-1,0.45-1,1S19.45,13,20,13z M11,2v2c0,0.55,0.45,1,1,1s1-0.45,1-1V2c0-0.55-0.45-1-1-1S11,1.45,11,2z M11,20v2c0,0.55,0.45,1,1,1s1-0.45,1-1v-2c0-0.55-0.45-1-1-1C11.45,19,11,19.45,11,20z M5.99,4.58c-0.39-0.39-1.03-0.39-1.41,0 c-0.39,0.39-0.39,1.03,0,1.41l1.06,1.06c0.39,0.39,1.03,0.39,1.41,0s0.39-1.03,0-1.41L5.99,4.58z M18.36,16.95 c-0.39-0.39-1.03-0.39-1.41,0c-0.39,0.39-0.39,1.03,0,1.41l1.06,1.06c0.39,0.39,1.03,0.39,1.41,0c0.39-0.39,0.39-1.03,0-1.41 L18.36,16.95z M19.42,5.99c0.39-0.39,0.39-1.03,0-1.41c-0.39-0.39-1.03-0.39-1.41,0l-1.06,1.06c-0.39,0.39-0.39,1.03,0,1.41 s1.03,0.39,1.41,0L19.42,5.99z M7.05,18.36c0.39-0.39,0.39-1.03,0-1.41c-0.39-0.39-1.03-0.39-1.41,0l-1.06,1.06 c-0.39,0.39-0.39,1.03,0,1.41s1.03,0.39,1.41,0L7.05,18.36z"></path></svg><svg viewBox="0 0 24 24" width="24" height="24" class="darkToggleIcon_wfgR"><path fill="currentColor" d="M9.37,5.51C9.19,6.15,9.1,6.82,9.1,7.5c0,4.08,3.32,7.4,7.4,7.4c0.68,0,1.35-0.09,1.99-0.27C17.45,17.19,14.93,19,12,19 c-3.86,0-7-3.14-7-7C5,9.07,6.81,6.55,9.37,5.51z M12,3c-4.97,0-9,4.03-9,9s4.03,9,9,9s9-4.03,9-9c0-0.46-0.04-0.92-0.1-1.36 c-0.98,1.37-2.58,2.26-4.4,2.26c-2.98,0-5.4-2.42-5.4-5.4c0-1.81,0.89-3.42,2.26-4.4C12.92,3.04,12.46,3,12,3L12,3z"></path></svg></button></div><div class="navbarSearchContainer_Bca1"></div></div></div><div role="presentation" class="navbar-sidebar__backdrop"></div></nav><div id="__docusaurus_skipToContent_fallback" class="main-wrapper mainWrapper_z2l0"><div class="docsWrapper_hBAB"><button aria-label="Scroll back to top" class="clean-btn theme-back-to-top-button backToTopButton_sjWU" type="button"></button><div class="docRoot_UBD9"><aside class="theme-doc-sidebar-container docSidebarContainer_YfHR"><div class="sidebarViewport_aRkj"><div class="sidebar_njMd"><nav aria-label="Docs sidebar" class="menu thin-scrollbar menu_SIkG"><ul class="theme-doc-sidebar-menu menu__list"><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class="menu__link" href="/en/docs/Linux-Application-Development-Manual">手册首页</a></li><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item menu__list-item--collapsed"><div class="menu__list-item-collapsible"><a class="menu__link menu__link--sublist" aria-expanded="false" href="/en/docs/category/第一篇-学习路线教程介绍资料下载">第一篇 学习路线、教程介绍、资料下载</a><button aria-label="Expand sidebar category &#x27;第一篇 学习路线、教程介绍、资料下载&#x27;" type="button" class="clean-btn menu__caret"></button></div></li><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item menu__list-item--collapsed"><div class="menu__list-item-collapsible"><a class="menu__link menu__link--sublist" aria-expanded="false" href="/en/docs/category/第二篇-ubuntu-基本操作">第二篇 Ubuntu 基本操作</a><button aria-label="Expand sidebar category &#x27;第二篇 Ubuntu 基本操作&#x27;" type="button" class="clean-btn menu__caret"></button></div></li><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item menu__list-item--collapsed"><div class="menu__list-item-collapsible"><a class="menu__link menu__link--sublist" aria-expanded="false" href="/en/docs/category/第三篇-环境搭建与开发板操作">第三篇 环境搭建与开发板操作</a><button aria-label="Expand sidebar category &#x27;第三篇 环境搭建与开发板操作&#x27;" type="button" class="clean-btn menu__caret"></button></div></li><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item"><div class="menu__list-item-collapsible"><a class="menu__link menu__link--sublist menu__link--active" aria-expanded="true" href="/en/docs/category/第四篇-嵌入式-linux-应用开发基础知识">第四篇 嵌入式 Linux 应用开发基础知识</a><button aria-label="Collapse sidebar category &#x27;第四篇 嵌入式 Linux 应用开发基础知识&#x27;" type="button" class="clean-btn menu__caret"></button></div><ul style="display:block;overflow:visible;height:auto" class="menu__list"><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/en/docs/Linux-Application-Development-Manual/part-4/chapter-12">第1章 HelloWorld背后没那么简单</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/en/docs/Linux-Application-Development-Manual/part-4/chapter-13">第2章 GCC编译器的使用</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/en/docs/Linux-Application-Development-Manual/part-4/chapter-14">第3章 Makefile的使用</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/en/docs/Linux-Application-Development-Manual/part-4/chapter-15">第4章 文件IO</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/en/docs/Linux-Application-Development-Manual/part-4/chapter-16">第5章 Framebuffer应用编程</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/en/docs/Linux-Application-Development-Manual/part-4/chapter-17">第6章 文字显示</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/en/docs/Linux-Application-Development-Manual/part-4/chapter-18">第7章 输入系统应用编程</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link menu__link--active" aria-current="page" tabindex="0" href="/en/docs/Linux-Application-Development-Manual/part-4/chapter-19">第8章 网络通信</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/en/docs/Linux-Application-Development-Manual/part-4/chapter-20">第9章 多线程编程</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/en/docs/Linux-Application-Development-Manual/part-4/chapter-21">第10章 I2C应用编程</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/en/docs/Linux-Application-Development-Manual/part-4/chapter-22">第11章 Linux串口应用编程</a></li></ul></li><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item menu__list-item--collapsed"><div class="menu__list-item-collapsible"><a class="menu__link menu__link--sublist" aria-expanded="false" href="/en/docs/category/第五篇-嵌入式-linux-驱动开发基础知识">第五篇 嵌入式 Linux 驱动开发基础知识</a><button aria-label="Expand sidebar category &#x27;第五篇 嵌入式 Linux 驱动开发基础知识&#x27;" type="button" class="clean-btn menu__caret"></button></div></li><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item menu__list-item--collapsed"><div class="menu__list-item-collapsible"><a class="menu__link menu__link--sublist" aria-expanded="false" href="/en/docs/category/第八篇-其他应用">第八篇 其他应用</a><button aria-label="Expand sidebar category &#x27;第八篇 其他应用&#x27;" type="button" class="clean-btn menu__caret"></button></div></li></ul></nav></div></div></aside><main class="docMainContainer_TBSr"><div class="container padding-top--md padding-bottom--lg"><div class="row"><div class="col docItemCol_VOVn"><div class="docItemContainer_Djhp"><article><nav class="theme-doc-breadcrumbs breadcrumbsContainer_Z_bl" aria-label="Breadcrumbs"><ul class="breadcrumbs" itemscope="" itemtype="https://schema.org/BreadcrumbList"><li class="breadcrumbs__item"><a aria-label="Home page" class="breadcrumbs__link" href="/en/"><svg viewBox="0 0 24 24" class="breadcrumbHomeIcon_YNFT"><path d="M10 19v-5h4v5c0 .55.45 1 1 1h3c.55 0 1-.45 1-1v-7h1.7c.46 0 .68-.57.33-.87L12.67 3.6c-.38-.34-.96-.34-1.34 0l-8.36 7.53c-.34.3-.13.87.33.87H5v7c0 .55.45 1 1 1h3c.55 0 1-.45 1-1z" fill="currentColor"></path></svg></a></li><li itemscope="" itemprop="itemListElement" itemtype="https://schema.org/ListItem" class="breadcrumbs__item"><a class="breadcrumbs__link" itemprop="item" href="/en/docs/category/第四篇-嵌入式-linux-应用开发基础知识"><span itemprop="name">第四篇 嵌入式 Linux 应用开发基础知识</span></a><meta itemprop="position" content="1"></li><li itemscope="" itemprop="itemListElement" itemtype="https://schema.org/ListItem" class="breadcrumbs__item breadcrumbs__item--active"><span class="breadcrumbs__link" itemprop="name">第8章 网络通信</span><meta itemprop="position" content="2"></li></ul></nav><div class="tocCollapsible_ETCw theme-doc-toc-mobile tocMobile_ITEo"><button type="button" class="clean-btn tocCollapsibleButton_TO0P">On this page</button></div><div class="theme-doc-markdown markdown"><header><h1>第8章 网络通信</h1></header><a id="_Toc197788648"></a>
+<a id="_Toc197788649"></a>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="81-网络通信概述">8.1 网络通信概述<a href="#81-网络通信概述" class="hash-link" aria-label="Direct link to 8.1 网络通信概述" title="Direct link to 8.1 网络通信概述">​</a></h2>
+<p>本章配套的视频，我没有重新录制，而是修改这个视频得来：2012年录制的“第3期项目视频”中的“第1课第6.1节_一小时学会网络编程_两个简单例子_tcp_udp”。</p>
+<p>在2012年录制的视频，质量一点都不比现在的差。</p>
+<p>悦己之作，方能悦人。很高兴，我从来没降低要求。</p>
+<p>使用GIT下载资料后，视频中涉及的文档和图片，位于如下目录：</p>
+<p>01_all_series_quickstart\</p>
+<p>04_嵌入式Linux应用开发基础知识\doc_pic\08.网络编程source\12_socket\</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="811-ip和端口">8.1.1 IP和端口<a href="#811-ip和端口" class="hash-link" aria-label="Direct link to 8.1.1 IP和端口" title="Direct link to 8.1.1 IP和端口">​</a></h3>
+<p>所有的数据传输，都有三个要素 ：源、目的、长度。</p>
+<p>怎么表示源或者目的呢？请看图 8.1：</p>
+<p><img loading="lazy" src="/en/assets/images/manual-299-9205017dde21541de3155b0d3f0c1f0e.png" width="1344" height="431" class="img_ev3q"></p>
+<p><a id="_Ref108710712"></a>图 8.1 网络源和目的</p>
+<p>所以，在网络传输中需要使用“IP和端口”来表示源或目的。</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="812-网络传输中的2个对象server和client">8.1.2 网络传输中的2个对象：server和client<a href="#812-网络传输中的2个对象server和client" class="hash-link" aria-label="Direct link to 8.1.2 网络传输中的2个对象：server和client" title="Direct link to 8.1.2 网络传输中的2个对象：server和client">​</a></h3>
+<p>我们经常访问网站，这涉及2个对象：网站服务器，浏览器。网站服务器平时安静地呆着，浏览器主动发起数据请求。网站服务器、浏览器可以抽象成2个软件的概念：server程序、client程序。</p>
+<p><img loading="lazy" src="/en/assets/images/manual-300-aee9f9b2fadc56bef4e9950401d9e4c9.png" width="739" height="216" class="img_ev3q"></p>
+<p>图 8.2 网络客户端和服务器</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="813-两种传输方式tcpudp">8.1.3 两种传输方式：TCP/UDP<a href="#813-两种传输方式tcpudp" class="hash-link" aria-label="Direct link to 8.1.3 两种传输方式：TCP/UDP" title="Direct link to 8.1.3 两种传输方式：TCP/UDP">​</a></h3>
+<p>在一般的网络书籍中，网络协议被分为5层，如图 8.3所示：</p>
+<p><img loading="lazy" alt="IMG_256" src="data:image/png;base64,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" width="160" height="250" class="img_ev3q"></p>
+<p><a id="_Ref108710802"></a>图 8.3 网络协议层</p>
+<p>应用层：它是体系结构中的最高层，直接为用户的应用进程（例如电子邮件、文件传输和终端仿真）提供服务。在因特网中的应用层协议很多，如支持万维网应用的HTTP协议，支持电子邮件的SMTP协议，支持文件传送的FTP协议，DNS，POP3，SNMP，Telnet等等。</p>
+<p>运输层：负责向两个主机中进程之间的通信提供服务。</p>
+<p>运输层主要使用以下两种协议：</p>
+<ol>
+<li>传输控制协议TCP(Transmission Control Protocol)：面向连接的，数据传输的单位是报文段，能够提供可靠的交付。</li>
+<li>用户数据包协议UDP(User Datagram Protocol)：无连接的，数据传输的单位是用户数据报，不保证提供可靠的交付，只能提供“尽最大努力交付”。</li>
+</ol>
+<ul>
+<li>网络层：负责将被称为数据包（datagram）的网络层分组从一台主机移动到另一台主机。</li>
+<li>链路层：因特网的网络层通过源和目的地之间的一系列路由器路由数据报。</li>
+<li>物理层：在物理层上所传数据的单位是比特。物理层的任务就是透明地传送比特流。</li>
+</ul>
+<p>这些层对于初学者来说很难理解，我们只需要知道：我们需要使用“运输层”编写应用程序，我们的应用程序位于“应用层”。</p>
+<p>使用“运输层”时，可以选择TCP协议，也可以选择UDP协议。</p>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ol>
+<li><a id="_Toc5259"></a><a id="_Toc13874"></a><a id="_Toc3956"></a><a id="_Toc24781"></a>TCP和UDP 原理上的区别</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>TCP向它的应用程序提供了面向连接的服务。这种服务有2个特点：可靠传输、流量控制（即发送方/接收方速率匹配）。它包括了应用层报文划分为短报文，并提供拥塞控制机制。</p>
+<p>UDP协议向它的应用  程序提供无连接服务。它没有可靠性，没有流量控制，也没有拥塞控制。</p>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ol>
+<li><a id="_Toc18997"></a><a id="_Toc16143"></a><a id="_Toc20640"></a><a id="_Toc31158"></a>为何存在UDP协议</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>既然TCP提供了可靠数据传输服务，而UDP不能提供，那么TCP是否总是首选呢？</p>
+<p>答案是否定的，因为有许多应用更适合用UDP，举个例子：视频通话时，使用UDP，偶尔的丢包、偶尔的花屏时可以忍受的；如果使用TCP，每个数据包都要确保可靠传输，当它出错时就重传，这会导致后续的数据包被阻滞，视频效果反而不好。</p>
+<p>使用UDP时，有如下特点：</p>
+<ol>
+<li>关于何时发送什么数据控制的更为精细</li>
+</ol>
+<p>采用UDP时只要应用进程将数据传递给UDP，UDP就会立即将其传递给网络层。而TCP有重传机制，而不管可靠交付需要多长时间。但是实时应用通常不希望过分的延迟报文段的传送，且能容忍一部分数据丢失。</p>
+<ol>
+<li>无需建立连接，不会引入建立连接时的延迟。</li>
+<li>无连接状态，能支持更多的活跃客户。</li>
+<li>分组首部开销较小。<!-- -->
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ol>
+<li><a id="_Toc29300"></a><a id="_Toc1190"></a><a id="_Toc19794"></a><a id="_Toc18120"></a>TCP/UDP网络通信大概交互图</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+<p>下面我们分别画出运用TCP协议和运用UDP协议的客户端和服务器大概交互图。</p>
+<p><img loading="lazy" alt="IMG_256" src="/en/assets/images/manual-302-83b14cd409844602b68a851a8e92fdb1.png" width="493" height="497" class="img_ev3q"></p>
+<p>图 8.4面向连接的TCP流模式</p>
+<p><img loading="lazy" alt="IMG_256" src="/en/assets/images/manual-303-0b4cb41da9c00e2964538a50036cb44b.png" width="420" height="398" class="img_ev3q"></p>
+<p>图 8.5UDP用户数据包模式</p>
+<a id="_Toc4336"></a>
+<a id="_Toc197788650"></a>
+<a id="_Toc4811"></a>
+<a id="_Toc14731"></a>
+<a id="_Toc19735"></a>
+<a id="_Toc30563"></a>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="82-网络编程主要函数介绍">8.2 网络编程主要函数介绍<a href="#82-网络编程主要函数介绍" class="hash-link" aria-label="Direct link to 8.2 网络编程主要函数介绍" title="Direct link to 8.2 网络编程主要函数介绍">​</a></h2>
+<a id="_Toc21697"></a>
+<a id="_Toc3951"></a>
+<a id="_Toc4842"></a>
+<a id="_Toc9505"></a>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="821-socket函数">8.2.1 socket函数<a href="#821-socket函数" class="hash-link" aria-label="Direct link to 8.2.1 socket函数" title="Direct link to 8.2.1 socket函数">​</a></h3>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">int socket(int domain, int type,int protocol);</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="Copy code to clipboard" title="Copy" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<p>此函数用于创建一个套接字。</p>
+<ul>
+<li><strong>domain</strong>是网络程序所在的主机采用的通讯协族(AF_UNIX和AF_INET等)。<!-- -->
+<ul>
+<li>AF_UNIX只能够用于单一的Unix 系统进程间通  信，而AF_INET是针对Internet的，因而可以允许远程通信使用。</li>
+</ul>
+</li>
+<li><strong>type</strong>是网络程序所采用的通讯协议(SOCK_STREAM,SOCK_DGRAM等)。<!-- -->
+<ul>
+<li>SOCK_STREAM表明用的是TCP 协议，这样会提供按顺序的，可靠，双向，面向连接的比特流。</li>
+<li>SOCK_DGRAM 表明用的是UDP协议，这样只会提不可靠，无连接的通信。</li>
+</ul>
+</li>
+<li>关于<strong>protocol</strong>，由于指定了type，所以这个地方一般只要用0来代替就可以了。</li>
+</ul>
+<p>此函数执行成功时返回文件描述符，失败时返回-1,看errno可知道出错的详细情况。</p>
+<a id="_Toc25504"></a>
+<a id="_Toc24267"></a>
+<a id="_Toc5265"></a>
+<a id="_Toc7640"></a>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="822-bind函数">8.2.2 bind函数<a href="#822-bind函数" class="hash-link" aria-label="Direct link to 8.2.2 bind函数" title="Direct link to 8.2.2 bind函数">​</a></h3>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">int bind(int sockfd, struct sockaddr *my_addr, int addrlen);</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="Copy code to clipboard" title="Copy" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<p>从函数用于将地址绑定到一个套接字。</p>
+<ul>
+<li><strong>sockfd</strong>是由socket函数调用返回的文件描述符。</li>
+<li><strong>my_addr</strong>是一个指向sockaddr的指针。</li>
+<li><strong>addrlen</strong>是sockaddr结构的长度。</li>
+</ul>
+<p>sockaddr的定义：</p>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">struct sockaddr{</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">unisgned short  as_family;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">char sa_data[14];</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">};</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="Copy code to clipboard" title="Copy" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<p>不过由于系统的兼容性,我们一般使用另外一个结构(struct sockaddr_in) 来代替。</p>
+<p>sockaddr_in的定义：</p>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">struct sockaddr_in{</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">unsigned short   sin_family;    </span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">unsigned short     sin_port;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">struct in_addr   sin_addr;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">unsigned char   sin_zero[8];</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">}</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="Copy code to clipboard" title="Copy" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<p>如果使用Internet所以sin_family一般为AF_INET。</p>
+<ul>
+<li>sin_addr设置为INADDR_ANY表示可以和任何的主机通信。</li>
+<li>sin_port是要监听的端口号。</li>
+<li>bind将本地的端口同socket返回的文件描述符捆绑在一起.成功是返回0,失败的情况和socket一样。</li>
+</ul>
+<a id="_Toc17825"></a>
+<a id="_Toc21757"></a>
+<a id="_Toc827"></a>
+<a id="_Toc28123"></a>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="823-listen函数">8.2.3 listen函数<a href="#823-listen函数" class="hash-link" aria-label="Direct link to 8.2.3 listen函数" title="Direct link to 8.2.3 listen函数">​</a></h3>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">int listen(int sockfd,int backlog);</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="Copy code to clipboard" title="Copy" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<p>此函数宣告服务器可以接受连接请求。</p>
+<ul>
+<li><strong>sockfd</strong>是bind后的文件描述符。</li>
+<li><strong>backlog</strong>设置请求排队的最大长度。当有多个客户端程序和服务端相连时，使用这个表示可以介绍的排队长度。</li>
+<li>listen函数将bind的文件描述符变为监听套接字，返回的情况和bind一样。</li>
+</ul>
+<a id="_Toc32652"></a>
+<a id="_Toc32055"></a>
+<a id="_Toc13164"></a>
+<a id="_Toc13091"></a>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="824-accept函数">8.2.4 accept函数<a href="#824-accept函数" class="hash-link" aria-label="Direct link to 8.2.4 accept函数" title="Direct link to 8.2.4 accept函数">​</a></h3>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">int accept(int sockfd, struct sockaddr *addr,int *addrlen);</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="Copy code to clipboard" title="Copy" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<p>服务器使用此函数获得连接请求，并且建立连接。</p>
+<ul>
+<li><strong>sockfd</strong>是listen后的文件描述符。</li>
+<li><strong>addr，addrlen</strong>是用来给客户端的程序填写的,服务器端只要传递指针就可以了， bind,listen和accept是服务器端用的函数。</li>
+<li>accept调用时，服务器端的程序会一直阻塞到有一个客户程序发出了连接。 accept成功时返回最后的服务器端的文件描述符，这个时候服务器端可以向该描述符写信息了，失败时返回-1 。</li>
+</ul>
+<a id="_Toc13403"></a>
+<a id="_Toc15559"></a>
+<a id="_Toc23451"></a>
+<a id="_Toc16444"></a>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="825-connect函数">8.2.5 connect函数<a href="#825-connect函数" class="hash-link" aria-label="Direct link to 8.2.5 connect函数" title="Direct link to 8.2.5 connect函数">​</a></h3>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">int connect(int sockfd, struct sockaddr * serv_addr,int addrlen);</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="Copy code to clipboard" title="Copy" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<p>可以用connect建立一个连接，在connect中所指定的地址是想与之通信的服务器的地址。</p>
+<ul>
+<li><strong>sockfd</strong>是socket函数返回的文件描述符。</li>
+<li><strong>serv_addr</strong>储存了服务器端的连接信息，其中sin_add是服务端的地址。</li>
+<li><strong>addrlen</strong>是serv_addr的长度</li>
+<li>connect函数是客户端用来同服务端连接的.成功时返回0，sockfd是同服务端通讯的文件描述符，失败时返回-1。</li>
+</ul>
+<a id="_Toc9383"></a>
+<a id="_Toc10120"></a>
+<a id="_Toc27486"></a>
+<a id="_Toc14138"></a>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="826-send函数">8.2.6 send函数<a href="#826-send函数" class="hash-link" aria-label="Direct link to 8.2.6 send函数" title="Direct link to 8.2.6 send函数">​</a></h3>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">ssize_t send(int sockfd, const void *buf, size_t len, int flags);</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="Copy code to clipboard" title="Copy" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<ul>
+<li><strong>sockfd</strong> 指定发送端套接字描述符；</li>
+<li><strong>buf</strong> 指明一个存放应用程序要发送数据的缓冲区；</li>
+<li><strong>len</strong> 指明实际要发送的数据的字节数；</li>
+<li><strong>flags</strong> 一般置0。</li>
+<li>客户或者服务器应用程序都用send函数来向TCP连接的另一端发送数据</li>
+</ul>
+<a id="_Toc5994"></a>
+<a id="_Toc25355"></a>
+<a id="_Toc2644"></a>
+<a id="_Toc22410"></a>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="827-recv函数">8.2.7 recv函数<a href="#827-recv函数" class="hash-link" aria-label="Direct link to 8.2.7 recv函数" title="Direct link to 8.2.7 recv函数">​</a></h3>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">ssize_t recv(int sockfd, void *buf, size_t len, int flags);</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="Copy code to clipboard" title="Copy" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<ul>
+<li><strong>sockfd</strong> 指定接收端套接字描述符；</li>
+<li><strong>buf</strong> 指明一个缓冲区，该缓冲区用来存放recv函数接收到的数据；</li>
+<li><strong>len</strong> 指明buf的长度；</li>
+<li><strong>flags</strong> 一般置0。</li>
+<li>客户或者服务器应用程序都用recv函数从TCP连接的另一端接收数据。</li>
+</ul>
+<a id="_Toc19748"></a>
+<a id="_Toc1976"></a>
+<a id="_Toc22380"></a>
+<a id="_Toc8386"></a>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="828-recvfrom函数">8.2.8 recvfrom函数<a href="#828-recvfrom函数" class="hash-link" aria-label="Direct link to 8.2.8 recvfrom函数" title="Direct link to 8.2.8 recvfrom函数">​</a></h3>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">ssize_t recvfrom(int sockfd, void *buf, size_t len, int flags,</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">                        struct sockaddr *src_addr, socklen_t *addrlen);</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="Copy code to clipboard" title="Copy" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<ul>
+<li>recvfrom通常用于无连接套接字，因为此函数可以获得发送者的地址。</li>
+<li><strong>src_addr</strong> 是一个struct sockaddr类型的变量，该变量保存源机的IP地址及端口号。</li>
+<li><strong>addrlen</strong> 常置为sizeof （struct sockaddr）。</li>
+</ul>
+<a id="_Toc18464"></a>
+<a id="_Toc18002"></a>
+<a id="_Toc22674"></a>
+<a id="_Toc4373"></a>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="829-sendto函数">8.2.9 sendto函数<a href="#829-sendto函数" class="hash-link" aria-label="Direct link to 8.2.9 sendto函数" title="Direct link to 8.2.9 sendto函数">​</a></h3>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">ssize_t sendto(int sockfd, const void *buf, size_t len, int flags,</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">                      const struct sockaddr *dest_addr, socklen_t addrlen);</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="Copy code to clipboard" title="Copy" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<ul>
+<li>sendto和send相似，区别在于sendto允许在无连接的套接字上指定一个目标地址。</li>
+<li><strong>dest_addr</strong> 表示目地机的IP地址和端口号信息，</li>
+<li><strong>addrlen</strong> 常常被赋值为sizeof （struct sockaddr）。</li>
+<li><strong>sendto</strong> 函数也返回实际发送的数据字节长度或在出现发送错误时返回-1。</li>
+</ul>
+<a id="_Toc197788651"></a>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="83-tcp编程">8.3 TCP编程<a href="#83-tcp编程" class="hash-link" aria-label="Direct link to 8.3 TCP编程" title="Direct link to 8.3 TCP编程">​</a></h2>
+<p>本章配套的视频，我没有重新录制，而是修改这个视频得来：2012年录制的“第3期项目视频”中的“第1课第6.1节_一小时学会网络编程_两个简单例子_tcp_udp”。</p>
+<p>在2012年录制的视频，质量一点都不比现在的差。</p>
+<p>悦己之作，方能悦人。很高兴，我从来没降低要求。</p>
+<p>使用GIT下载所有源码后，本节源码位于如下目录：</p>
+<p>01_all_series_quickstart\</p>
+<p>04_嵌入式Linux应用开发基础知识\source\12_socket\tcp\</p>
+<a id="_Toc197788652"></a>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="84-udp编程">8.4 UDP编程<a href="#84-udp编程" class="hash-link" aria-label="Direct link to 8.4 UDP编程" title="Direct link to 8.4 UDP编程">​</a></h2>
+<p>本章配套的视频，我没有重新录制，而是修改这个视频得来：2012年录制的“第3期项目视频”中的“第1课第6.1节_一小时学会网络编程_两个简单例子_tcp_udp”。</p>
+<p>使用GIT下载所有源码后，本节源码位于如下目录：</p>
+<p>01_all_series_quickstart\</p>
+<p>04_嵌入式Linux应用开发基础知识\source\12_socket\udp\udp2\</p></div><footer class="theme-doc-footer docusaurus-mt-lg"><div class="theme-doc-footer-edit-meta-row row"><div class="col"><a href="https://github.com/100askTeam/linux-docs/tree/main/docs/Linux-Application-Development-Manual/part-4/chapter-19.md" target="_blank" rel="noopener noreferrer" class="theme-edit-this-page"><svg fill="currentColor" height="20" width="20" viewBox="0 0 40 40" class="iconEdit_Z9Sw" aria-hidden="true"><g><path d="m34.5 11.7l-3 3.1-6.3-6.3 3.1-3q0.5-0.5 1.2-0.5t1.1 0.5l3.9 3.9q0.5 0.4 0.5 1.1t-0.5 1.2z m-29.5 17.1l18.4-18.5 6.3 6.3-18.4 18.4h-6.3v-6.2z"></path></g></svg>Edit this page</a></div><div class="col lastUpdated_vwxv"></div></div></footer></article><nav class="pagination-nav docusaurus-mt-lg" aria-label="Docs pages"><a class="pagination-nav__link pagination-nav__link--prev" href="/en/docs/Linux-Application-Development-Manual/part-4/chapter-18"><div class="pagination-nav__sublabel">Previous</div><div class="pagination-nav__label">第7章 输入系统应用编程</div></a><a class="pagination-nav__link pagination-nav__link--next" href="/en/docs/Linux-Application-Development-Manual/part-4/chapter-20"><div class="pagination-nav__sublabel">Next</div><div class="pagination-nav__label">第9章 多线程编程</div></a></nav></div></div><div class="col col--3"><div class="tableOfContents_bqdL thin-scrollbar theme-doc-toc-desktop"><ul class="table-of-contents table-of-contents__left-border"><li><a href="#81-网络通信概述" class="table-of-contents__link toc-highlight">8.1 网络通信概述</a><ul><li><a href="#811-ip和端口" class="table-of-contents__link toc-highlight">8.1.1 IP和端口</a></li><li><a href="#812-网络传输中的2个对象server和client" class="table-of-contents__link toc-highlight">8.1.2 网络传输中的2个对象：server和client</a></li><li><a href="#813-两种传输方式tcpudp" class="table-of-contents__link toc-highlight">8.1.3 两种传输方式：TCP/UDP</a></li></ul></li><li><a href="#82-网络编程主要函数介绍" class="table-of-contents__link toc-highlight">8.2 网络编程主要函数介绍</a><ul><li><a href="#821-socket函数" class="table-of-contents__link toc-highlight">8.2.1 socket函数</a></li><li><a href="#822-bind函数" class="table-of-contents__link toc-highlight">8.2.2 bind函数</a></li><li><a href="#823-listen函数" class="table-of-contents__link toc-highlight">8.2.3 listen函数</a></li><li><a href="#824-accept函数" class="table-of-contents__link toc-highlight">8.2.4 accept函数</a></li><li><a href="#825-connect函数" class="table-of-contents__link toc-highlight">8.2.5 connect函数</a></li><li><a href="#826-send函数" class="table-of-contents__link toc-highlight">8.2.6 send函数</a></li><li><a href="#827-recv函数" class="table-of-contents__link toc-highlight">8.2.7 recv函数</a></li><li><a href="#828-recvfrom函数" class="table-of-contents__link toc-highlight">8.2.8 recvfrom函数</a></li><li><a href="#829-sendto函数" class="table-of-contents__link toc-highlight">8.2.9 sendto函数</a></li></ul></li><li><a href="#83-tcp编程" class="table-of-contents__link toc-highlight">8.3 TCP编程</a></li><li><a href="#84-udp编程" class="table-of-contents__link toc-highlight">8.4 UDP编程</a></li></ul></div></div></div></div></main></div></div></div><footer class="footer footer--dark"><div class="container container-fluid"><div class="row footer__links"><div class="col footer__col"><div class="footer__title">Docs</div><ul class="footer__items clean-list"><li class="footer__item"><a href="https://dongshanpi.com" target="_blank" rel="noopener noreferrer" class="footer__link-item">DongshanPI<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a></li><li class="footer__item"><a href="https://canaan-docs.100ask.net/" target="_blank" rel="noopener noreferrer" class="footer__link-item">Canaan-Docs<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a></li><li class="footer__item"><a href="https://renesas-docs.100ask.net/" target="_blank" rel="noopener noreferrer" class="footer__link-item">Renesas-Docs<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a></li><li class="footer__item"><a href="https://rtos.100ask.net/" target="_blank" rel="noopener noreferrer" class="footer__link-item">RTOS<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a></li><li class="footer__item"><a href="https://tina.100ask.net/" target="_blank" rel="noopener noreferrer" class="footer__link-item">TinaSDK-Docs<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a></li><li class="footer__item"><a href="https://allwinner-docs.100ask.net/" target="_blank" rel="noopener noreferrer" class="footer__link-item">Allwinner-Docs<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a></li><li class="footer__item"><a href="https://aw-r128.100ask.net/" target="_blank" rel="noopener noreferrer" class="footer__link-item">R128-Docs<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a></li></ul></div><div class="col footer__col"><div class="footer__title">Community</div><ul class="footer__items clean-list"><li class="footer__item"><a href="https://space.bilibili.com/275908810" target="_blank" rel="noopener noreferrer" class="footer__link-item">BiliBili<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a></li><li class="footer__item"><a href="https://forums.100ask.net" target="_blank" rel="noopener noreferrer" class="footer__link-item">Stack Overflow<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a></li><li class="footer__item"><a href="https://video.100ask.net/" target="_blank" rel="noopener noreferrer" class="footer__link-item">VideoCenter<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a></li><li class="footer__item"><a href="https://twitter.com/dongshanpi" target="_blank" rel="noopener noreferrer" class="footer__link-item">Twitter<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a></li></ul></div><div class="col footer__col"><div class="footer__title">More</div><ul class="footer__items clean-list"><li class="footer__item"><a href="https://weidongshan.coding.net/public/" target="_blank" rel="noopener noreferrer" class="footer__link-item">Coding<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a></li><li class="footer__item"><a href="https://github.com/100askTeam" target="_blank" rel="noopener noreferrer" class="footer__link-item">GitHub<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a></li><li class="footer__item"><a href="https://gitee.com/weidongshan" target="_blank" rel="noopener noreferrer" class="footer__link-item">Gitee<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a></li></ul></div></div><div class="footer__bottom text--center"><div class="footer__copyright">Copyright © 2026 100askTeam, Inc. Built with Docusaurus.</div></div></div></footer></div>
+</body>
+</html>

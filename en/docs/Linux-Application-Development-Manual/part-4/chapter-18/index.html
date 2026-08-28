@@ -1,0 +1,808 @@
+<!doctype html>
+<html lang="en" dir="ltr" class="docs-wrapper plugin-docs plugin-id-default docs-version-current docs-doc-page docs-doc-id-Linux-Application-Development-Manual/part-4/chapter-18" data-has-hydrated="false">
+<head>
+<meta charset="UTF-8">
+<meta name="generator" content="Docusaurus v3.0.1">
+<title data-rh="true">第7章 输入系统应用编程 | 韦东山Linux</title><meta data-rh="true" name="viewport" content="width=device-width,initial-scale=1"><meta data-rh="true" name="twitter:card" content="summary_large_image"><meta data-rh="true" property="og:image" content="https://linux.100ask.net/en/img/docusaurus-social-card.jpg"><meta data-rh="true" name="twitter:image" content="https://linux.100ask.net/en/img/docusaurus-social-card.jpg"><meta data-rh="true" property="og:url" content="https://linux.100ask.net/en/docs/Linux-Application-Development-Manual/part-4/chapter-18"><meta data-rh="true" property="og:locale" content="en"><meta data-rh="true" property="og:locale:alternate" content="zh_Hans"><meta data-rh="true" name="docusaurus_locale" content="en"><meta data-rh="true" name="docsearch:language" content="en"><meta data-rh="true" name="docusaurus_version" content="current"><meta data-rh="true" name="docusaurus_tag" content="docs-default-current"><meta data-rh="true" name="docsearch:version" content="current"><meta data-rh="true" name="docsearch:docusaurus_tag" content="docs-default-current"><meta data-rh="true" property="og:title" content="第7章 输入系统应用编程 | 韦东山Linux"><meta data-rh="true" name="description" content="7.1 什么是输入系统"><meta data-rh="true" property="og:description" content="7.1 什么是输入系统"><link data-rh="true" rel="icon" href="/en/img/favicon.ico"><link data-rh="true" rel="canonical" href="https://linux.100ask.net/en/docs/Linux-Application-Development-Manual/part-4/chapter-18"><link data-rh="true" rel="alternate" href="https://linux.100ask.net/docs/Linux-Application-Development-Manual/part-4/chapter-18" hreflang="zh-Hans"><link data-rh="true" rel="alternate" href="https://linux.100ask.net/en/docs/Linux-Application-Development-Manual/part-4/chapter-18" hreflang="en"><link data-rh="true" rel="alternate" href="https://linux.100ask.net/docs/Linux-Application-Development-Manual/part-4/chapter-18" hreflang="x-default"><link rel="stylesheet" href="/en/assets/css/styles.f22fa3d1.css">
+<script src="/en/assets/js/runtime~main.5483192b.js" defer="defer"></script>
+<script src="/en/assets/js/main.42c7fc72.js" defer="defer"></script>
+</head>
+<body class="navigation-with-keyboard">
+<script>!function(){function t(t){document.documentElement.setAttribute("data-theme",t)}var e=function(){try{return new URLSearchParams(window.location.search).get("docusaurus-theme")}catch(t){}}()||function(){try{return localStorage.getItem("theme")}catch(t){}}();t(null!==e?e:"light")}(),function(){try{const c=new URLSearchParams(window.location.search).entries();for(var[t,e]of c)if(t.startsWith("docusaurus-data-")){var a=t.replace("docusaurus-data-","data-");document.documentElement.setAttribute(a,e)}}catch(t){}}()</script><div id="__docusaurus"><div role="region" aria-label="Skip to main content"><a class="skipToContent_fXgn" href="#__docusaurus_skipToContent_fallback">Skip to main content</a></div><nav aria-label="Main" class="navbar navbar--fixed-top"><div class="navbar__inner"><div class="navbar__items"><button aria-label="Toggle navigation bar" aria-expanded="false" class="navbar__toggle clean-btn" type="button"><svg width="30" height="30" viewBox="0 0 30 30" aria-hidden="true"><path stroke="currentColor" stroke-linecap="round" stroke-miterlimit="10" stroke-width="2" d="M4 7h22M4 15h22M4 23h22"></path></svg></button><a class="navbar__brand" href="/en/"><div class="navbar__logo"><img src="/en/img/logo.svg" alt="东山PI" class="themedComponent_mlkZ themedComponent--light_NVdE"><img src="/en/img/logo.svg" alt="东山PI" class="themedComponent_mlkZ themedComponent--dark_xIcU"></div><b class="navbar__title text--truncate">韦东山Linux</b></a><a class="navbar__item navbar__link" href="/en/docs/Learn-Linux/LearnStudyPath">嵌入式Linux学习指南</a><a aria-current="page" class="navbar__item navbar__link navbar__link--active" href="/en/docs/Linux-Application-Development-Manual">嵌入式Linux应用开发完全手册</a><a class="navbar__item navbar__link" href="/en/docs/Linux-CourseList/Introduction">嵌入式Linux课程列表</a><a class="navbar__item navbar__link" href="/en/docs/Knowledge-Notes/InputSystem">官方笔记知识库</a><a class="navbar__item navbar__link" href="/en/docs/Study-Notes/intro">学员笔记</a></div><div class="navbar__items navbar__items--right"><a href="https://github.com/100askTeam/linux-docs" target="_blank" rel="noopener noreferrer" class="navbar__item navbar__link">GitHub<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a><div class="toggle_vylO colorModeToggle_DEke"><button class="clean-btn toggleButton_gllP toggleButtonDisabled_aARS" type="button" disabled="" title="Switch between dark and light mode (currently light mode)" aria-label="Switch between dark and light mode (currently light mode)" aria-live="polite"><svg viewBox="0 0 24 24" width="24" height="24" class="lightToggleIcon_pyhR"><path fill="currentColor" d="M12,9c1.65,0,3,1.35,3,3s-1.35,3-3,3s-3-1.35-3-3S10.35,9,12,9 M12,7c-2.76,0-5,2.24-5,5s2.24,5,5,5s5-2.24,5-5 S14.76,7,12,7L12,7z M2,13l2,0c0.55,0,1-0.45,1-1s-0.45-1-1-1l-2,0c-0.55,0-1,0.45-1,1S1.45,13,2,13z M20,13l2,0c0.55,0,1-0.45,1-1 s-0.45-1-1-1l-2,0c-0.55,0-1,0.45-1,1S19.45,13,20,13z M11,2v2c0,0.55,0.45,1,1,1s1-0.45,1-1V2c0-0.55-0.45-1-1-1S11,1.45,11,2z M11,20v2c0,0.55,0.45,1,1,1s1-0.45,1-1v-2c0-0.55-0.45-1-1-1C11.45,19,11,19.45,11,20z M5.99,4.58c-0.39-0.39-1.03-0.39-1.41,0 c-0.39,0.39-0.39,1.03,0,1.41l1.06,1.06c0.39,0.39,1.03,0.39,1.41,0s0.39-1.03,0-1.41L5.99,4.58z M18.36,16.95 c-0.39-0.39-1.03-0.39-1.41,0c-0.39,0.39-0.39,1.03,0,1.41l1.06,1.06c0.39,0.39,1.03,0.39,1.41,0c0.39-0.39,0.39-1.03,0-1.41 L18.36,16.95z M19.42,5.99c0.39-0.39,0.39-1.03,0-1.41c-0.39-0.39-1.03-0.39-1.41,0l-1.06,1.06c-0.39,0.39-0.39,1.03,0,1.41 s1.03,0.39,1.41,0L19.42,5.99z M7.05,18.36c0.39-0.39,0.39-1.03,0-1.41c-0.39-0.39-1.03-0.39-1.41,0l-1.06,1.06 c-0.39,0.39-0.39,1.03,0,1.41s1.03,0.39,1.41,0L7.05,18.36z"></path></svg><svg viewBox="0 0 24 24" width="24" height="24" class="darkToggleIcon_wfgR"><path fill="currentColor" d="M9.37,5.51C9.19,6.15,9.1,6.82,9.1,7.5c0,4.08,3.32,7.4,7.4,7.4c0.68,0,1.35-0.09,1.99-0.27C17.45,17.19,14.93,19,12,19 c-3.86,0-7-3.14-7-7C5,9.07,6.81,6.55,9.37,5.51z M12,3c-4.97,0-9,4.03-9,9s4.03,9,9,9s9-4.03,9-9c0-0.46-0.04-0.92-0.1-1.36 c-0.98,1.37-2.58,2.26-4.4,2.26c-2.98,0-5.4-2.42-5.4-5.4c0-1.81,0.89-3.42,2.26-4.4C12.92,3.04,12.46,3,12,3L12,3z"></path></svg></button></div><div class="navbarSearchContainer_Bca1"></div></div></div><div role="presentation" class="navbar-sidebar__backdrop"></div></nav><div id="__docusaurus_skipToContent_fallback" class="main-wrapper mainWrapper_z2l0"><div class="docsWrapper_hBAB"><button aria-label="Scroll back to top" class="clean-btn theme-back-to-top-button backToTopButton_sjWU" type="button"></button><div class="docRoot_UBD9"><aside class="theme-doc-sidebar-container docSidebarContainer_YfHR"><div class="sidebarViewport_aRkj"><div class="sidebar_njMd"><nav aria-label="Docs sidebar" class="menu thin-scrollbar menu_SIkG"><ul class="theme-doc-sidebar-menu menu__list"><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class="menu__link" href="/en/docs/Linux-Application-Development-Manual">手册首页</a></li><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item menu__list-item--collapsed"><div class="menu__list-item-collapsible"><a class="menu__link menu__link--sublist" aria-expanded="false" href="/en/docs/category/第一篇-学习路线教程介绍资料下载">第一篇 学习路线、教程介绍、资料下载</a><button aria-label="Expand sidebar category &#x27;第一篇 学习路线、教程介绍、资料下载&#x27;" type="button" class="clean-btn menu__caret"></button></div></li><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item menu__list-item--collapsed"><div class="menu__list-item-collapsible"><a class="menu__link menu__link--sublist" aria-expanded="false" href="/en/docs/category/第二篇-ubuntu-基本操作">第二篇 Ubuntu 基本操作</a><button aria-label="Expand sidebar category &#x27;第二篇 Ubuntu 基本操作&#x27;" type="button" class="clean-btn menu__caret"></button></div></li><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item menu__list-item--collapsed"><div class="menu__list-item-collapsible"><a class="menu__link menu__link--sublist" aria-expanded="false" href="/en/docs/category/第三篇-环境搭建与开发板操作">第三篇 环境搭建与开发板操作</a><button aria-label="Expand sidebar category &#x27;第三篇 环境搭建与开发板操作&#x27;" type="button" class="clean-btn menu__caret"></button></div></li><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item"><div class="menu__list-item-collapsible"><a class="menu__link menu__link--sublist menu__link--active" aria-expanded="true" href="/en/docs/category/第四篇-嵌入式-linux-应用开发基础知识">第四篇 嵌入式 Linux 应用开发基础知识</a><button aria-label="Collapse sidebar category &#x27;第四篇 嵌入式 Linux 应用开发基础知识&#x27;" type="button" class="clean-btn menu__caret"></button></div><ul style="display:block;overflow:visible;height:auto" class="menu__list"><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/en/docs/Linux-Application-Development-Manual/part-4/chapter-12">第1章 HelloWorld背后没那么简单</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/en/docs/Linux-Application-Development-Manual/part-4/chapter-13">第2章 GCC编译器的使用</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/en/docs/Linux-Application-Development-Manual/part-4/chapter-14">第3章 Makefile的使用</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/en/docs/Linux-Application-Development-Manual/part-4/chapter-15">第4章 文件IO</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/en/docs/Linux-Application-Development-Manual/part-4/chapter-16">第5章 Framebuffer应用编程</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/en/docs/Linux-Application-Development-Manual/part-4/chapter-17">第6章 文字显示</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link menu__link--active" aria-current="page" tabindex="0" href="/en/docs/Linux-Application-Development-Manual/part-4/chapter-18">第7章 输入系统应用编程</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/en/docs/Linux-Application-Development-Manual/part-4/chapter-19">第8章 网络通信</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/en/docs/Linux-Application-Development-Manual/part-4/chapter-20">第9章 多线程编程</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/en/docs/Linux-Application-Development-Manual/part-4/chapter-21">第10章 I2C应用编程</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/en/docs/Linux-Application-Development-Manual/part-4/chapter-22">第11章 Linux串口应用编程</a></li></ul></li><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item menu__list-item--collapsed"><div class="menu__list-item-collapsible"><a class="menu__link menu__link--sublist" aria-expanded="false" href="/en/docs/category/第五篇-嵌入式-linux-驱动开发基础知识">第五篇 嵌入式 Linux 驱动开发基础知识</a><button aria-label="Expand sidebar category &#x27;第五篇 嵌入式 Linux 驱动开发基础知识&#x27;" type="button" class="clean-btn menu__caret"></button></div></li><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item menu__list-item--collapsed"><div class="menu__list-item-collapsible"><a class="menu__link menu__link--sublist" aria-expanded="false" href="/en/docs/category/第八篇-其他应用">第八篇 其他应用</a><button aria-label="Expand sidebar category &#x27;第八篇 其他应用&#x27;" type="button" class="clean-btn menu__caret"></button></div></li></ul></nav></div></div></aside><main class="docMainContainer_TBSr"><div class="container padding-top--md padding-bottom--lg"><div class="row"><div class="col docItemCol_VOVn"><div class="docItemContainer_Djhp"><article><nav class="theme-doc-breadcrumbs breadcrumbsContainer_Z_bl" aria-label="Breadcrumbs"><ul class="breadcrumbs" itemscope="" itemtype="https://schema.org/BreadcrumbList"><li class="breadcrumbs__item"><a aria-label="Home page" class="breadcrumbs__link" href="/en/"><svg viewBox="0 0 24 24" class="breadcrumbHomeIcon_YNFT"><path d="M10 19v-5h4v5c0 .55.45 1 1 1h3c.55 0 1-.45 1-1v-7h1.7c.46 0 .68-.57.33-.87L12.67 3.6c-.38-.34-.96-.34-1.34 0l-8.36 7.53c-.34.3-.13.87.33.87H5v7c0 .55.45 1 1 1h3c.55 0 1-.45 1-1z" fill="currentColor"></path></svg></a></li><li itemscope="" itemprop="itemListElement" itemtype="https://schema.org/ListItem" class="breadcrumbs__item"><a class="breadcrumbs__link" itemprop="item" href="/en/docs/category/第四篇-嵌入式-linux-应用开发基础知识"><span itemprop="name">第四篇 嵌入式 Linux 应用开发基础知识</span></a><meta itemprop="position" content="1"></li><li itemscope="" itemprop="itemListElement" itemtype="https://schema.org/ListItem" class="breadcrumbs__item breadcrumbs__item--active"><span class="breadcrumbs__link" itemprop="name">第7章 输入系统应用编程</span><meta itemprop="position" content="2"></li></ul></nav><div class="tocCollapsible_ETCw theme-doc-toc-mobile tocMobile_ITEo"><button type="button" class="clean-btn tocCollapsibleButton_TO0P">On this page</button></div><div class="theme-doc-markdown markdown"><header><h1>第7章 输入系统应用编程</h1></header><a id="_Toc197788642"></a>
+<a id="_Toc197788643"></a>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="71-什么是输入系统">7.1 什么是输入系统<a href="#71-什么是输入系统" class="hash-link" aria-label="Direct link to 7.1 什么是输入系统" title="Direct link to 7.1 什么是输入系统">​</a></h2>
+<ul>
+<li>先来了解什么是输入设备？</li>
+</ul>
+<p>常见的输入设备有键盘、鼠标、遥控杆、书写板、触摸屏等等,用户通过这些输入设备与Linux系统进行数据交换。</p>
+<ul>
+<li>什么是输入系统？</li>
+</ul>
+<p>输入设备种类繁多，能否统一它们的接口？既在驱动层面统一，也在应用程序层面统一？可以的。</p>
+<p>Linux系统为了统一管理这些输入设备，实现了一套能兼容所有输入设备的框架：输入系统。驱动开发人员基于这套框架开发出程序，应用开发人员就可以使用统一的API去使用设备。</p>
+<a id="_Toc197788644"></a>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="72-输入系统框架及调试">7.2 输入系统框架及调试<a href="#72-输入系统框架及调试" class="hash-link" aria-label="Direct link to 7.2 输入系统框架及调试" title="Direct link to 7.2 输入系统框架及调试">​</a></h2>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="721-框架概述">7.2.1 框架概述<a href="#721-框架概述" class="hash-link" aria-label="Direct link to 7.2.1 框架概述" title="Direct link to 7.2.1 框架概述">​</a></h3>
+<p>作为应用开 发人员，可以只基于API使用输入子系统。但是了解内核中输入子系统的框架、了解数据流程，有助于解决开发过程中碰到的硬件问题、驱动问题。</p>
+<p>输入系统框架如图 7.1所示：</p>
+<p><img loading="lazy" src="/en/assets/images/manual-271-8c388926faa335eb61c3043248d3dee6.png" width="691" height="665" class="img_ev3q"></p>
+<p><a id="_Ref108708430"></a>图 7.1 输入系统框架</p>
+<p>假设用户程序直接访问/dev/input/event0设备节点，或者使用tslib访问设备节点，数据的流程如下：</p>
+<ol>
+<li>APP发起读操作，若无数据则休眠；</li>
+<li>用户操作设备，硬件上产生中断；</li>
+<li>输入系统驱动层对应的驱动程序处理中断：</li>
+</ol>
+<p>读取到数据，转换为标准的输入事件，向核心层汇报。</p>
+<p>所谓输入事件就是一个“struct input_event”结构体。</p>
+<ol>
+<li>核心层可以决定把输入事件转发给上面哪个handler来处理：</li>
+</ol>
+<p>从handler的名字来看，它就是用来处输入操作的。有多种handler，比如：evdev_handler、kbd_handler、joydev_handler等等。</p>
+<p>最常用的是evdev_handler：它只是把input_event结构体保存在内核buffer等，APP来读取时就原原本本地返回。它支持多个APP同时访问输入设备，每个APP都可以获得同一份输入事件。</p>
+<p>当APP正在等待数据时，evdev_handler会把它唤醒，这样APP就可以返回数据。</p>
+<ol>
+<li>APP对输入事件的处理：</li>
+</ol>
+<p>APP获得数据的方法有2种：直接访问设备节点(比如/dev/input/event0,1,2,...)，或者通过tslib、libinput这类库来间接访问设备节点。这些库简化了对数据的处理。</p>
+<p>要想深入理解整个输入系统，就必须研究内核的输入系统，这在后续的“驱动大全”中会讲解。</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="722-编写app需要掌握的知识">7.2.2 编写APP需要掌握的知识<a href="#722-编写app需  要掌握的知识" class="hash-link" aria-label="Direct link to 7.2.2 编写APP需要掌握的知识" title="Direct link to 7.2.2 编写APP需要掌握的知识">​</a></h3>
+<p>基于编写应用程序的角度，只需要理解这些内容：</p>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ol>
+<li>内核中怎么表示一个输入设备？</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>使用input_dev结构体来表示输入设备，它的内容如图 7.2：</p>
+<p><img loading="lazy" src="/en/assets/images/manual-272-d81ecc611b5770e65ea9d251f62a8a65.png" width="730" height="332" class="img_ev3q"></p>
+<p><a id="_Ref108708501"></a>图 7.2 输入设备结构体</p>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ol>
+<li>APP可以得到什么数据？</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>可以得到一系列的输入事件，就是一个一个“struct input_event”，它定义如图 7.3：</p>
+<p><img loading="lazy" src="/en/assets/images/manual-273-1ce2e285160a99ae0fd43d12f7c514f9.png" width="768" height="276" class="img_ev3q"></p>
+<p><a id="_Ref108708550"></a>图 7.3 输入事件结构体</p>
+<p>每个输入事件input_event中都含有发生时间：timeval表示的是“自系统启动以来过了多少时间”，它是一个结构体，含有“tv_sec、tv_usec”两项(即秒、微秒)。</p>
+<p>输入事件input_event中更重要的是：type(哪类事件)、code(哪个事件)、value(事件值)，细讲如下：</p>
+<ol>
+<li>type：表示哪类事件</li>
+</ol>
+<p>比如EV_KEY表示按键类、EV_REL表示相对位移(比如鼠标)，EV_ABS表示绝对位置(比如触摸屏)。有图 7.4这几类事件(参考Linux内核头文件)：</p>
+<p><img loading="lazy" src="/en/assets/images/manual-274-17b42a69238de69efa1e4e3779ef2222.png" width="541" height="371" class="img_ev3q"></p>
+<p><a id="_Ref108708671"></a>图 7.4 EV_TYPE</p>
+<ol>
+<li>code：表示该类事件下的哪一个事件</li>
+</ol>
+<p>比如对于EV_KEY(按键)类事件，它表示键盘。键盘上有很多按键，比如数字键1、2、3，字母键A、B、C里等。所以可以有图 7.5这些事件：</p>
+<p><img loading="lazy" src="/en/assets/images/manual-275-0e7718b4be696e59d6138b4b5a3bd5fe.png" width="443" height="339" class="img_ev3q"></p>
+<p><a id="_Ref108708662"></a>图 7.5 按键事件</p>
+<p>对于触摸屏，它提供的是绝对位置信息，有X方向、Y方向，还有压力值。所以code值有图 7.6这些：</p>
+<p><img loading="lazy" src="data:image/png;base64,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" width="297" height="146" class="img_ev3q"></p>
+<p><a id="_Ref108708691"></a>图 7.6 绝对位置信息</p>
+<ol>
+<li>value：表示事件值</li>
+</ol>
+<p>对于按键，它的value可以是0(表示按键被按下)、1(表示按键被松开)、2(表示长按)；</p>
+<p>对于触摸屏，它的value就是坐标值、压力值。</p>
+<ol>
+<li>事件之间的界线</li>
+</ol>
+<p>APP读取数据时，可以得到一个或多个数据，比如一个触摸屏的一个触点会上报X、Y位置信息，也可能会上报压力值。</p>
+<ul>
+<li>
+<ul>
+<li>APP怎么知道它已经读到了完整的数据？</li>
+</ul>
+</li>
+</ul>
+<p>驱动程序上报完一系列的数据后，会上报一个“同步事件”，表示数据上报完毕。APP读到“同步事件”时，就知道已经读完了当前的数据。</p>
+<p>同步事件也是一个input_event结构体，它的type、code、value三项都是0。</p>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ol>
+<li>输入子系统支持完整的API操作</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>支持这些机制：阻塞、非阻塞、POLL/SELECT、异步通知。</p>
+<p>注意：如果你想深入理解上述机制，需要学习以下内容：</p>
+<ul>
+<li>《第5篇 嵌入式Linux驱动开发基础知识 <a href="/en/docs/Linux-Application-Development-Manual/part-5/chapter-41#_%E7%AC%AC%E5%8D%81%E4%B9%9D%E7%AB%A0_%E9%A9%B1%E5%8A%A8%E7%A8%8B%E5%BA%8F%E5%9F%BA%E7%9F%B3">第十九章 驱动程序基石》</a></li>
+</ul>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="723-调试技巧">7.2.3 调试技巧<a href="#723-调试技巧" class="hash-link" aria-label="Direct link to 7.2.3 调试技巧" title="Direct link to 7.2.3 调试技巧">​</a></h3>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ol>
+<li>确定设备信息</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>输入设备的设备节点名为/dev/input/eventX(也可能是/dev/eventX，X表示0、1、2等数字)。查看设备节点，可以执行以下命令：</p>
+<div class="language-bash codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-bash codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">ls /dev/input/* -l</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="Copy code to clipboard" title="Copy" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<p>或</p>
+<div class="language-bash codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-bash codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">ls /dev/event* -l</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="Copy code to clipboard" title="Copy" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<p>可以看到图 7.7类似下面的信息：</p>
+<p><img loading="lazy" src="/en/assets/images/manual-277-eacdab700d7dc06f5c014eec5776aa8d.png" width="633" height="142" class="img_ev3q"></p>
+<p><a id="_Ref108708862"></a>图 7.7 查找设备节点</p>
+<p>怎么知道这些设备节点对应什么硬件呢？可以在板子上执行以下命令：</p>
+<div class="language-bash codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-bash codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">cat /proc/bus/input/devices</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="Copy code to clipboard" title="Copy" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<p>这条指令的含义就是获取与event对应的相关设备信息，可以看到类似以下的结果：</p>
+<p><img loading="lazy" src="/en/assets/images/manual-278-e3466ac99cce5a2b0eaf933cb14779a7.png" width="561" height="325" class="img_ev3q"></p>
+<p>图 7.8 查看设备信息</p>
+<p>那么这里的I、N、P、S、U、H、B对应的每一行是什么含义呢？</p>
+<ol>
+<li>I<!-- -->:id<!-- --> of the device(设备ID)</li>
+</ol>
+<p>该参数由结构体struct input_id来进行描述，驱动程序中会定义这样的结构体：</p>
+<p><img loading="lazy" src="data:image/png;base64,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" width="326" height="159" class="img_ev3q"></p>
+<p>图 7.9 设备ID</p>
+<ol>
+<li>N<!-- -->:name<!-- --> of the device</li>
+</ol>
+<p>设备名称</p>
+<ol>
+<li>P<!-- -->:physical<!-- --> path to the device in the system hierarchy</li>
+</ol>
+<p>系统层次结构中设备的物理路径。</p>
+<ol>
+<li>S<!-- -->:sysfs<!-- --> path</li>
+</ol>
+<p>位于sys文件系统的路径</p>
+<ol>
+<li>U<!-- -->:unique<!-- --> identification code for the device(if device has it)</li>
+</ol>
+<p>设备的唯一标识码</p>
+<ol>
+<li>H<!-- -->:list<!-- --> of input handles associated with the device.</li>
+</ol>
+<p>与设备关联的输入句柄列表。</p>
+<ol>
+<li>B<!-- -->:bitmaps<!-- -->(位图)</li>
+</ol>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">PROP:device properties and quirks(设备属性)</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">EV:types of events supported by the device(设备支持的事件类型)</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">KEY:keys/buttons this device has(此设备具有的键/按钮)</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">MSC:miscellaneous events supported by the device(设备支持的其他事件)</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">LED:leds present on the device(设备上的指示灯)</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="Copy code to clipboard" title="Copy" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<p>值得注意的是B位图，比如上图中“B: EV=b”用来表示该设备支持哪类输入事件。b的二进制是1011，bit0、1、3为1，表示该设备支持0、1、3这三类事件，即EV_SYN、EV_KEY、EV_ABS。</p>
+<p>再举一个例子，“B: ABS=2658000 3”如何理解？</p>
+<p>它表示该设备支持EV_ABS这一类事件中的哪一些事件。这是2个32位的数字：0x2658000、0x3，高位在前低位在后，组成一个64位的数字：“0x2658000,00000003”，数值为1的位有：0、1、47、48、50、53、54，即：0、1、0x2f、0x30、0x32、0x35、0x36，对应以下这些宏：</p>
+<p><img loading="lazy" src="/en/assets/images/manual-280-850004009129c38379ce014b1ba6930a.png" width="1082" height="365" class="img_ev3q"></p>
+<p>图 7.10 绝对信息宏定义</p>
+<p>即这款输入设备支持上述的ABS_X、ABS_Y、ABS_MT_SLOT、ABS_MT_TOUCH_MAJOR、ABS_MT_WIDTH_MAJOR、ABS_MT_POSITION_X、ABS_MT_POSITION_Y这些绝对位置事件(它们的含义在后面讲解电容屏时再细讲)。</p>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ol>
+<li>使用命令读取数据</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>调试输入系统时，直接执行类似下面的命令，然后操作对应的输入设备即可读出数据：</p>
+<div class="language-bash codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-bash codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">hexdump /dev/input/event0</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="Copy code to clipboard" title="Copy" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<p>在开发板上执行上述命令之后，点击按键或是点击触摸屏，就会打印图 7.11信息：</p>
+<p><img loading="lazy" src="/en/assets/images/manual-281-529039425846193ee701d4fc2a26ebce.png" width="977" height="548" class="img_ev3q"></p>
+<p><a id="_Ref108709071"></a>图 7.11 按键或触摸打印信息</p>
+<p>图 7.11中的type为3，对应EV_ABS；code为0x35对应ABS_MT_POSITION_X；code为0x36对应ABS_MT_POSITION_Y。</p>
+<p>上图中还发现有2个同步事件：它的type、code、value都为0。表示电容屏上报了2次完整的数据。</p>
+<a id="_Toc197788645"></a>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="73-不使用库的应用程序示例">7.3 不使用库的应用程序示例<a href="#73-不使用库的应用程序示例" class="hash-link" aria-label="Direct link to 7.3 不使用库的应用程序示例" title="Direct link to 7.3 不使用库的应用程序示例">​</a></h2>
+<p>使用GIT下载所有源码后，本节源码位于如下目录：</p>
+<p>01_all_series_quickstart\</p>
+<p>04_嵌入式Linux应用开发基础知识\</p>
+<p>source\11_input\01_app_demo\</p>
+<p>有些同学反馈：老师，你不从0写代码，我都不知道怎么写程序了。基础好的同学直接看这个文档，我录完这个视频后会补齐这个文档，你能看到这部分手册时肯定已经齐全了。</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="731-输入系统支持完整的api操作">7.3.1 输入系统支持完整的API操作<a href="#731-输入系统支持完整的api操作" class="hash-link" aria-label="Direct link to 7.3.1 输入系统支持完整的API操作" title="Direct link to 7.3.1 输入系统支持完整的API操作">​</a></h3>
+<p>支持这些机制：阻塞、非阻塞、POLL/SELECT、异步通知。</p>
+<p>注意：如果你想深入理解上述机制，需要学习以下内容：</p>
+<p>作为APP开发人员，即使没有深入理解这些机制，也是可以编写出程序的。</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="732-app访问硬件的4种方式妈妈怎么知道孩子醒了">7.3.2 APP访问硬件的4种方式：妈妈怎么知道孩子醒了<a href="#732-app访问硬件的4种方式妈妈怎么知道孩子醒了" class="hash-link" aria-label="Direct link to 7.3.2 APP访问硬件的4种方式：妈妈怎么知道孩子醒了" title="Direct link to 7.3.2 APP访问硬件的4种方式：妈妈怎么知道孩子醒了">​</a></h3>
+<p><img loading="lazy" src="/en/assets/images/manual-282-c51825c940f1fa0b1e152832678df22b.png" width="986" height="783" class="img_ev3q"></p>
+<p>图 7.12 举例示意图</p>
+<p>妈妈怎么知道卧室里小孩醒了？</p>
+<ol>
+<li>时不时进房间看一下：查询方式</li>
+</ol>
+<p>简单，但是累</p>
+<ol>
+<li>进去房间陪小孩一起睡觉，小孩醒了会吵醒她：休眠-唤醒</li>
+</ol>
+<p>不累，但是妈妈干不了活了</p>
+<ol>
+<li>妈妈要干很多活，但是可以陪小孩睡一会，定个闹钟：poll方式</li>
+</ol>
+<p>要浪费点时间，但是可以继续干活。</p>
+<p>妈妈要么是被小孩吵醒，要么是被闹钟吵醒。</p>
+<ol>
+<li>妈妈在客厅干活，小孩醒了他会自己走出房门告诉妈妈：异步通知</li>
+</ol>
+<p>妈妈、小孩互不耽误。</p>
+<p>这4种方法没有优劣之分，在不同的场合使用不同的方法。</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="733-获取设备信息">7.3.3 获  取设备信息<a href="#733-获取设备信息" class="hash-link" aria-label="Direct link to 7.3.3 获取设备信息" title="Direct link to 7.3.3 获取设备信息">​</a></h3>
+<p>通过ioctl获取设备信息，ioctl的参数如下：</p>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">int ioctl(int fd, unsigned long request, ...);</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="Copy code to clipboard" title="Copy" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<p>有些驱动程序对request的格式有要求，它的格式如下：</p>
+<p><img loading="lazy" src="/en/assets/images/manual-283-1c233618e5460aa4aef948b97a2ed193.png" width="573" height="186" class="img_ev3q"></p>
+<p>图 7.13 request格式要求</p>
+<p>比如dir为_IOC_READ(即2)时，表示APP要读数据；为_IOC_WRITE(即4)时，表示APP要写数据。</p>
+<ul>
+<li>size表示这个ioctl能传输数据的最大字节数。</li>
+<li>type、nr的含义由具体的驱动程序决定。</li>
+</ul>
+<p>比如要读取输入设备的evbit时，ioctl的request要写为“EVIOCGBIT(0, size)”，size的大小可以由你决定：你想读多少字节就设置为多少。这个宏的定义如下：</p>
+<p><img loading="lazy" src="data:image/png;base64,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" width="1070" height="32" class="img_ev3q"></p>
+<p>图 7.14 size宏定义</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="734-查询方式">7.3.4 查询方式<a href="#734-查询方式" class="hash-link" aria-label="Direct link to 7.3.4 查询方式" title="Direct link to 7.3.4 查询方式">​</a></h3>
+<p>APP调用open函数时，传入“O_NONBLOCK”表示“非阻塞”。</p>
+<p>APP调用read函数读取数据时，如果驱动程序中有数据，那么APP的read函数会返回数据，否则也会立刻返回错误。</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="735-休眠-唤醒方式">7.3.5 休眠-唤醒方式<a href="#735-休眠-唤醒方式" class="hash-link" aria-label="Direct link to 7.3.5 休眠-唤醒方式" title="Direct link to 7.3.5 休眠-唤醒方式">​</a></h3>
+<p>APP调用open函数时，不要传入“O_NONBLOCK”。</p>
+<p>APP调用read函数读取数据时，如果驱动程序中有数据，那么APP的read函数会返回数据；否则APP就会在内核态休眠，当有数据时驱动程序会把APP唤醒，read函数恢复执行并返回数据给APP。</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="736-pollselect方式">7.3.6 POLL/SELECT方式<a href="#736-pollselect方式" class="hash-link" aria-label="Direct link to 7.3.6 POLL/SELECT方式" title="Direct link to 7.3.6 POLL/SELECT方式">​</a></h3>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ol>
+<li>功能介绍</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>POLL机制、SELECT机制是完全一样的，只是APP接口函数不一样。</p>
+<p>简单地说，它们就是“定个闹钟”：在调用poll、select函数时可以传入“超时时间”。在这段时间内，条件合适时(比如有数据可读、有空间可写)就会立刻返回，否则等到“超时时间”结束时返回错误。</p>
+<p>用法如下。</p>
+<ul>
+<li>APP先调用open函数时。</li>
+<li>APP不是直接调用read函数，而是先调用poll或select函数，这2个函数中可以传入“超时时间  ”。它们的作用是：如果驱动程序中有数据，则立刻返回；否则就休眠。在休眠期间，如果有人操作了硬件，驱动程序获得数据后就会把APP唤醒，导致poll或select立刻返回；如果在“超时时间”内无人操作硬件，则时间到后poll或select函数也会返回。APP可以根据函数的返回值判断返回原因：有数据？无数据超时返回？</li>
+<li>APP根据poll或select的返回值判断有数据之后，就调用read函数读取数据时，这时就会立刻获得数据。</li>
+<li>poll/select函数可以监测多个文件，可以监测多种事件：</li>
+</ul>
+<p>表 7‑1 poll/select监测事件</p>
+<table><thead><tr><th>事件类型</th><th>说明</th></tr></thead><tbody><tr><td>POLLIN</td><td>有数据可读</td></tr><tr><td>POLLRDNORM</td><td>等同于POLLIN</td></tr><tr><td>POLLRDBAND</td><td>Priority band data can be read，有优先级较较高的“band data”可读<br>Linux系统中很少使用这个事件</td></tr><tr><td>POLLPRI</td><td>高优先级数据可读</td></tr><tr><td>POLLOUT</td><td>可以写数据</td></tr><tr><td>POLLWRNORM</td><td>等同于POLLOUT</td></tr><tr><td>POLLWRBAND</td><td>Priority data may be written</td></tr><tr><td>POLLERR</td><td>发生了错误</td></tr><tr><td>POLLHUP</td><td>挂起</td></tr><tr><td>POLLNVAL</td><td>无效的请求，一般是fd未open</td></tr></tbody></table>
+<p>在调用poll函数时，要指明：</p>
+<ul>
+<li>你要监测哪一个文件：哪一个fd</li>
+<li>你想监测这个文件的哪种事件：是POLLIN、还是POLLOUT</li>
+</ul>
+<p>最后，在poll函数返回时，要判断状态。</p>
+<p>应用程序代码如下：</p>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">struct pollfd fds[1];</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">int timeout_ms = 5000;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">int ret;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">fds[0].fd = fd;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">fds[0].events = POLLIN;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">ret = poll(fds, 1, timeout_ms);</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">if ((ret == 1) &amp;&amp; (fds[0].revents &amp; POLLIN))</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">{</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">	read(fd, &amp;val, 4);</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">	printf(&quot;get button : 0x%x\n&quot;, val);</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">}</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="Copy code to clipboard" title="Copy" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ol>
+<li>现在编程：使用POLL</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>使用GIT下载所有源码后，本节源码位于如下目录：</p>
+<p>01_all_series_quickstart\</p>
+<p>04_嵌入式Linux应用开发基础知识\</p>
+<p>source\11_input\01_app_demo\03_input_read_poll.c</p>
+<p>精简过的核心源码如下：</p>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">14 int main(int argc, char **argv)</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">15 {</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">16      int fd;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">26      struct pollfd fds[1];</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">……</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">61      fd = open(argv[1], O_RDWR | O_NONBLOCK);</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">……</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">94      while (1)</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">95      {</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">96              fds[0].fd = fd;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">97              fds[0].events  = POLLIN;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">98              fds[0].revents = 0;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">99              ret = poll(fds, nfds, 5000);</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">100             if (ret &gt; 0)</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">101             {</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">102                     if (fds[0].revents == POLLIN)</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">103                     {</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">104                             while (read(fd, &amp;event, sizeof(event)) == sizeof(event))</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">105                             {</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">106                                     printf(&quot;get event: type = 0x%x, code = 0x%x, value = 0x%x\n&quot;, event.type, event.code, event.value);</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">107                             }</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">108                     }</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">109             }</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">110             else if (ret == 0)</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">111             {</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">112                     printf(&quot;time out\n&quot;);</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">113             }</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">114             else</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">115             {</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">116                     printf(&quot;poll err\n&quot;);</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">117             }</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">118     }</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">119</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">120     return 0;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">121 }</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">122</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="Copy code to clipboard" title="Copy" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<p>第61行：打开设备文件。</p>
+<p>第96~98行：设置pollfd结构体。</p>
+<p>第96行：想查询哪个文件(fd)？</p>
+<p>第97行：想查询什么事件(POLLIN)？</p>
+<p>第98行：先清除“返回的事件”(revents)。</p>
+<p>第99行：使用poll函数查询事件，指定超时时间为5000(ms)。</p>
+<p>第100、110行判断返回值：大于0表示期待的事件发生了，等于0表示超时。</p>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ol>
+<li>课后作业</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>使用poll函数监测多个输入设备。</li>
+<li>使用select函数实现同样的功能。</li>
+</ul>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="737-异步通知方式">7.3.7 异步通知方式<a href="#737-异步通知方式" class="hash-link" aria-label="Direct link to 7.3.7 异步通知方式" title="Direct link to 7.3.7 异步通知方式">​</a></h3>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ol>
+<li>功能介绍</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>所谓同步，就是“你慢我等你”。</p>
+<p>那么异步就是：你慢那你就自己玩，我做自己的事去了，有情况再通知我。</p>
+<p>所谓异步通知，就是APP可以忙自己的事，当驱动程序用数据时它会主动给APP发信号，这会导致APP执行信号处理函数。</p>
+<p>仔细想想“发信号”，这只有3个字，却可以引发很多问题：</p>
+<ul>
+<li>谁发：驱动程序发</li>
+<li>发什么：信号</li>
+<li>发什么信号：SIGIO</li>
+<li>怎么发：内核里提供有函数</li>
+<li>发给谁：APP，APP要把自己告诉驱动</li>
+<li>APP收到后做什么：执行信号处理函数</li>
+<li>信号处理函数和信号，之间怎么挂钩：APP注册信号处理函数</li>
+</ul>
+<p>小孩通知妈妈的事情有很多：饿了、渴了、想找人玩。</p>
+<p>Linux系统中也有很多信号，在Linux内核源文件include\uapi\asm-generic\signal.h中，有很多信号的宏定义：</p>
+<p><img loading="lazy" src="/en/assets/images/manual-285-5faf270788f990d6647c94b16dd63440.png" width="529" height="681" class="img_ev3q"></p>
+<p>图 7.15信号宏定义</p>
+<p>驱动程序通知APP时，它会发出“SIGIO”这个信号，表示有“IO事件”要处理。</p>
+<p>就APP而言，你想处理SIGIO信息，那么需要提供信号处理函数，并且要跟SIGIO挂钩。这可以通过一个signal函数来“给某个信号注册处理函数”，用法如下：</p>
+<p><img loading="lazy" src="/en/assets/images/manual-286-583d4e7386bff2d39d1013821e475c26.png" width="1026" height="221" class="img_ev3q"></p>
+<p>图 7.16信号函数用法</p>
+<p>除了注册SIGIO的处理函数，APP还要做什  么事？想想这几个问题：</p>
+<ul>
+<li>内核里有那么多驱动，你想让哪一个驱动给你发SIGIO信号？</li>
+</ul>
+<p>APP要打开驱动程序的设备节点。</p>
+<ul>
+<li>驱动程序怎么知道要发信号给你而不是别人？APP要把自己的进程ID告诉驱动程序。</li>
+<li>APP有时候想收到信号，有时候又不想收到信号：应该可以把APP的意愿告诉驱动：设置Flag里面的FASYNC位为1，使能“异步通知”。<!-- -->
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ol>
+<li>应用编程</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>应用程序要做的事情有这几件：</p>
+<ol>
+<li>编写信号处理函数：</li>
+</ol>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">static void sig_func(int sig)</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">{</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">	int val;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">	read(fd, &amp;val, 4);</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">	printf(&quot;get button : 0x%x\n&quot;, val);</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">}</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="Copy code to clipboard" title="Copy" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<ol>
+<li>注册信号处理函数：</li>
+</ol>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">signal(SIGIO, sig_func);</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="Copy code to clipboard" title="Copy" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<ol>
+<li>打开驱动：</li>
+</ol>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">fd = open(argv[1], O_RDWR);</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="Copy code to clipboard" title="Copy" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<ol>
+<li>把进程ID告诉驱动：</li>
+</ol>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">fcntl(fd, F_SETOWN, getpid());</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="Copy code to clipboard" title="Copy" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<ol>
+<li>使能驱动的FASYNC功能：</li>
+</ol>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">flags = fcntl(fd, F_GETFL);</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">fcntl(fd, F_SETFL, flags | FASYNC);</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="Copy code to clipboard" title="Copy" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<a id="_Toc197788646"></a>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="74-电阻屏和电容屏">7.4 电阻屏和电容屏<a href="#74-电阻屏和电容屏" class="hash-link" aria-label="Direct link to 7.4 电阻屏和电容屏" title="Direct link to 7.4 电阻屏和电容屏">​</a></h2>
+<p>触摸屏分为电阻屏、电容屏。电阻屏结构简单，在以前很流行；电容屏支持多点触摸，现在的手机基本都是使用电容屏。</p>
+<p><strong>注意</strong>：LCD、触摸屏不是一回事，LCD是输出设备，触摸屏是输入设备。制作触摸屏时特意把它的尺寸做得跟LCD一模一样，并且把触摸屏覆盖在LCD上。</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="741-电阻屏">7.4.1 电阻屏<a href="#741-电阻屏" class="hash-link" aria-label="Direct link to 7.4.1 电阻屏" title="Direct link to 7.4.1 电阻屏">​</a></h3>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ol>
+<li>复习一下欧姆定律</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p><img loading="lazy" src="data:image/png;base64,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" width="272" height="569" class="img_ev3q"></p>
+<p><a id="_Ref108709777"></a>图 7.17 欧姆定律</p>
+<p>图 7.17中的电阻假设是均匀的，就是长度和阻值成正比关系。电阻长度为L，阻值为R，在两端施加3.3V电压。在某点测得电阻为V，求上图中长度X。</p>
+<p>根据欧姆定律：3.3/R = V/Rx，</p>
+<p>因为长度和阻值成正比关系，上述公式转换为：3.3∕L = V/X，所以X=LV/3.3。</p>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ol>
+<li>电阻屏原理</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>电阻屏就是基于欧姆定律制作的，它有上下两层薄膜，这两层薄膜就是两个电阻，如下图所示：</p>
+<p><img loading="lazy" src="/en/assets/images/manual-288-6248939e5c9afb5543c6948ebdeee8db.png" width="586" height="315" class="img_ev3q"></p>
+<p>图 7.18 电阻屏原理</p>
+<p>平时上下两层薄膜无触触，当点击触摸屏时，上下两层薄膜接触：这时就可以测量触点电压。过程如下：</p>
+<ol>
+<li>测量X坐标：</li>
+</ol>
+<p>在xp、xm两端施加3.3V电压，yp和ym不施加电压(yp就相当于探针)，测量yp电压值。该电压值就跟X坐标成正比关系，假设：</p>
+<p>X = 3.3*Vyp/Xmax</p>
+<ol>
+<li>测量Y坐标：</li>
+</ol>
+<p>在yp、ym两端施加3.3V电压，xp和xm不施加电压(xp就相当于探针)，测量xp电压值。该电压值就跟Y坐标成正比关系，假设：</p>
+<p>Y = 3.3*Vxp/Ymax</p>
+<p>在实际使用时，电阻屏的Xmax、Ymax无从得知，所以使用之前要先较准：依次点击触摸屏的四个角和中心点，推算出X、Y坐标的公式：</p>
+<p>X = func(Vyp)</p>
+<p>Y = func(Vxp)</p>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ol>
+<li>电阻屏数据</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>Linux驱动程序中，会上报触点的X、Y数据，注意：这不是LCD的坐标值，需要APP再次处理才能转换为LCD坐标值。</p>
+<p>对应的input_event结构体中，“type、code、value”如下：</p>
+<p><strong>按下时：</strong></p>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">EV_KEY   BTN_TOUCH     1        /* 按下 */</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">EV_ABS   ABS_PRESSURE  1        /* 压力值，可以上报，也可以不报，可以是其他压力值 */</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">EV_ABS   ABS_X         x_value  /* X坐标 */</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">EV_ABS   ABS_Y         y_value  /* Y坐标 */</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">EV_SYNC  0             0        /* 同步事件 */</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="Copy code to clipboard" title="Copy" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<p><strong>松开时：</strong></p>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">EV_KEY   BTN_TOUCH     0        /* 松开 */</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">EV_ABS   ABS_PRESSURE  0        /* 压力值，可以上报，也可以不报 */</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">EV_SYNC  0             0        /* 同步事件 */</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="Copy code to clipboard" title="Copy" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="742-电容屏">7.4.2 电容屏<a href="#742-电容屏" class="hash-link" aria-label="Direct link to 7.4.2 电容屏" title="Direct link to 7.4.2 电容屏">​</a></h3>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ol>
+<li>原理</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>原理如图 7.19所示：</p>
+<p><img loading="lazy" src="/en/assets/images/manual-289-6c8e2e04805cbc05d817ac3cdbc4b93e.png" width="749" height="283" class="img_ev3q"></p>
+<p><a id="_Ref108710102"></a>图 7.19 电容屏</p>
+<p>电容屏中有一个控制芯片，它会周期性产生驱动信号，接收电极接收到信号，并可测量电荷大小。当电容屏被按下时，相当于引入了新的电容，从而影响了接收电极接收到的电荷大小。主控芯片根据电荷大小即可计算出触点位置。</p>
+<p>怎么通过电荷计算出触点位置？这由控制芯片实现，这类芯片一般是I2C接口。</p>
+<p>我们只需要编写程序，通过I2C读取芯片寄存器即可得到这些数据。</p>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ol>
+<li>电容屏数据</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>参考文档：Linux内核Documentation\input\multi-touch-protocol.rst。</p>
+<p>电容屏可以支持多点触摸(Multi touch)，驱动程序上报的数据中怎么分辨触点？</p>
+<p>这有两种方法：Type A、Type B，这也对应两种类型的触摸屏：</p>
+<ol>
+<li>Type A</li>
+</ol>
+<p>该类型的触摸屏不能分辨是哪一个触点，它只是把所有触点的坐标一股脑地上报，由软件来分辨这些数据分别属于哪一个触点。</p>
+<p>Type A已经过时，Linux内核中都没有Type A的源码了。</p>
+<ol>
+<li>Type B</li>
+</ol>
+<p>该类型的触摸屏能分辨是哪一个触点，上报数据时会先上报触点ID，再上报它的数据。</p>
+<p>具体例子如下，这是最简单的示例，使用场景分析来看看它上报的数据。</p>
+<p>当有2个触点时(type, code, value)：</p>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">EV_ABS   ABS_MT_SLOT 0   // 这表示“我要上报一个触点信息了”，用来分隔触点信息</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">EV_ABS   ABS_MT_TRACKING_ID 45          // 这个触点的ID是45</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">EV_ABS   ABS_MT_POSITION_X x[0]         // 触点X坐标</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">EV_ABS   ABS_MT_POSITION_Y y[0]         // 触点Y坐标</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">EV_ABS   ABS_MT_SLOT 1 // 这表示“我要上报一个触点信息了”，用来分隔触点信息</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">EV_ABS   ABS_MT_TRACKING_ID 46          // 这个触点的ID是46</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">EV_ABS   ABS_MT_POSITION_X x[1]         // 触点X坐标</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">EV_ABS   ABS_MT_POSITION_Y y[1]         // 触点Y坐标</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">EV_SYNC  SYN_REPORT        0            // 全部数据上报完毕</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="Copy code to clipboard" title="Copy" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<p>当ID为45的触点正在移动时：</p>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">EV_ABS   ABS_MT_SLOT 0   // 这表示“我要上报一个触点信息了”，之前上报过ID，就不用再上报ID了</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">EV_ABS   ABS_MT_POSITION_X x[0]   // 触点X坐标</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">EV_SYNC  SYN_REPORT         0     // 全部数据上报完毕</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="Copy code to clipboard" title="Copy" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<p>松开ID为45的触点时(在前面slot已经被设置为0，这里这需要再重新设置slot，slot就像一个全局变量一样：如果它没变化的话，就无需再次设置)：</p>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">// 刚刚设置了ABS_MT_SLOT为0，它对应ID为45，这里设置ID为-1就表示ID为45的触点被松开了</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">EV_ABS   ABS_MT_TRACKING_ID -1</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">EV_SYNC  SYN_REPORT         0    // 全部数据上报完毕</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="Copy code to clipboard" title="Copy" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<p>最后，松开ID为46的触点：</p>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">EV_ABS   ABS_MT_SLOT 1       // 这表示“我要上报一个触点信息了”，在前面设置过slot 1的ID为46</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">EV_ABS   ABS_MT_TRACKING_ID -1  // ID为-1，表示slot 1被松开，即ID为46的触点被松开</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">EV_SYNC  SYN_REPORT             // 全部数据上报完毕</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="Copy code to clipboard" title="Copy" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ol>
+<li>电容屏的实验数据</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>假设你的开发板上电容屏对应的设备节点是/dev/input/event0，执行以下命令：</p>
+<div class="language-bash codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-bash codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">hexdump /dev/input/event0</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="Copy code to clipboard" title="Copy" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<p>然后用一个手指点击触摸屏，得到类似图 7.20的数据：</p>
+<p><img loading="lazy" src="/en/assets/images/manual-290-0238a75407ee6f1cc300bfa5ed38cd06.png" width="736" height="267" class="img_ev3q"></p>
+<p><a id="_Ref108710128"></a>图 7.20 触摸屏打印信息</p>
+<p>在上面的数据中，为了兼容老程序，它也上报了ABS_X、ABS_Y数据，电阻触摸屏就是使用这类型的数据。所以基于电阻屏的程序，也可以用在电容屏上。</p>
+<p>使用两个手指点击触摸屏时，得到类似如下的数据：</p>
+<p><img loading="lazy" src="/en/assets/images/manual-291-d3606803064410f594b70d27d4b93713.png" width="946" height="559" class="img_ev3q"></p>
+<p>图 7.21 双指触摸时打印信息</p>
+<p>为了兼容老程序，它也上报了ABS_X、ABS_Y数据，但是只上报第1个触点的数据。</p>
+<a id="_Toc197788647"></a>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="75-tslib">7.5 tslib<a href="#75-tslib" class="hash-link" aria-label="Direct link to 7.5 tslib" title="Direct link to 7.5 tslib">​</a></h2>
+<p>tslib是一个触摸屏的开源库，可以使用它来访问触摸屏设备，可以给输入设备添加各种“filter”(过滤器，就是各种处理)，地址是：<a href="http://www.tslib.org/" target="_blank" rel="noopener noreferrer">http://www.tslib.org/</a>。</p>
+<p>编译tslib后，可以得到libts库，还可以得到各种工具：较准工具、测试工具。</p>
+<p>使用GIT下载所有源码后，本节源码位于如下目录：</p>
+<p>01_all_series_quickstart\</p>
+<p>04_嵌入式Linux应用开发基础知识\source\11_input\02_tslib\</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="751-tslib框架分析">7.5.1 tslib框架分析<a href="#751-tslib框架分析" class="hash-link" aria-label="Direct link to 7.5.1 tslib框架分析" title="Direct link to 7.5.1 tslib框架分析">​</a></h3>
+<p>tslib的主要代码如图 7.22：</p>
+<p><img loading="lazy" src="/en/assets/images/manual-292-a0d4b3986ee478745b940b88cd32945a.png" width="333" height="450" class="img_ev3q"></p>
+<p><a id="_Ref108710213"></a>图 7.22 tslib主要代码</p>
+<p>核心在于“plugins”目录里的“插件”，或称为“module”。这个目录下的每个文件都是一个module，每个module都提供2个函数：read、read_mt，前者用于读取单点触摸屏的数据，后者用于读取多点触摸屏的数据。</p>
+<p>要分析tslib的框架，先看看示例程序怎么使用，我们参考ts_test.c和ts_test_mt.c，前者用于一般触摸屏(比如电阻屏、单点电容屏)，后者用于多点触摸屏。</p>
+<p>一个图就可以弄清楚tslib的框架：</p>
+<p><img loading="lazy" src="/en/assets/images/manual-293-8b807e73fead4c167839527d6f518a2a.png" width="816" height="1056" class="img_ev3q"></p>
+<p>图 7.23 tslib框架</p>
+<p>调用ts_open后，可以打开某个设备节点，构造出一个tsdev结构体。然后调用ts_config读取配置文件的处理，假设/etc/ts.conf  内容如下：</p>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain"> module_raw input</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain"> module pthres pmin=1</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain"> module dejitter delta=100</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain"> module linear</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="Copy code to clipboard" title="Copy" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<p>每行表示一个“module”或“moduel_raw”。</p>
+<p>对于所有的“module”，都会插入tsdev.list链表头，也就是tsdev.list执行配置文件中最后一个“module”，配置文件中第一个“module”位于链表的尾部。</p>
+<p>对于所有的“module_raw”，都会插入tsdev.list_raw链表头，一般只有一个“module_raw”。</p>
+<p>注意：tsdev.list中最后一个“module”会指向ts_dev.list_raw的头部。</p>
+<p>无论是调用ts_read还是ts_read_mt，都是通过tsdev.list中的模块来处理数据的。这写模块是递归调用的，比如linear模块的read函数如图 7.24：</p>
+<p><img loading="lazy" src="/en/assets/images/manual-294-48a91b696caeb238bdcef39473b80a18.png" width="842" height="310" class="img_ev3q"></p>
+<p><a id="_Ref108710303"></a>图 7.24 linear的read</p>
+<p>linear模块的read_raw函数如图 7.25：</p>
+<p><img loading="lazy" src="/en/assets/images/manual-295-c88fe283acf3e366b16457537bbffe19.png" width="781" height="431" class="img_ev3q"></p>
+<p><a id="_Ref108710330"></a>图 7.25 linear的read_raw</p>
+<p>因为是递归调用，所有最先使用input模块读取设备节点得到原始数据，再依次经过pthres模块、dejitter模块、linear模块处理后，才返回最终数据。</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="752-交叉编译测试tslib">7.5.2 交叉编译、测试tslib<a href="#752-交叉编译测试tslib" class="hash-link" aria-label="Direct link to 7.5.2 交叉编译、测试tslib" title="Direct link to 7.5.2 交叉编译、测试tslib">​</a></h3>
+<p>使用GIT下载所有源码后，本节源码位于如下目录：</p>
+<p>01_all_series_quickstart\</p>
+<p>04_嵌入式Linux应用开发基础知识\</p>
+<p>source\11_input\02_tslib\tslib-1.21.tar.xz</p>
+<p>本节会涉及这些内容：交叉编译tslib，运行自带的测试程序，后面会自己写一个简单的测试程序。</p>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ol>
+<li>交叉编译tslib</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<div class="language-bash codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-bash codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">// 对于IMX6ULL，命令如下</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">tar xJf tslib-1.21.tar.xz</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">cd tslib-1.21</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">./configure  --host=arm-buildroot-linux-gnueabihf  --prefix=/</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">make</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">make install DESTDIR=$PWD/tmp</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="Copy code to clipboard" title="Copy" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<p>确定工具链中头文件、库文件目录：</p>
+<div class="language-bash codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-bash codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">// 对于IMX6ULL，命令如下</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">echo &#x27;main(){}&#x27;|  arm-buildroot-linux-gnueabihf-gcc  -E -v -</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="Copy code to clipboard" title="Copy" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<p>把头文件、库文件放到工具链目录下：</p>
+<div class="language-bash codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-bash codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">// 对于IMX6ULL，命令如下</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">cd tslib-1.21/tmp/</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">cp include/* /home/book/100ask_imx6ull-sdk/ToolChain/arm-buildroot-linux-gnueabihf_sdk-buildroot/bin/../lib/gcc/arm-buildroot-linux-gnueabihf/7.5.0/include</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">cp -d lib/*so*  /home/book/100ask_imx6ull-sdk/ToolChain/arm-buildroot-linux-gnueabihf_sdk-buildroot/bin/../lib/gcc/arm-buildroot-linux-gnueabihf/7.5.0/../../../../arm-buildroot-linux-gnueabihf/lib</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="Copy code to clipboard" title="Copy" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ol>
+<li>测试tslib</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>把库文件放到单板上：运行程序要用，命令如下：</p>
+<div class="language-bash codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-bash codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">cd   tslib-1.21/tmp</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">adb  push  lib/ts       /lib</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">adb  push  lib/*so*     /lib</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">adb  push  bin/*        /bin</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">adb  push  etc/ts.conf  /etc</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="Copy code to clipboard" title="Copy" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<p>对于IMX6ULL，首先需要关闭默认的qt gui程序，才可以执行ts_test_mt测试命令，关闭qt命令如下所示：</p>
+<div class="language-bash codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-bash codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">mv  /etc/init.d/*hmi*  /root</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">mv  /etc/init.d/*lvgl*  /root</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">sync</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">reboot</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="Copy code to clipboard" title="Copy" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<p>在单板上执行测试程序：</p>
+<div class="language-bash codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-bash codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">export  TSLIB_PLUGINDIR=/lib/ts</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">ts_test_mt</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="Copy code to clipboard" title="Copy" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="753-自己写一个测试程序">7.5.3 自己写一个测试程序<a href="#753-自己写一个测试程序" class="hash-link" aria-label="Direct link to 7.5.3 自己写一个测试程序" title="Direct link to 7.5.3 自己写一个测试程序">​</a></h3>
+<p>使用GIT下载所有源码后，本节源码位于如下目录：</p>
+<p>01_all_series_quickstart\</p>
+<p>04_嵌入式Linux应用开发基础知识\source\11_input\02_tslib\mt_cal_distance.c</p>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ol>
+<li>接口函数深入分析</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>前面演示过，用两个手指点击屏幕时，可以得到类似图 7.26的数据：</p>
+<p><img loading="lazy" src="/en/assets/images/manual-296-d3606803064410f594b70d27d4b93713.png" width="946" height="559" class="img_ev3q"></p>
+<p><a id="_Ref108710499"></a>图 7.26 双指触摸屏幕的打印信息</p>
+<p>驱动程序使用slot、tracking_id来标识一个触点；当tracking_id等于-1时，标识这个触点被松开了。</p>
+<p>触摸屏可能支持多个触点，比如5个：tslib为了简化处理，即使只有2个触点，ts_read_mt函数也会返回5个触点数据，可以根据标志位判断数据是否有效。</p>
+<p>ts_read_mt函数原型如图 7.27：</p>
+<p><img loading="lazy" src="data:image/png;base64,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" width="811" height="57" class="img_ev3q"></p>
+<p><a id="_Ref108710522"></a>图 7.27 ts_read_mt函数原型</p>
+<p>假设nr设置为1，max_slots设置为5，那么读到的数据保存在：samp[0][0]、samp[0][1]、samp[0][2]、samp[0][3]、samp[0][4]中。</p>
+<p>假设nr设置为2，max_slots设置为5，那么读到的数据保存在：samp[0][0]、samp[0][1]、samp[0][2]、samp[0][3]、samp[0][4]和samp[1][0]、samp[1][1]、samp[1][2]、samp[1][3]、samp[1][4]中。</p>
+<p>ts_sample_mt结构体如图 7.28：</p>
+<p><img loading="lazy" src="/en/assets/images/manual-298-d8eddd9a3656326eb6c069d5826895af.png" width="602" height="546" class="img_ev3q"></p>
+<p><a id="_Ref108710576"></a>图 7.28 ts_sample_mt结构体</p>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ol>
+<li>编写代码</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>实现一个程序，不断打印2个触点的距离。</p>
+<p>思路：假设是5点触摸屏，调用一次ts_read_mt可以得到5个新数据；使用新旧数据进行判断，如果有2个触点，就打印出距离。</p></div><footer class="theme-doc-footer docusaurus-mt-lg"><div class="theme-doc-footer-edit-meta-row row"><div class="col"><a href="https://github.com/100askTeam/linux-docs/tree/main/docs/Linux-Application-Development-Manual/part-4/chapter-18.md" target="_blank" rel="noopener noreferrer" class="theme-edit-this-page"><svg fill="currentColor" height="20" width="20" viewBox="0 0 40 40" class="iconEdit_Z9Sw" aria-hidden="true"><g><path d="m34.5 11.7l-3 3.1-6.3-6.3 3.1-3q0.5-0.5 1.2-0.5t1.1 0.5l3.9 3.9q0.5 0.4 0.5 1.1t-0.5 1.2z m-29.5 17.1l18.4-18.5 6.3 6.3-18.4 18.4h-6.3v-6.2z"></path></g></svg>Edit this page</a></div><div class="col lastUpdated_vwxv"></div></div></footer></article><nav class="pagination-nav docusaurus-mt-lg" aria-label="Docs pages"><a class="pagination-nav__link pagination-nav__link--prev" href="/en/docs/Linux-Application-Development-Manual/part-4/chapter-17"><div class="pagination-nav__sublabel">Previous</div><div class="pagination-nav__label">第6章 文字显示</div></a><a class="pagination-nav__link pagination-nav__link--next" href="/en/docs/Linux-Application-Development-Manual/part-4/chapter-19"><div class="pagination-nav__sublabel">Next</div><div class="pagination-nav__label">第8章 网络通信</div></a></nav></div></div><div class="col col--3"><div class="tableOfContents_bqdL thin-scrollbar theme-doc-toc-desktop"><ul class="table-of-contents table-of-contents__left-border"><li><a href="#71-什么是输入系统" class="table-of-contents__link toc-highlight">7.1 什么是输入系统</a></li><li><a href="#72-输入系统框架及调试" class="table-of-contents__link toc-highlight">7.2 输入系统框架及调试</a><ul><li><a href="#721-框架概述" class="table-of-contents__link toc-highlight">7.2.1 框架概述</a></li><li><a href="#722-编写app需要掌握的知识" class="table-of-contents__link toc-highlight">7.2.2 编写APP需要掌握的知识</a></li><li><a href="#723-调试技巧" class="table-of-contents__link toc-highlight">7.2.3 调试技巧</a></li></ul></li><li><a href="#73-不使用库的应用程序示例" class="table-of-contents__link toc-highlight">7.3 不使用库的应用程序示例</a><ul><li><a href="#731-输入系统支持完整的api操作" class="table-of-contents__link toc-highlight">7.3.1 输入系统支持完整的API操作</a></li><li><a href="#732-app访问硬件的4种方式妈妈怎么知道孩子醒了" class="table-of-contents__link toc-highlight">7.3.2 APP访问硬件的4种方式：妈妈怎么知道孩子醒了</a></li><li><a href="#733-获取设备信息" class="table-of-contents__link toc-highlight">7.3.3 获取设备信息</a></li><li><a href="#734-查询方式" class="table-of-contents__link toc-highlight">7.3.4 查询方式</a></li><li><a href="#735-休眠-唤醒方式" class="table-of-contents__link toc-highlight">7.3.5 休眠-唤醒方式</a></li><li><a href="#736-pollselect方式" class="table-of-contents__link toc-highlight">7.3.6 POLL/SELECT方式</a></li><li><a href="#737-异步通知 方式" class="table-of-contents__link toc-highlight">7.3.7 异步通知方式</a></li></ul></li><li><a href="#74-电阻屏和电容屏" class="table-of-contents__link toc-highlight">7.4 电阻屏和电容屏</a><ul><li><a href="#741-电阻屏" class="table-of-contents__link toc-highlight">7.4.1 电阻屏</a></li><li><a href="#742-电容屏" class="table-of-contents__link toc-highlight">7.4.2 电容屏</a></li></ul></li><li><a href="#75-tslib" class="table-of-contents__link toc-highlight">7.5 tslib</a><ul><li><a href="#751-tslib框架分析" class="table-of-contents__link toc-highlight">7.5.1 tslib框架分析</a></li><li><a href="#752-交叉编译测试tslib" class="table-of-contents__link toc-highlight">7.5.2 交叉编译、测试tslib</a></li><li><a href="#753-自己写一个测试程序" class="table-of-contents__link toc-highlight">7.5.3 自己写一个测试程序</a></li></ul></li></ul></div></div></div></div></main></div></div></div><footer class="footer footer--dark"><div class="container container-fluid"><div class="row footer__links"><div class="col footer__col"><div class="footer__title">Docs</div><ul class="footer__items clean-list"><li class="footer__item"><a href="https://dongshanpi.com" target="_blank" rel="noopener noreferrer" class="footer__link-item">DongshanPI<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a></li><li class="footer__item"><a href="https://canaan-docs.100ask.net/" target="_blank" rel="noopener noreferrer" class="footer__link-item">Canaan-Docs<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a></li><li class="footer__item"><a href="https://renesas-docs.100ask.net/" target="_blank" rel="noopener noreferrer" class="footer__link-item">Renesas-Docs<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a></li><li class="footer__item"><a href="https://rtos.100ask.net/" target="_blank" rel="noopener noreferrer" class="footer__link-item">RTOS<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a></li><li class="footer__item"><a href="https://tina.100ask.net/" target="_blank" rel="noopener noreferrer" class="footer__link-item">TinaSDK-Docs<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a></li><li class="footer__item"><a href="https://allwinner-docs.100ask.net/" target="_blank" rel="noopener noreferrer" class="footer__link-item">Allwinner-Docs<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a></li><li class="footer__item"><a href="https://aw-r128.100ask.net/" target="_blank" rel="noopener noreferrer" class="footer__link-item">R128-Docs<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a></li></ul></div><div class="col footer__col"><div class="footer__title">Community</div><ul class="footer__items clean-list"><li class="footer__item"><a href="https://space.bilibili.com/275908810" target="_blank" rel="noopener noreferrer" class="footer__link-item">BiliBili<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a></li><li class="footer__item"><a href="https://forums.100ask.net" target="_blank" rel="noopener noreferrer" class="footer__link-item">Stack Overflow<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a></li><li class="footer__item"><a href="https://video.100ask.net/" target="_blank" rel="noopener noreferrer" class="footer__link-item">VideoCenter<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a></li><li class="footer__item"><a href="https://twitter.com/dongshanpi" target="_blank" rel="noopener noreferrer" class="footer__link-item">Twitter<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a></li></ul></div><div class="col footer__col"><div class="footer__title">More</div><ul class="footer__items clean-list"><li class="footer__item"><a href="https://weidongshan.coding.net/public/" target="_blank" rel="noopener noreferrer" class="footer__link-item">Coding<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a></li><li class="footer__item"><a href="https://github.com/100askTeam" target="_blank" rel="noopener noreferrer" class="footer__link-item">GitHub<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a></li><li class="footer__item"><a href="https://gitee.com/weidongshan" target="_blank" rel="noopener noreferrer" class="footer__link-item">Gitee<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a></li></ul></div></div><div class="footer__bottom text--center"><div class="footer__copyright">Copyright © 2026 100askTeam, Inc. Built with Docusaurus.</div></div></div></footer></div>
+</body>
+</html>
